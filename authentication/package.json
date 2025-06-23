@@ -1,0 +1,30 @@
+{
+  "name": "oj",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "homepage": "https://github.com/hhf112/OJ#readme",
+  "bugs": {
+    "url": "https://github.com/hhf112/OJ/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hhf112/OJ.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "main": "auth_server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon auth_server.js"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.17.0",
+    "mongoose": "^8.16.0",
+    "nodemon": "^3.1.10"
+  }
+}

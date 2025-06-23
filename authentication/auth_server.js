@@ -1,0 +1,21 @@
+import jwt from 'jsonwebtoken';
+import express from 'express';
+
+import { DBConnection } from './db.js';
+import auth from './routes/auth.js';
+
+try {
+  DBConnection();
+} catch (error) {
+  console.error("Database connection failed:", error);
+  process.exit(1);
+}
+
+const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use('/', auth);
+
+app.listen(5000, () => console.log("Server is running on port 5000"));
+
