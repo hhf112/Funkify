@@ -3,6 +3,7 @@ import monogoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import User from '../models/user_model.js';
 import jwt from "jsonwebtoken";
+import cookieParser from 'cookie-parser';
 
 
 function generateAccessToken(user) {
@@ -38,10 +39,14 @@ export const loginHandler = async (req, res) => {
     await User.updateOne({ _id: user._id }, { jwt_refreshToken: refreshToken });
     res.status(200).json({
       success: true,
-      message: "Successfully loogged in user",
+      message: "Successfully logged in user",
       accessToken: access,
-      refreshToken: refreshToken
-    });
+    }).cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'Strict',
+      maxAge: 30 * 24 * 60 * 60 * 1000  // 30 days
+    })
   } catch (err) {
     console.log(err);
     res.status(500).json({
@@ -93,7 +98,7 @@ export const registerHandler = async (req, res) => {
 }
 
 export const logoutHandler = async (req, res) => {
-  const refreshToken = req.body.refreshToken;
+  const refreshToken = req.cookies.refreshToken;
   if (refreshToken == null)
     return res.status(400).json({
       success: false,
@@ -117,10 +122,18 @@ export const logoutHandler = async (req, res) => {
       }
 
       await User.updateOne({ _id: result._id }, { jwt_refreshToken: null });
-      return res.status(200).json({
-        success: true,
-        message: "User logged out successfully"
-      });
+      return res
+        .status(200).json({
+          success: true,
+          message: "User logged out successfully"
+        })
+        .clearCookie("refreshToken", {
+          path: '/',
+          httpOnly: true,
+          secure: true,
+          sameSite: 'Strict',
+        });
+
     } catch (err) {
       console.error(err);
       return res.status(500).json({
@@ -133,7 +146,7 @@ export const logoutHandler = async (req, res) => {
 }
 
 export const tokenHandler = async (req, res) => {
-  const refreshToken = req.body.refreshToken;
+  const refreshToken = req.cookies.refreshToken;
   if (refreshToken == null)
     return res.status(400).json({
       success: false,

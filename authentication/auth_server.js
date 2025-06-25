@@ -3,6 +3,7 @@ import express from 'express';
 
 import { DBConnection } from './db.js';
 import auth from './routes/auth.js';
+import cookieParser from 'cookie-parser';
 
 try {
   DBConnection();
@@ -14,6 +15,7 @@ try {
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser())
 
 app.use('/', auth);
 

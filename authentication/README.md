@@ -47,7 +47,6 @@ Expected request Body: JSON
     "success": true,
     "message": string,    
     "accessToken": string,
-    "refreshToken": string
 }
 
 ```
