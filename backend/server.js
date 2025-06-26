@@ -15,8 +15,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const PORT = process.env.PORT || 3000;
-import JudgeRoutes from './routes/Judge.js';
-import ProblemsRoutes from './routes/Problems.js';
+import JudgeRoutes from './routes/JudgeRoutes.js';
+import ProblemsRoutes from './routes/ProblemRoutes.js';
 
 app.use('/api/judge', JudgeRoutes);
 app.use('/api/problems', ProblemsRoutes);
