@@ -1,6 +1,7 @@
 import express from 'express';
 import "dotenv/config.js";
 import { DBConnection } from './db.js';
+import { Authenticate } from '../middleware/authentication.js';
 
 
 try {
@@ -11,6 +12,7 @@ try {
 }
 
 const app = express();
+app.use(Authenticate);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
