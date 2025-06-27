@@ -7,7 +7,10 @@ import cookieParser from 'cookie-parser';
 
 
 function generateAccessToken(user) {
-  return jwt.sign(user, process.env.JWT_SECRET, { expiresIn: "30m" })
+  return jwt.sign({
+    username: user.username,
+    email: user.email
+  }, process.env.JWT_SECRET, { expiresIn: "5h" })
 }
 
 export const loginHandler = async (req, res) => {
@@ -35,21 +38,25 @@ export const loginHandler = async (req, res) => {
       });
 
     const access = generateAccessToken(user);
-    const refreshToken = jwt.sign(user, process.env.REFRESH_SECRET);
+    const refreshToken = jwt.sign({
+      username: user.username,
+      email: user.email,
+    }, process.env.REFRESH_SECRET);
     await User.updateOne({ _id: user._id }, { jwt_refreshToken: refreshToken });
-    res.status(200).json({
-      success: true,
-      message: "Successfully logged in user",
-      accessToken: access,
-    }).cookie("refreshToken", refreshToken, {
+    res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: true,
       sameSite: 'Strict',
-      maxAge: 30 * 24 * 60 * 60 * 1000  // 30 days
+      mexAge: 30 * 24 * 60 * 60 * 1000  // 30 days
     })
+    return res.status(200).json({
+      success: true,
+      message: "Successfully logged in user",
+      accessToken: access,
+    });
   } catch (err) {
     console.log(err);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "Internal server error",
     });
@@ -147,6 +154,7 @@ export const logoutHandler = async (req, res) => {
 
 export const tokenHandler = async (req, res) => {
   const refreshToken = req.cookies.refreshToken;
+  console.log(refreshToken);
   if (refreshToken == null)
     return res.status(400).json({
       success: false,
@@ -169,7 +177,11 @@ export const tokenHandler = async (req, res) => {
         })
       }
 
-      const accessToken = jwt.sign(result.toObject(), process.env.REFRESH_SECRET);
+
+      const accessToken = jwt.sign({
+        username: result.username,
+        email: result.email,
+      }, process.env.REFRESH_SECRET);
       return res.status(200).json({
         success: true,
         message: "Access token generated successfully",
