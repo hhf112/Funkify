@@ -20,12 +20,12 @@ const verdictSchema = new mongoose.Schema({
     default: null,
   },
   compile: {
-    type: boolean,
+    type: Boolean,
     default: null,
     required: true
   },
   runtime: {
-    type: boolean,
+    type: Boolean,
     default: null,
     required: true
   },

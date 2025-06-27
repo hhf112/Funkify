@@ -25,7 +25,7 @@ const problemSchema = new mongoose.Schema({
     default: Date.now
   },
   author: {
-    type: string,
+    type: String,
     default: 'Anonymous'
   },
   sampleTests: {

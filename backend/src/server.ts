@@ -1,7 +1,7 @@
-import express from 'express';
+import express, { Application } from 'express';
 import "dotenv/config.js";
 import { DBConnection } from './db.js';
-import { Authenticate } from '../middleware/authentication.js';
+import { Authenticate } from './middleware/authentication';
 
 
 try {
@@ -11,8 +11,8 @@ try {
   process.exit(1);
 }
 
-const app = express();
-app.use(Authenticate);
+const app: Application = express();
+app.use("/", Authenticate);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

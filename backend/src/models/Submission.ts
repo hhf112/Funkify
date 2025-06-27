@@ -16,7 +16,7 @@ const submissionsSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  SubmissionTime: {
+  submissionTime: {
     type: Date,
     default: Date.now
   },
@@ -31,5 +31,5 @@ const submissionsSchema = new mongoose.Schema({
   },
 })
 
-const Submissions = mongoose.model('submissions', SubmissionsSchema);
+const Submissions = mongoose.model('submissions', submissionsSchema);
 export default Submissions;

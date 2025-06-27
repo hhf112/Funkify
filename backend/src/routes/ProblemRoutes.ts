@@ -1,11 +1,12 @@
 import express from 'express';
 import { 
   getProblemsByCount,
-  getProblemByUserId,
+  getProblemsByUserId,
+  getProblemById,
   createProblem,
   updateProblem,
   deleteProblem,
-} from '../controllers/ProblemsController.js';
+} from '../controllers/problemController';
 
 
 const router = express.Router();
@@ -13,7 +14,7 @@ const router = express.Router();
 
 
 router.get('/', getProblemsByCount); //count in request query
-router.get('/:problemId', getProbleById); 
+router.get('/:problemId', getProblemById); 
 router.get('/user', getProblemsByUserId);
 router.put('/add', createProblem);
 router.post('/mod', updateProblem);
