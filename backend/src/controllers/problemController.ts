@@ -37,6 +37,7 @@ export const createProblem = async (req: Request, res: Response) => {
     console.error('Error creating problem:', error);
     res.status(500).json({
       success: false,
+      error: error.name,
       message: error.message,
     });
     return;
@@ -66,7 +67,7 @@ export const updateProblem = async (req: Request, res: Response) => {
     console.error('Error updating problem:', error);
     res.status(500).json({
       success: false,
-      error: "Database Error",
+      error: error.name,
       message: error.message,
     });
     return;
