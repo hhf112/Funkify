@@ -14,11 +14,11 @@ const router = express.Router();
 
 
 router.get('/', getProblemsByCount); //count in request query
-router.get('/:problemId', getProblemById); 
 router.get('/user', getProblemsByUserId);
 router.put('/add', createProblem);
 router.post('/mod', updateProblem);
 router.delete('/del', deleteProblem);
+router.get('/:problemId', getProblemById); 
 
 
 export default router;

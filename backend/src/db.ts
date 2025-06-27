@@ -11,7 +11,12 @@ if (!MONGO_URL) {
 
 export const DBConnection = async () => {
   try {
-    await mongoose.connect(MONGO_URL)
+    await mongoose.connect(MONGO_URL, {
+      autoIndex: true,
+    })
+    const Problem = (await import("./models/Problem.js")).default;
+    await Problem.syncIndexes();
+
     console.log("Database connected successfully");
   } catch (err) {
     console.error("Database connection failed:", err);

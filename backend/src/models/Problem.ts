@@ -4,17 +4,18 @@ const problemSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
+    unique: true,
   },
   description: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
   },
   difficulty: {
     type: String,
     enum: ['Easy', 'Medium', 'Hard'],
-    required: true
+    required: true,
   },
   tags: [{
     type: String,
@@ -27,6 +28,10 @@ const problemSchema = new mongoose.Schema({
   author: {
     type: String,
     default: 'Anonymous'
+  },
+  userId: {
+    type: String,
+    default: null,
   },
   sampleTests: {
     type: [{
