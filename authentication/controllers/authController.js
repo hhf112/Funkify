@@ -106,11 +106,12 @@ export const registerHandler = async (req, res) => {
 
 export const logoutHandler = async (req, res) => {
   const refreshToken = req.cookies.refreshToken;
-  if (refreshToken == null)
+  if (refreshToken == null) {
     return res.status(400).json({
       success: false,
       message: "Refresh token must be provided"
     })
+  }
 
 
   jwt.verify(refreshToken, process.env.REFRESH_SECRET, async (err, user) => {
@@ -129,17 +130,17 @@ export const logoutHandler = async (req, res) => {
       }
 
       await User.updateOne({ _id: result._id }, { jwt_refreshToken: null });
+      res.clearCookie("refreshToken", {
+        path: '/',
+        httpOnly: true,
+        secure: true,
+        sameSite: 'Strict',
+      });
       return res
         .status(200).json({
           success: true,
           message: "User logged out successfully"
         })
-        .clearCookie("refreshToken", {
-          path: '/',
-          httpOnly: true,
-          secure: true,
-          sameSite: 'Strict',
-        });
 
     } catch (err) {
       console.error(err);
