@@ -6,6 +6,9 @@ import jwt from "jsonwebtoken";
 import cookieParser from 'cookie-parser';
 
 
+function verifyRefreshToken(refreshToken) {
+
+}
 function generateAccessToken(user) {
   return jwt.sign({
     username: user.username,
@@ -196,6 +199,59 @@ export const tokenHandler = async (req, res) => {
       });
     }
   })
+}
 
+export const modifyUser = async (req, res) => {
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) {
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorized"
+    })
+  }
+
+  const updationDetails = req.body.updationDetails;
+  const userId = req.body.userId;
+  if (!updationDetails) {
+    return res.send(400).json({
+      success: false,
+      message: "Details not provied"
+    });
+  }
+
+  jwt.verify(refreshToken, process.env.REFRESH_SECRET, async (err, user) => {
+    if (err) return res.status(401).json({
+      success: false,
+      message: "Unauthorized"
+    });
+
+    try {
+      const updatedUser = await User.findOneAndUpdate(
+        {_id: userId},
+        updationDetails,
+        { new: true });
+
+      if (!updatedUser) {
+        return res.status(404).json({
+          success: false,
+          message: "User not found"
+        })
+      }
+      return res.status(200).json({
+        success: true,
+        message: "User updated successfully",
+        problem: updatedUser,
+      });
+
+    } catch (err) {
+      console.error('Error updating problem:', error);
+      return res.status(500).json({
+        success: false,
+        error: error.name,
+        message: error.message,
+      });
+      return;
+    }
+  })
 }
 
