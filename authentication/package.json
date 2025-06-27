@@ -16,7 +16,7 @@
   "main": "auth_server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon auth_server.js"
+    "dev": "nodemon auth_server.js"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
