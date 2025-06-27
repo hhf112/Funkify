@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import mongoose, { Model } from 'mongoose';
-import Submission from '../models/Submission'
+import Submission from '../models/Submission.js'
 
 export const submit = async (req: Request, res: Response) => {
   try {

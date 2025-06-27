@@ -1,7 +1,7 @@
 import express, { Application } from 'express';
 import "dotenv/config.js";
 import { DBConnection } from './db.js';
-import { Authenticate } from './middleware/authentication';
+import { Authenticate } from './middleware/authentication.js';
 
 
 try {
@@ -26,5 +26,5 @@ app.use('/api/problems', ProblemsRoutes);
 
 
 app.listen(PORT, () => {
-  console.log('Server is runnniong on port', PORT);
+  console.log('server is RUNNING ON', PORT);
 })
