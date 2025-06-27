@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import mongoose, { Model } from 'mongoose';
 import Submission from '../models/Submission.js'
 
-export const submit = async (req: Request, res: Response) => {
+export const createSubmission = async (req: Request, res: Response) => {
   try {
     const { userId, problemId, code, language } = req.body;
     if (!userId || !problemId || !code || !language) {

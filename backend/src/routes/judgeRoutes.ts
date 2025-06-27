@@ -1,6 +1,6 @@
 import express, { Router } from 'express';
 import {
-  submit,
+  createSubmission,
   getSubmissionById,
   getSubmissionsByProblemId,
   getSubmissionsByUserId,
@@ -10,7 +10,7 @@ import {
 const router = Router();
 
 
-router.post('/', submit);
+router.post('/', createSubmission);
 router.get('/user/:userId', getSubmissionsByUserId);
 router.get('/problem/:problemId', getSubmissionsByProblemId);
 router.get('/for/:userId/:problemId', getSubmissionByProblemIdAndUserId);
