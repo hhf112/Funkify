@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import Problem from '../models/Problem.js';
+import Problem from '../models/problemModels/Problem.js';
 import { Error, MongooseError } from 'mongoose';
 
 

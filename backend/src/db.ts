@@ -14,7 +14,8 @@ export const DBConnection = async () => {
     await mongoose.connect(MONGO_URL, {
       autoIndex: true,
     })
-    const Problem = (await import("./models/Problem.js")).default;
+    // has implied unique index
+    const Problem = (await import("./models/problemModels/Problem.js")).default;
     await Problem.syncIndexes();
 
     console.log("Database connected successfully");

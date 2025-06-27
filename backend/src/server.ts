@@ -17,14 +17,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const PORT = process.env.PORT || 3000;
-import JudgeRoutes from './routes/judgeRoutes.js';
+import SubmissionRoutes from './routes/submissionRoutes.js';
 import ProblemsRoutes from './routes/problemRoutes.js';
 
 app.get("/", (req: Request, res: Response) => {
   res.status(200).json({ message: "working" });
   return;
 })
-app.use('/api/judge', JudgeRoutes);
+app.use('/api/submissions', SubmissionRoutes);
 app.use('/api/problems', ProblemsRoutes);
 
 

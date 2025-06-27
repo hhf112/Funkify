@@ -13,7 +13,8 @@ const router = Router();
 router.post('/', createSubmission);
 router.get('/user/:userId', getSubmissionsByUserId);
 router.get('/problem/:problemId', getSubmissionsByProblemId);
-router.get('/for/:userId/:problemId', getSubmissionByProblemIdAndUserId);
+router.get('/for', getSubmissionByProblemIdAndUserId);
+router.get('/:submissionId', getSubmissionById);
 
 
 

@@ -1,10 +1,9 @@
 import mongoose from 'mongoose';
 
 const submissionsSchema = new mongoose.Schema({
-  ProblemId: {
+  problemId: {
     type: String,
     required: true,
-    unique: true,
     trim: true
   },
   userId: {
@@ -20,9 +19,13 @@ const submissionsSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
+  language: {
+    type: String,
+    required: true
+  },
   status: {
     type: String,
-    enum: ["Pending", "Processing", "Processed"],
+    enum: ["pending", "processing", "processed"],
     default: 'Pending'
   },
   verdictId: {

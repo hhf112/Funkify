@@ -1,15 +1,15 @@
 import { Request, Response } from 'express';
 import mongoose, { Model } from 'mongoose';
-import Submission from '../models/Submission.js'
+import Submission from '../models/submissionModels/Submission.js'
 
 export const createSubmission = async (req: Request, res: Response) => {
   try {
     const { userId, problemId, code, language } = req.body;
     if (!userId || !problemId || !code || !language) {
-       res.status(400).json({ error: 'Required fields are not filled' });
-       return;
+      res.status(400).json({ error: 'Required fields are not filled' });
+      return;
     }
-    const submission = new Model('Submission')({
+    const submission = await Submission.create({
       userId,
       problemId,
       code,
@@ -19,12 +19,19 @@ export const createSubmission = async (req: Request, res: Response) => {
       verdictId: null,
     });
 
-    await submission.save();
-    res.status(201).json(submission);
+    res.status(200).json({
+      success: false,
+      message: "Submitted successfully",
+      submissionId: submission._id,
+    });
     return;
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error submitting solution:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({
+      success: false,
+      error: error.name,
+      message: error.message,
+    });
     return;
   }
 }
@@ -32,16 +39,36 @@ export const createSubmission = async (req: Request, res: Response) => {
 export const getSubmissionsByUserId = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    const submissions = await Submission.find({ userId });
-    if (!submissions || submissions.length === 0) {
-      res.status(404).json({ error: 'No submissions found for this user' });
+    if (!userId) {
+      res.status(400).json({
+        success: false,
+        message: "user Id is required",
+      });
       return;
     }
-    res.status(200).json(submissions);
+
+    const submissions = await Submission.find({ userId });
+
+    if (!submissions || submissions.length === 0) {
+      res.status(404).json({
+        success: false,
+        message: "No submissions found matching userId",
+      });
+      return;
+    }
+    res.status(200).json({
+      success: true,
+      message: "Submissions found",
+      submissions: submissions,
+    });
     return;
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching submissions by user ID:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({
+      success: false,
+      error: error.name,
+      message: error.message,
+    });
     return;
   }
 }
@@ -49,15 +76,36 @@ export const getSubmissionsByUserId = async (req: Request, res: Response) => {
 export const getSubmissionById = async (req: Request, res: Response) => {
   try {
     const { submissionId } = req.params;
-    const submission = await mongoose.model('submissions').findById(submissionId);
-    if (!submission) {
-      return res.status(404).json({ error: 'Submission not found' });
+    if (!submissionId) {
+      res.status(400).json({
+        success: false,
+        message: "submission Id is required",
+      });
+      return;
     }
-    res.status(200).json(submission);
-    return;
-  } catch (error) {
+
+    const submission = await Submission.findById(submissionId);
+
+    if (!submission) {
+      res.status(404).json({
+        success: false,
+        message: "no submission found matching with provied Id",
+      });
+      return;
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "submission found",
+      submission: submission,
+    });
+  } catch (error: any) {
     console.error('Error fetching submission:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({
+      success: false,
+      error: error.name,
+      message: error.message,
+    });
     return;
   }
 }
@@ -65,32 +113,69 @@ export const getSubmissionById = async (req: Request, res: Response) => {
 export const getSubmissionsByProblemId = async (req: Request, res: Response) => {
   try {
     const { problemId } = req.params;
-    const submissions = await mongoose.model('submissions').find({ problemId });
-    if (!submissions) {
-       res.status(404).json({ error: 'No submissions found for this problem' });
-       return;
+    if (!problemId) {
+      res.status(400).json({
+        success: false,
+        message: "problem Id is required",
+      });
+      return;
     }
-    res.status(200).json(submissions);
-    return
-  } catch (error) {
+
+    const submissions = await Submission.find({ problemId });
+    if (!submissions) {
+      res.status(404).json({
+        sucesses: false,
+        message: "No submissions found",
+      });
+      return;
+    }
+    res.status(200).json({
+      success: true,
+      message: "Submission found",
+      submissions: submissions,
+    });
+  } catch (error: any) {
     console.error('Error fetching submissions by problem ID:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({
+      success: false,
+      error: error.name,
+      message: error.message,
+    });
     return;
   }
 }
 
 export const getSubmissionByProblemIdAndUserId = async (req: Request, res: Response) => {
   try {
-    const { userId, problemId } = req.params;
-    const submissions = await mongoose.model('submissions').find({ userId, problemId });
-    if (!submissions) {
-      res.status(404).json({ error: 'No submission found for this user and problem' });
+    const userId = req.query.userId as string;
+    const problemId = req.query.problemId as string;
+    if (!userId || !problemId) {
+      res.status(400).json({
+        success: false,
+        message: "Required fields not provided",
+      })
+      return;
     }
-     res.status(200).json(submissions);
-     return;
-  } catch (error) {
+    const submissions = await Submission.find({ userId, problemId });
+    if (!submissions || !submissions.length) {
+      res.status(404).json({
+        success: false,
+        message: "Submissions not found",
+      });
+      return;
+    }
+    res.status(200).json({
+      success: true,
+      message: "Submission found",
+      submissions: submissions,
+    });
+  } catch (error: any) {
     console.error('Error fetching submission by user ID and problem ID:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({
+      success: false,
+      error: error.name,
+      message: error.message,
+    });
     return;
   }
 }
