@@ -50,7 +50,7 @@ export const runCode = async (req: Request, res: Response) => {
     if (format === "cpp") {
       output = await execCpp(filePath, inputPath);
     }
-    console.error("Job finished: ", filePath);
+    console.error("file processed: ", filePath);
 
     // check for mongoose error.
     try {

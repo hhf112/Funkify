@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const outputPath = path.join(__dirname, "../../../outputs");
+const outputPath = path.join(__dirname, "../../outputs");
 
 if (!fs.existsSync(outputPath)) {
   fs.mkdirSync(outputPath, { recursive: true });
@@ -18,7 +18,8 @@ export const execCpp = (filepath: string, inputPath: string) : Promise<string> =
 
   return new Promise((resolve, reject) => {
     exec(
-      `g++ ${filepath} -o ${outPath} && cd ${outputPath} && ./${jobId}.out < ${inputPath}`,
+      `g++ ${filepath} -o ${outPath} && cd ${outputPath} && ./${jobId}.out < ${inputPath}`, 
+      {timeout: 5000},
       (error: ExecFileException | null, stdout: string, stderr: string) => {
         if (error) {
           reject({ error, stderr });
