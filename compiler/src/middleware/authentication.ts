@@ -4,7 +4,7 @@ import jwt, { VerifyErrors } from 'jsonwebtoken';
 
 const JWT_SECRET: string | undefined = process.env.JWT_SECRET;
 if (!JWT_SECRET) {
-  throw new Error("JWT_SECRET is not defined in the environment variables");
+  console.error("JWT_SECRET is not defined in the environment variables");
   process.exit(1);
 }
 
@@ -14,8 +14,7 @@ export const Authenticate = (req: Request, res: Response, next: NextFunction) : 
 
   if (!token) {
     res.status(401).json({
-      error: 'No token provided',
-      message: 'Please provide valid authentication'
+      error: "Unauthorized",
     });
     return;
   }
@@ -25,9 +24,9 @@ export const Authenticate = (req: Request, res: Response, next: NextFunction) : 
     (req as any).user = decode;
     next();
   } catch (error: VerifyErrors | any) {
+    console.error(error);
     res.status(401).json({
-      error: 'Invalid token',
-      message: error.message
+      error: "Unauthorized"
     });
     return;
   }
