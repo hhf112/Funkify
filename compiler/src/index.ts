@@ -20,7 +20,9 @@ app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req: Request, res: Response) => {
   res.status(200).json({
-    message: "working"
+    message: "compiler is running.",
+    status: "healthy.",
+    date: Date.now().toString(),
   })
   return;
 })
