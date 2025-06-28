@@ -6,9 +6,6 @@ import jwt from "jsonwebtoken";
 import cookieParser from 'cookie-parser';
 
 
-function verifyRefreshToken(refreshToken) {
-
-}
 function generateAccessToken(user) {
   return jwt.sign({
     username: user.username,
