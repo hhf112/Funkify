@@ -1,3 +1,4 @@
+import { warn } from 'console';
 import mongoose from 'mongoose';
 
 const verdictSchema = new mongoose.Schema({
@@ -19,18 +20,11 @@ const verdictSchema = new mongoose.Schema({
     type: String,
     default: null,
   },
-  compile: {
+  error: {
     type: Boolean,
     default: null,
-    required: true
   },
-  runtime: {
-    type: Boolean,
-    default: null,
-    required: true
-  },
-
-  errorMessage: {
+  output: {
     type: String,
     default: null,
   },
