@@ -2,7 +2,10 @@ import express, { Application, Request, Response } from 'express';
 import "dotenv/config.js";
 import { DBConnection } from './db.js';
 import { Authenticate } from './middleware/authentication.js';
+import SubmissionRoutes from './routes/submissionRoutes.js';
+import ProblemsRoutes from './routes/problemRoutes.js';
 
+const PORT = process.env.PORT || 3000;
 
 try {
   DBConnection();
@@ -16,9 +19,6 @@ app.use("/", Authenticate);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const PORT = process.env.PORT || 3000;
-import SubmissionRoutes from './routes/submissionRoutes.js';
-import ProblemsRoutes from './routes/problemRoutes.js';
 
 app.get("/", (req: Request, res: Response) => {
   res.status(200).json({ message: "working" });
