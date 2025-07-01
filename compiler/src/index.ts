@@ -1,36 +1,31 @@
-import express, { Application, Request, Response } from 'express';
-import "dotenv/config.js";
-import { DBConnection } from './db.js';
-import { Authenticate } from './middleware/authentication.js';
+import { Worker, JobData } from "bullmq";
+import IORedis from "ioredis"
+import { DBConnection } from "./db.js";
 
-import execRoutes from "./routes/execRoutes.js"
-
+import { runCode } from "./controllers/execController.js";
 
 try {
-  DBConnection();
-} catch (error) {
-  console.error("Database connection failed:", error);
-  process.exit(1);
+   DBConnection();
+} catch (err) {
+  console.log("failed to connect to database", err);
 }
 
-const app: Application = express();
-app.use("/", Authenticate);
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+const connection = new IORedis({
+  host: 'localhost',
+  port: 6379,
+  maxRetriesPerRequest: null
+});
 
-app.get("/", (req: Request, res: Response) => {
-  res.status(200).json({
-    message: "compiler is running.",
-    status: "healthy.",
-    date: Date.now().toString(),
-  })
-  return;
-})
+export interface CompileData {
+  submissionId: string,
+}
 
-app.use("/judge", execRoutes);
+const worker = new Worker<CompileData>(
+  'submissions',
+  async (job) => {
+    runCode(job.data.submissionId);
+  },
+  { connection }
+);
 
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-  console.log('server is RUNNING ON', PORT);
-})
+console.log('Worker is running...');

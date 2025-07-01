@@ -1,5 +1,15 @@
 import mongoose from 'mongoose';
 
+export interface SubmissionType {
+  ProblemId: string,
+  userId: string,
+  code: string,
+  language: string,
+  submissionTime: Date,
+  status: string,
+  verdictId: string,
+}
+
 const submissionsSchema = new mongoose.Schema({
   ProblemId: {
     type: String,
@@ -15,6 +25,10 @@ const submissionsSchema = new mongoose.Schema({
   code: {
     type: String,
     required: true
+  },
+  language: {
+    type: String,
+    required: true,
   },
   submissionTime: {
     type: Date,
