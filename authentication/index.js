@@ -4,15 +4,18 @@ import express from 'express';
 import { DBConnection } from './db.js';
 import auth from './routes/auth.js';
 import cookieParser from 'cookie-parser';
+import cors from "cors"
 
 try {
   DBConnection();
+  console.log("connecting db ...")
 } catch (error) {
   console.error("Database connection failed:", error);
   process.exit(1);
 }
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser())

@@ -54,6 +54,8 @@ export const loginHandler = async (req, res) => {
       message: "Successfully logged in user",
       accessToken: access,
     });
+
+  console.log("accessToken given out. ", access, "expires in 5h");
   } catch (err) {
     console.log(err);
     return res.status(500).json({

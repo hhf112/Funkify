@@ -11,7 +11,7 @@ const auth = express.Router();
 
 auth.delete("/logout", logoutHandler);
 auth.get("/token", tokenHandler);
-auth.get("/login", loginHandler);
+auth.post("/login", loginHandler);
 auth.post("/register", registerHandler);
 auth.post("/modify", modifyUser);
 
