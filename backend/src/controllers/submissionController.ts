@@ -1,6 +1,12 @@
 import { Request, Response } from 'express';
 import mongoose, { Model } from 'mongoose';
 import Submission from '../models/submissionModels/Submission.js'
+// import { submissionQueue } from '../queue.js';
+
+
+// async function handleSubmission(submissionId: string) {
+//   await submissionQueue.add('compile-job', { submissionId });
+// }
 
 export const createSubmission = async (req: Request, res: Response) => {
   try {
@@ -14,14 +20,15 @@ export const createSubmission = async (req: Request, res: Response) => {
       problemId,
       code,
       language,
-      status: 'pending',
+      status: "Pending",
       submissionTime: new Date(),
       verdictId: null,
     });
 
+    // handleSubmission(submission._id.toString());
     res.status(200).json({
       success: false,
-      message: "Submitted successfully",
+      message: "Submission successfully added to queue.",
       submissionId: submission._id,
     });
     return;

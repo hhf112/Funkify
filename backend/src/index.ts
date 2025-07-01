@@ -5,7 +5,17 @@ import { Authenticate } from './middleware/authentication.js';
 import SubmissionRoutes from './routes/submissionRoutes.js';
 import ProblemsRoutes from './routes/problemRoutes.js';
 import cors from "cors";
-
+// import { Queue } from "bullmq";
+// import IORedis from "ioredis"
+//
+//
+// const connection = new IORedis({
+// host: 'localhost',
+//   port: 6379,
+//   maxRetriesPerRequest: null
+// });
+//
+// export const submissionQueue = new Queue('submissions', { connection });
 
 const PORT = process.env.PORT || 3000;
 
