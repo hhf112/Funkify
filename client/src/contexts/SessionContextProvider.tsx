@@ -4,9 +4,28 @@ const backend = import.meta.env.VITE_BACKEND;
 // interfaces
 export interface User {
   isValid: Boolean,
-  username: String | null,
-  password: String | null,
-  email: String | null,
+  username: string | null,
+  password: string | null,
+  email: string | null,
+}
+
+export interface problem {
+  title: string,
+  description: string,
+  difficulty: string,
+  tags: string[],
+  createdAt: Date,
+  author: string,
+  userId: string,
+  sampleTests: {
+    input: string,
+    output: string,
+  }[],
+  constraints: {
+    memory_md: number,
+    runtime_s: number,
+  },
+  testSolution: string,
 }
 export interface sessionContextType {
   sessionToken: string,
@@ -14,20 +33,21 @@ export interface sessionContextType {
   setSessionToken: Dispatch<SetStateAction<string>>,
   setUser: Dispatch<SetStateAction<User>>,
   getSessionToken: () => Promise<void>,
-
+  doRefreshToken: () => Promise<void>,
 }
+
 export const sessionContext = createContext<sessionContextType>({
   sessionToken: "",
   user: ({
-    isValid: false,
-    username: "",
-    password: "",
-    email: "",
+    isValid: true,
+    username: "harsh4664",
+    password: "somepassword",
+    email: "hanzo4679@gmail.com",
   }),
   setUser: () => { },
   setSessionToken: () => { },
   getSessionToken: async () => { },
-
+  doRefreshToken: async () => { }
 });
 
 export function SessionContextProvider(
@@ -36,25 +56,48 @@ export function SessionContextProvider(
   // states
   const [sessionToken, setSessionToken] = useState<string>("");
   const [user, setUser] = useState<User>({
-    isValid: false,
-    username: "",
-    password: "",
-    email: "",
+    isValid: true,
+    username: "harsh4664",
+    password: "somepassword",
+    email: "hanzo4679@gmail.com",
   })
 
   /* funcs */
   async function getSessionToken(): Promise<void> {
+    if (user.email == "" || user.password == "") return;
     try {
-      const get: Response = await fetch(`${backend}/token`);
-      const getJSON = await get.json();
-      const token = getJSON.accessToken;
-
+      const post: Response = await fetch(`http://localhost:5000/login`, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({
+          email: user.email || "",
+          password: user.password || "",
+        }),
+      });
+      const postJSON = await post.json();
+      const token = postJSON.accessToken;
       setSessionToken(token);
     } catch (err) {
-      // redirect to login page.
+      console.error(err);
     }
-
+    return;
   }
+
+  async function doRefreshToken(): Promise<void> {
+    try {
+      const get: Response = await fetch(`http://localhost:5000/token`);
+      const getJSON = await get.json();
+      const token = getJSON.accessToken;
+      setSessionToken(token);
+    } catch (err) {
+      console.error(err);
+    }
+    return;
+  }
+
+
 
   return (
     <sessionContext.Provider value={{
@@ -63,6 +106,7 @@ export function SessionContextProvider(
       setUser,
       setSessionToken,
       getSessionToken,
+      doRefreshToken,
     }}>
 
       {children}
