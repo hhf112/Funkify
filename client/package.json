@@ -24,6 +24,7 @@
   "devDependencies": {
     "@eslint/js": "^9.29.0",
     "@shikijs/markdown-it": "^3.7.0",
+    "@tailwindcss/typography": "^0.5.16",
     "@types/node": "^24.0.7",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",

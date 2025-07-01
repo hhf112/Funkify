@@ -1,8 +1,8 @@
-import { generatePath, Route, Routes } from "react-router-dom"
+import { Route, Routes } from "react-router-dom"
 import { Login } from "./Login"
 import { Home } from "./Home";
-import { Problem } from "./Problem";
-import { sessionContext, type sessionContextType } from "./contexts/SessionContextProvider";
+import { ProblemPage } from "./ProblemPage";
+import { sessionContext} from "./contexts/SessionContextProvider";
 import { useContext, useEffect } from "react";
 
 
@@ -28,7 +28,7 @@ function App() {
     <>
       <Routes>
         <Route path="/Login" element={<Login />} />
-        <Route path="/Problem/:Id" element={<Problem />} />
+        <Route path="/Problem/:Id" element={<ProblemPage />} />
         <Route path="/" element={<Home />} />
       </Routes>
 

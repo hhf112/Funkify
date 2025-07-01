@@ -7,6 +7,7 @@ export interface User {
   username: string | null,
   password: string | null,
   email: string | null,
+  userId: string,
 }
 
 export interface problem {
@@ -43,6 +44,7 @@ export const sessionContext = createContext<sessionContextType>({
     username: "harsh4664",
     password: "somepassword",
     email: "hanzo4679@gmail.com",
+    userId: "686364f9b197f5f55668f707",
   }),
   setUser: () => { },
   setSessionToken: () => { },
@@ -60,6 +62,7 @@ export function SessionContextProvider(
     username: "harsh4664",
     password: "somepassword",
     email: "hanzo4679@gmail.com",
+    userId: "686364f9b197f5f55668f707",
   })
 
   /* funcs */
