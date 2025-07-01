@@ -29,6 +29,12 @@ async function getProblemOne(Id: string, token: string): Promise<problem | null>
   }
 }
 
+const defaultEditorCpp : string = `#include <bits/stdc++.h>
+int main(){
+
+return 0; 
+}
+`
 export function ProblemPage() {
   /* use */
   const { Id } = useParams();
@@ -90,8 +96,8 @@ export function ProblemPage() {
       {/*Content*/}
       <div className="h-19/20 w-full  flex p-2">
         {/*Problem*/}
-        <div className=" bg-white min-w-1/2  shrink-0 h-full mx-1 p-5 text-amber-50 prose  prose-sm">
-          {prob == null ? (<h1> Fetching problem ... </h1>) : (
+        <div className=" bg-white min-w-1/2  shrink-0 h-full mx-1 p-5 text-neutral-900 prose  prose-sm">
+          {prob == null ? (<h1 className = "animate-pulse"> Fetching problem ... </h1>) : (
             <ProblemContents problem={prob} />
           )}
         </div>
@@ -109,7 +115,7 @@ export function ProblemPage() {
                 }}
                 height="100%" width="100%"
                 defaultLanguage="cpp"
-                defaultValue="// some comment"
+                defaultValue= {defaultEditorCpp}
                 onMount={(editor: monaco.editor.IStandaloneCodeEditor) => {
                   codeInputRef.current = editor;
                 }}
