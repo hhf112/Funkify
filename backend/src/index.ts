@@ -4,6 +4,8 @@ import { DBConnection } from './db.js';
 import { Authenticate } from './middleware/authentication.js';
 import SubmissionRoutes from './routes/submissionRoutes.js';
 import ProblemsRoutes from './routes/problemRoutes.js';
+import cors from "cors";
+
 
 const PORT = process.env.PORT || 3000;
 
@@ -15,6 +17,8 @@ try {
 }
 
 const app: Application = express();
+
+app.use(cors());
 app.use("/", Authenticate);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

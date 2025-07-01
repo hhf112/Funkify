@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import Problem from '../models/problemModels/Problem.js';
 import { Error, MongooseError } from 'mongoose';
+import { ObjectId } from 'mongoose';
+import { Types } from 'mongoose';
 
 
 export const createProblem = async (req: Request, res: Response) => {
@@ -127,13 +129,22 @@ export const getProblemsByCount = async (req: Request, res: Response) => {
 
 
 export const getProblemById = async (req: Request, res: Response) => {
-  const problemId = req.params.problemId;
+  const problemId: string = req.params.problemId;
   if (!problemId) {
     res.status(400).json({ error: 'Problem ID is required' });
     return;
   }
+  console.log("to find by Id:", problemId);
   try {
-    const problem = await Problem.findById(problemId);
+    const problem = await Problem.findById(problemId).exec();
+    if (!problem) {
+      res.status(404).json({
+        success: false,
+        message: "No problems found",
+        problem: problem,
+      });
+      return;
+    }
     res.status(200).json({
       success: true,
       message: "Found problem successfully",
