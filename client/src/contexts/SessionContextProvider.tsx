@@ -1,5 +1,4 @@
 import React, { createContext, useState, type Dispatch, type SetStateAction } from "react";
-const backend = import.meta.env.VITE_BACKEND;
 
 // interfaces
 export interface User {
@@ -39,13 +38,13 @@ export interface sessionContextType {
 
 export const sessionContext = createContext<sessionContextType>({
   sessionToken: "",
-  user: ({
+  user: {
     isValid: true,
     username: "harsh4664",
     password: "somepassword",
     email: "hanzo4679@gmail.com",
     userId: "686364f9b197f5f55668f707",
-  }),
+  },
   setUser: () => { },
   setSessionToken: () => { },
   getSessionToken: async () => { },
