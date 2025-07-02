@@ -6,6 +6,7 @@ import { LoginSubmitted } from "./LoginSubmitted";
 const backend: string = import.meta.env.VITE_AUTH || "";
 
 
+
 export function Login() {
   /* use */
   const { setUser, setSessionToken } = useContext<sessionContextType>(sessionContext);
@@ -46,8 +47,15 @@ export function Login() {
     }
     setErrMsg("");
     if (login) {
+      const user = postJSON.user;
       setSessionToken(postJSON.accessToken);
-      setUser(postJSON.user);
+      setUser({
+        isValid: true,
+        username: user.username,
+        email: user.email,
+        password: user.password,
+        userId: user._id.toString(),
+      });
       setSubmitted(true);
     } if (signUp) {
       setSubmitted(true);
@@ -60,6 +68,7 @@ export function Login() {
         {submitted ? <LoginSubmitted
           login={login}
           signUp={signUp}
+          setSignUp={setSignUp}
           setLogin={setLogin}
           setSubmitted={setSubmitted}
           Submit={Submit}
@@ -71,10 +80,10 @@ export function Login() {
           passwordInputRef={passwordInputRef}
           usernameInputRef={usernameInputRef}
           errMsg={errMsg}
-          loader = {loader}
-          setLogin = { setLogin }
+          loader={loader}
+          setLogin={setLogin}
           setSignUp={setSignUp}
-        Submit={Submit}
+          Submit={Submit}
         />}
       </div>
     </div>

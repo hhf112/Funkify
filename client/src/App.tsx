@@ -9,7 +9,6 @@ import { useContext, useEffect } from "react";
 function App() {
   const { user, sessionToken, getSessionToken } = useContext(sessionContext);
 
-
   useEffect(() => {
     if (user.isValid) {
       getSessionToken();

@@ -1,9 +1,12 @@
 import { useContext, type Dispatch, type SetStateAction } from "react";
 import { sessionContext } from "../contexts/SessionContextProvider"
+import { useNavigate } from "react-router-dom";
+import { TypeLoginButton, Disclaimer } from "./TypesElement";
 
 export function LoginSubmitted({
   login,
   signUp,
+  setSignUp,
   setLogin,
   setSubmitted,
   Submit,
@@ -11,9 +14,11 @@ export function LoginSubmitted({
   login: boolean,
   signUp: boolean,
   setLogin: Dispatch<SetStateAction<boolean>>,
+  setSignUp: Dispatch<SetStateAction<boolean>>,
   setSubmitted: Dispatch<SetStateAction<boolean>>,
   Submit: () => Promise<void>;
 }) {
+  const navigate = useNavigate();
   const { user } = useContext(sessionContext);
   return (
     <div className="bg-white relative flex flex-col w-2/6 h-3/5 items-center justify-center border border-neutral-500 shadow-xl p-15">
@@ -27,35 +32,33 @@ export function LoginSubmitted({
 
       {/*Banner */}
       <img src="/logged-in.png" className="w-25 h-25 object-fill m-2" />
-      <div className="border border-neutral-700 p-2 bg-green-400">
-        <h2 className="text-white font-semibold animate-pulse"> {login ? "Logged in successfully!" : "Account created successfully!"} </h2>
-      </div>
-
+      <Disclaimer
+        display={login ? "Logged in successfully!" : "Account created successfully!"}
+        colorClass="green"
+      />
 
       {login &&
         <div className="flex">
-          <button onClick={() => Submit()}
-            className="cursor-pointer hover:bg-neutral-500 my-4 text-lg border border-neutral-700 bg-neutral-800 text-neutral-100 p-3 
-          shadow-neutral-500 shadow-lg mx-2">
-            Continue to Homepage!
-          </button>
-          <button onClick={() => Submit()}
-            className="cursor-pointer hover:bg-neutral-500 my-4 text-lg border border-neutral-700 bg-neutral-800 text-neutral-100 p-3 
-          shadow-neutral-500 shadow-lg">
-            Logout
-          </button>
+          <TypeLoginButton
+            display="Continue to Homepage!"
+            doThisAsync={() => navigate("/")}
+          />
+          <TypeLoginButton
+            display="Login"
+            doThisAsync={() => Submit()}
+          />
         </div>
       }
 
       {signUp &&
-        <button onClick={() => {
-          setSubmitted(false);
-          setLogin(true);
-        }}
-          className="cursor-pointer hover:bg-neutral-500 my-4 text-lg border border-neutral-700 bg-neutral-800 text-neutral-100 p-3 
-          shadow-neutral-500 shadow-lg mx-2">
-          Continue to Login!
-        </button>
+        <TypeLoginButton
+          doThisAsync={() => {
+            setSubmitted(false);
+            setLogin(true);
+            setSignUp(false);
+          }}
+          display="Continue to Login"
+        />
       }
     </div>
   )

@@ -1,5 +1,5 @@
 import { useEffect, useState, type Dispatch, type RefObject, type SetStateAction } from "react";
-import { setFlagsFromString } from "v8";
+import { TypeLoginButton, Disclaimer, Loader } from "./TypesElement";
 
 export function LoginForm({
   login,
@@ -36,7 +36,6 @@ ${formMount ? "opacity-100 -translate-y-2" : "opacity-0 translate-2"} transition
 
       {/*Top Text*/}
       <div className="prose prose-sm absolute  top-0 m-4">
-
         <h3 className="hover:-translate-y-1 transition delay-100 text-neutral-700">
           {login ? "Don't have an account?" : "Already have an account?"}
           <a className="text-amber-300 font-semibold cursor-pointer"
@@ -45,7 +44,7 @@ ${formMount ? "opacity-100 -translate-y-2" : "opacity-0 translate-2"} transition
                 setLogin(false);
                 setSignUp(true);
               }
-              if (signUp) {
+              else if (signUp) {
                 setLogin(true);
                 setSignUp(false);
               }
@@ -55,52 +54,42 @@ ${formMount ? "opacity-100 -translate-y-2" : "opacity-0 translate-2"} transition
         </h3>
       </div>
 
-      {/*Banner */}
       <img src="/unlock.png" className="animate-bounce w-15 h-15 object-fill m-2" />
       <h3 className="text-neutral-700 my-2 font-semibold">
-        {login ? "Login is required to access further content" : "access the best coding platform today!"}
+        {login ? "Login is required to access further content" : 
+          "access the best coding platform today!"}
       </h3>
 
       <div className="flex items-stretch h-12">
-        <label htmlFor="email" />
         <img src="/mail.png" className="my-1 mx-1" />
         <input ref={emailInputRef} type="email" id="email " placeholder="your email goes here" className="w-65 p-4 border border-neutral-500 my-1 mx-1" />
       </div>
 
       {signUp && (
         <div className="flex items-stretch h-12">
-          <label htmlFor="username" />
           <img src="/user.png" className="my-1 mx-1" />
           <input ref={usernameInputRef} type="email" id="email " placeholder="your username goes here" className="w-65 p-4 border border-neutral-500 my-1 mx-1" />
         </div>
       )}
 
       <div className="flex items-stretch h-12">
-        <label htmlFor="password" />
         <img src="/globe.png" className=" my-1 mx-1" />
         <input ref={passwordInputRef} type="password" id="email " placeholder="your password goes here" className="w-65  p-4 border border-neutral-500 my-1 mx-1" />
       </div>
 
       {/*Submit*/}
-      <button onClick={() => Submit()}
-        className="cursor-pointer hover:bg-amber-300 hover:text-black my-4 text-lg border border-neutral-700 bg-neutral-800 text-neutral-100 p-3 
-          shadow-neutral-500 shadow-lg
-        transition delay-100 hover:-translate-y-2 hover:scale-100">
-        {login ? "Login" : "Signup"}
-      </button>
+      <TypeLoginButton
+        display={(login ? "Login" : "SignUp")}
+        doThisAsync={() => Submit()}
+      />
 
-      {errMsg && (
-        <div className="border border-neutral-700 p-2 bg-red-400">
-          <h2 className="text-white font-semibold animate-pulse">  {errMsg}</h2>
-        </div>
-      )}
-
-      {loader && (
-        <div className = "flex">
-          <p className = "text-neutral-800"> loading ... </p>
-          <img src="/loader.png" className=" animate-spin w-4 h-4 my-1 mx-1" />
-        </div>
-      )}
+      {errMsg &&
+        <Disclaimer
+          display={errMsg}
+          colorClass="red"
+        />
+      }
+      {loader && <Loader display="loading ..."/> }
     </div>
   )
 }

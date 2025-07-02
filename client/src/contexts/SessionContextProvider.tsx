@@ -39,11 +39,11 @@ export interface sessionContextType {
 export const sessionContext = createContext<sessionContextType>({
   sessionToken: "",
   user: {
-    isValid: true,
-    username: "harsh4664",
-    password: "somepassword",
-    email: "hanzo4679@gmail.com",
-    userId: "686364f9b197f5f55668f707",
+    isValid: false,
+    username: "",
+    password: "",
+    email: "",
+    userId: "",
   },
   setUser: () => { },
   setSessionToken: () => { },
@@ -57,11 +57,11 @@ export function SessionContextProvider(
   // states
   const [sessionToken, setSessionToken] = useState<string>("");
   const [user, setUser] = useState<User>({
-    isValid: true,
-    username: "harsh4664",
-    password: "somepassword",
-    email: "hanzo4679@gmail.com",
-    userId: "686364f9b197f5f55668f707",
+    isValid: false,
+    username: "",
+    password: "",
+    email: "",
+    userId: "",
   })
 
   /* funcs */
