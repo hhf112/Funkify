@@ -42,7 +42,7 @@ export const loginHandler = async (req, res) => {
       username: user.username,
       email: user.email,
     }, process.env.REFRESH_SECRET);
-     await User.updateOne({ _id: user._id }, { jwt_refreshToken: refreshToken }, { new: true});
+    const user = await User.updateOne({ _id: user._id }, { jwt_refreshToken: refreshToken }, { new: true});
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: true,
@@ -53,7 +53,6 @@ export const loginHandler = async (req, res) => {
       success: true,
       message: "Successfully logged in user",
       accessToken: access,
-      user: user,
     });
 
   console.log("accessToken given out. ", access, "expires in 5h");
