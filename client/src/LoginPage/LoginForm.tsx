@@ -55,6 +55,7 @@ ${formMount ? "opacity-100 -translate-y-2" : "opacity-0 translate-2"} transition
       </div>
 
       <img src="/unlock.png" className="animate-bounce w-15 h-15 object-fill m-2" />
+
       <h3 className="text-neutral-700 my-2 font-semibold">
         {login ? "Login is required to access further content" : 
           "access the best coding platform today!"}

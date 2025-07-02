@@ -37,7 +37,8 @@ export function Login() {
         username: username,
         email: email,
         password: password,
-      })
+      }),
+      credentials: "include",
     })
     const postJSON = await post.json();
     setLoader(false);

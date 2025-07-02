@@ -36,7 +36,6 @@ export function LoginSubmitted({
         display={login ? "Logged in successfully!" : "Account created successfully!"}
         colorClass="green"
       />
-
       {login &&
         <div className="flex">
           <TypeLoginButton
@@ -44,7 +43,7 @@ export function LoginSubmitted({
             doThisAsync={() => navigate("/")}
           />
           <TypeLoginButton
-            display="Login"
+            display="SignUp"
             doThisAsync={() => Submit()}
           />
         </div>
