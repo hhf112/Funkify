@@ -5,6 +5,7 @@ import { Authenticate } from './middleware/authentication.js';
 import SubmissionRoutes from './routes/submissionRoutes.js';
 import ProblemsRoutes from './routes/problemRoutes.js';
 import cors from "cors";
+import { warn } from 'console';
 // import { Queue } from "bullmq";
 // import IORedis from "ioredis"
 //
