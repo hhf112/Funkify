@@ -1,56 +1,53 @@
 import { Request, Response } from 'express';
 import mongoose, { Model } from 'mongoose';
 import Submission from '../models/submissionModels/Submission.js'
+import { SubmissionType } from '../models/submissionModels/Submission.js';
 
 const compiler = process.env.COMPILER;
-// import { submissionQueue } from '../queue.js';
-
-
-// async function handleSubmission(submissionId: string) {
-//   await submissionQueue.add('compile-job', { submissionId });
-// }
-
 export const createSubmission = async (req: Request, res: Response) => {
-  try {
-    const { userId, problemId, code, language } = req.body;
-    if (!userId || !problemId || !code || !language) {
-      res.status(400).json({ error: 'Required fields are not filled' });
-      return;
-    }
-    const submission = await Submission.create({
-      userId,
-      problemId,
-      code,
-      language,
-      submissionTime: new Date(),
-      verdictId: null,
-    });
+  let submission: SubmissionType;
+  const {
+    problemId,
+    userId,
+    code,
+    language
+  } = req.body;
+  if (!problemId || !userId || !code || !language) {
+    res.status(400).json({
+      success: false,
+      message: "Required fields not provied",
+    })
+    return;
+  }
 
-    // handleSubmission(submission._id.toString());
+  const newSubmission = await Submission.create({
+    problemId,
+    userId,
+    code,
+    language
+  });
+
+  try {
     const dopost = await fetch(`${compiler}/`, {
       method: "POST",
       headers: {
         "Content-type": "application/json",
       },
       body: JSON.stringify({
-        submissionId: submission._id,
+        submissionId: newSubmission._id,
       }),
     })
-
     const dopostJSON = await dopost.json();
-    console.log(dopostJSON);
     res.status(200).json({
       success: false,
       message: "Submission successfully added to queue.",
-      submissionId: submission._id,
+      submissionId: newSubmission._id,
     });
-    return;
-  } catch (error: any) {
-    console.error('Error submitting solution:', error);
+  } catch (error) {
+    console.log(error);
     res.status(500).json({
       success: false,
-      error: error.name,
-      message: error.message,
+      message: "Internal Server error"
     });
     return;
   }

@@ -1,11 +1,15 @@
 import mongoose from 'mongoose';
 
 const systemTestsSchema = new mongoose.Schema({
-  ProblemId: {
+  problemId: {
     type: String,
     required: true,
     unique: true,
     trim: true
+  },
+  tested: {
+    type: Boolean,
+    default: false,
   },
   tests: {
     type: [{

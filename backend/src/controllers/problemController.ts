@@ -3,35 +3,25 @@ import Problem from '../models/problemModels/Problem.js';
 import { Error, MongooseError } from 'mongoose';
 import { ObjectId } from 'mongoose';
 import { Types } from 'mongoose';
+import { ProblemType } from '../models/problemModels/Problem.js';
+import { warn } from 'console';
 
 
 export const createProblem = async (req: Request, res: Response) => {
   console.log("called createProblem")
-  const { title,
-    description,
-    difficulty,
-    tags,
-    author,
-    sampleTests,
-    constraints,
-    userId,
-    testSolution } = req.body;
-  console.log(req.body)
-
-  if (!title || !description || !difficulty || !testSolution) {
-    res.status(400).json({ error: 'Title, description, difficulty, and test solution are required' });
+  let problem: ProblemType;
+  try {
+    problem = req.body.problem;
+  } catch (err) {
+    console.log(err);
+    res.status(400).json({
+      success: false,
+      message: "Required fields not provied",
+    });
     return;
   }
   try {
-    const newProblem = await Problem.create({
-      title,
-      description,
-      difficulty,
-      userId,
-      testSolution,
-      sampleTests,
-      tags: tags || [],
-    });
+    const newProblem = await Problem.create(problem);
     res.status(200).json({
       success: true,
       message: "Problem created successfully",
@@ -140,7 +130,6 @@ export const getProblemById = async (req: Request, res: Response) => {
     res.status(400).json({ error: 'Problem ID is required' });
     return;
   }
-  console.log("to find by Id:", problemId);
   try {
     const problem = await Problem.findById(problemId).exec();
     if (!problem) {
@@ -169,7 +158,7 @@ export const getProblemById = async (req: Request, res: Response) => {
 }
 
 export const getProblemsByUserId = async (req: Request, res: Response) => {
-  
+
   console.log("called getProblemsByUserId")
   const userId = req.query.userId?.toString();
   if (!userId) {

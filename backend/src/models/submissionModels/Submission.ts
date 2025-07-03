@@ -1,9 +1,22 @@
 import mongoose from 'mongoose';
 
+
+export interface SubmissionType {
+  problemId: string,
+  userId: string,
+  code: string,
+  language: string,
+  submissionTime?: Date,
+  status?: string,
+  verdictId?: string,
+}
+
+
 const submissionsSchema = new mongoose.Schema({
   problemId: {
     type: String,
     required: true,
+    unique: true,
     trim: true
   },
   userId: {
@@ -26,7 +39,7 @@ const submissionsSchema = new mongoose.Schema({
   status: {
     type: String,
     enum: ["pending", "processing", "processed"],
-    default: "pending"
+    default: 'pending'
   },
   verdictId: {
     type: String,

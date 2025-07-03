@@ -1,5 +1,25 @@
 import mongoose from 'mongoose';
 
+export interface ProblemType {
+  title: string,
+  description: string,
+  difficulty: string,
+  tags: string[],
+  createdAt: Date,
+  author: string,
+  userId: string,
+  sampleTests:  {
+    input: string,
+    output: string,
+  }[],
+  constraints: {
+    runtime_s: string,
+    memory_mb: string,
+  },
+  testSolution: string,
+  linesPerTestCase: number
+}
+
 const problemSchema = new mongoose.Schema({
   title: {
     type: String,
