@@ -9,15 +9,17 @@ import { execCpp } from "./runCpp.js"
 import { ExecFileException } from 'child_process';
 import { MongooseError } from 'mongoose';
 import Problem from '../models/Problem.js';
+import type { ProblemType } from '../models/Problem.js';
+import type { SystemTestsType } from '../models/SystemTests.js';
+import { warn } from 'console';
+import SystemTests from '../models/SystemTests.js';
+import { runTests } from './runTests.js';
 
-function runTests(filename: string) {
 
+const langs: Record<string, any> = {
+  "cpp": execCpp,
 }
-
-// export const runCode = async (submissionId: string) => {
 export const runCode = async (req: Request, res: Response) => {
-  console.log("this is called");
-  console.log(req.body);
   const submissionId = req.body.submissionId;
   if (!submissionId) {
     res.status(400).json({
@@ -26,35 +28,29 @@ export const runCode = async (req: Request, res: Response) => {
     })
   }
 
-  let submission: SubmissionType | null = null;
+  let submission: SubmissionType | null;
+  let tests: SystemTestsType | null;
   try {
     submission = await Submission.findById(submissionId);
+    tests = await SystemTests.findById(submission?.ProblemId);
   } catch (err) {
     console.log(err);
+    res.status(500).json({
+      success: false,
+      message: "internal server error",
+    })
+    return;
+  }
+  if (!submission || !tests) {
+    res.status(404).json({
+      success: true,
+      message: "submission or tests not found",
+    })
     return;
   }
 
-  if (submission == null) return;
   let filePath: string;
   let inputPath: string;
-
-  let problem;
-  try {
-    problem = await Problem.findById(submission.ProblemId);
-  } catch (err) {
-    res.status(404).json({
-      success: false,
-      message: "submission problem not found",
-    })
-  }
-  if (!problem) return;
-
-  const inputs: string[] = problem.sampleTests.map((test: {
-    input: string,
-    output: string,
-  }) => test.input);
-
-  // check for fs error.
   try {
     filePath = await generateFile("../../codes/", submission.language, submission.code);
     inputPath = await generateFile("../../input", "txt", "");
@@ -63,18 +59,21 @@ export const runCode = async (req: Request, res: Response) => {
     return;
   }
 
+  const inputs = "", outputs = "";
+  tests.tests.forEach((test: {
+    input: string,
+    output: string,
+  }) => {
+    inputs.concat(test.input)
+    outputs.concat(test.output)
+  });
 
-  let output = "";
-  let runtime_ms = 0;
   // check for exec error.
   try {
     const start: [number, number] = process.hrtime();
-    if (submission.language === "cpp") {
-      output = await execCpp(filePath, inputPath);
-    }
+    const output = await langs[submission.language](filePath, inputPath, submission.constraints.runtime_s);
     const end: [number, number] = process.hrtime(start);
-    runtime_ms = end[1] * 1000000;
-
+    const verdict = runTests(output, outputs, tests.linesPerTestcase);
     // check for mongoose error.
     try {
       const { _id } = await Verdict.create({
@@ -82,7 +81,7 @@ export const runCode = async (req: Request, res: Response) => {
         submissionId: submissionId,
         userId: submission.userId,
         output: output,
-        verdict: "Accepted",
+        verdict: verdict,
       })
 
       res.status(200).json({
@@ -91,31 +90,20 @@ export const runCode = async (req: Request, res: Response) => {
         verdictId: _id,
       });
 
-    } catch (error: MongooseError | any) {
-      let err: MongooseError;
-      console.error("Error creating verdict: ", filePath, error);
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({
+        success: false,
+        message: "Internal server Error",
+      })
+      return;
     }
   } catch (error: ExecFileException | any) {
-    // check for mongoose error.
-    try {
-      const verdict = runTests(filePath);
-      await Verdict.create({
-        plagReportID: null,
-        error: true,
-        errorMessage: error.message,
-        submissionId: submissionId,
-        userId: submission.userId,
-        output: output,
-        verdict: "Accepted",
-        runtime_ms: runtime_ms,
-      })
-    } catch (error: MongooseError | any) {
-      res.status(500).json({
-        successs: true,
-        message: "failed to create verdict",
-      })
-      console.error("Error creating verdict: ", filePath, error);
-    }
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    })
   }
 }
 

@@ -8,6 +8,10 @@ export interface SubmissionType {
   submissionTime: Date,
   status: string,
   verdictId: string,
+  constraints: {
+    runtime_s: Number,
+    memory_mb: Number,
+  }
 }
 
 const submissionSchema = new mongoose.Schema({
@@ -38,6 +42,10 @@ const submissionSchema = new mongoose.Schema({
     type: String,
     enum: ["Pending", "Processing", "Processed"],
     default: 'Pending'
+  },
+  constraints: {
+    runtime_s: Number,
+    memory_mb: Number,
   },
   verdictId: {
     type: String,

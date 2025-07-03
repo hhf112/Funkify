@@ -1,4 +1,3 @@
-import { warn } from 'console';
 import mongoose from 'mongoose';
 
 const verdictSchema = new mongoose.Schema({
