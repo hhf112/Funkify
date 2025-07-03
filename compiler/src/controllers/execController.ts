@@ -1,38 +1,42 @@
+/* default */
 import { Request, Response } from 'express';
+
+/* models and types */
 import Submission from '../models/Submission.js';
-import type { SubmissionType } from '../models/Submission.js';
 import Verdict from '../models/Verdict.js';
-
-import { generateFile } from './generateFile.js';
-
-import { execCpp } from "./runCpp.js"
-import { ExecFileException } from 'child_process';
-import { MongooseError } from 'mongoose';
 import Problem from '../models/Problem.js';
+import SystemTests from '../models/SystemTests.js';
+import type { SubmissionType } from '../models/Submission.js';
 import type { ProblemType } from '../models/Problem.js';
 import type { SystemTestsType } from '../models/SystemTests.js';
-import { warn } from 'console';
-import SystemTests from '../models/SystemTests.js';
+
+/* impl */
 import { runTests } from './runTests.js';
+import { generateFile } from './generateFile.js';
+import { execCpp } from "./runCpp.js"
 
 
+/* Languages supported */
 const langs: Record<string, any> = {
   "cpp": execCpp,
 }
+
 export const runCode = async (req: Request, res: Response) => {
   const submissionId = req.body.submissionId;
   if (!submissionId) {
+    console.log("wrong submisssion")
     res.status(400).json({
-      success: false,
-      message: "submissionId required"
+      success: true,
+      message: "submissionId required."
     })
+    return;
   }
 
   let submission: SubmissionType | null;
   let tests: SystemTestsType | null;
   try {
     submission = await Submission.findById(submissionId);
-    tests = await SystemTests.findById(submission?.ProblemId);
+    tests = await SystemTests.findById(submission?.problemId);
   } catch (err) {
     console.log(err);
     res.status(500).json({
@@ -42,6 +46,7 @@ export const runCode = async (req: Request, res: Response) => {
     return;
   }
   if (!submission || !tests) {
+    console.log("submission or problem not found")
     res.status(404).json({
       success: true,
       message: "submission or tests not found",
@@ -90,6 +95,8 @@ export const runCode = async (req: Request, res: Response) => {
         verdictId: _id,
       });
 
+      console.log("job completed: ", filePath);
+
     } catch (err) {
       console.log(err);
       res.status(500).json({
@@ -98,7 +105,7 @@ export const runCode = async (req: Request, res: Response) => {
       })
       return;
     }
-  } catch (error: ExecFileException | any) {
+  } catch (error) {
     console.log(error);
     res.status(500).json({
       success: false,
@@ -106,5 +113,3 @@ export const runCode = async (req: Request, res: Response) => {
     })
   }
 }
-
-
