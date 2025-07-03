@@ -6,6 +6,7 @@ import { Types } from 'mongoose';
 
 
 export const createProblem = async (req: Request, res: Response) => {
+  console.log("called createProblem")
   const { title,
     description,
     difficulty,
@@ -28,6 +29,7 @@ export const createProblem = async (req: Request, res: Response) => {
       difficulty,
       userId,
       testSolution,
+      sampleTests,
       tags: tags || [],
     });
     res.status(200).json({
@@ -48,6 +50,7 @@ export const createProblem = async (req: Request, res: Response) => {
 
 
 export const updateProblem = async (req: Request, res: Response) => {
+  console.log("called updateProblem")
   const { problemId, updationData } = req.body;
   if (!problemId || !updationData) {
     res.status(400).json({ error: "Problem ID and updation data is required" });
@@ -78,6 +81,7 @@ export const updateProblem = async (req: Request, res: Response) => {
 
 
 export const deleteProblem = async (req: Request, res: Response) => {
+  console.log("called deleteProblem")
   const problemId = req.body.problemId;
   if (!problemId) {
     res.status(400).json({ error: 'Problem ID is required' });
@@ -107,6 +111,7 @@ export const deleteProblem = async (req: Request, res: Response) => {
   }
 }
 export const getProblemsByCount = async (req: Request, res: Response) => {
+  console.log("called getProblemsByCount")
   try {
     const count = parseInt(req.query.count as string) || 1;
     const problems = await Problem.find().limit(count);
@@ -129,6 +134,7 @@ export const getProblemsByCount = async (req: Request, res: Response) => {
 
 
 export const getProblemById = async (req: Request, res: Response) => {
+  console.log("called getProblemById")
   const problemId: string = req.params.problemId;
   if (!problemId) {
     res.status(400).json({ error: 'Problem ID is required' });
@@ -163,6 +169,8 @@ export const getProblemById = async (req: Request, res: Response) => {
 }
 
 export const getProblemsByUserId = async (req: Request, res: Response) => {
+  
+  console.log("called getProblemsByUserId")
   const userId = req.query.userId?.toString();
   if (!userId) {
     res.status(400).json({ error: 'User ID is required' });

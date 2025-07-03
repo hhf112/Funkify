@@ -29,7 +29,11 @@ try {
 
 const app: Application = express();
 
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND,
+  credentials: true
+}));
+
 app.use("/", Authenticate);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

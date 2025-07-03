@@ -26,7 +26,7 @@ const submissionsSchema = new mongoose.Schema({
   status: {
     type: String,
     enum: ["pending", "processing", "processed"],
-    default: 'Pending'
+    default: "pending"
   },
   verdictId: {
     type: String,

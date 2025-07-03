@@ -10,7 +10,7 @@ export interface SubmissionType {
   verdictId: string,
 }
 
-const submissionsSchema = new mongoose.Schema({
+const submissionSchema = new mongoose.Schema({
   ProblemId: {
     type: String,
     required: true,
@@ -45,5 +45,5 @@ const submissionsSchema = new mongoose.Schema({
   },
 })
 
-const Submissions = mongoose.model('submissions', submissionsSchema);
-export default Submissions;
+const Submission = mongoose.model('submissions', submissionSchema);
+export default Submission;

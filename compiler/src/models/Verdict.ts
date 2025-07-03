@@ -43,7 +43,7 @@ const verdictSchema = new mongoose.Schema({
     type: Number,
     default: null,
   },
-  runtime_s: {
+  runtime_ms: {
     type: Number,
     default: null,
   },
@@ -51,3 +51,4 @@ const verdictSchema = new mongoose.Schema({
 
 const Verdict = mongoose.model('verdicts', verdictSchema);
 export default Verdict;
+

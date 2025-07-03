@@ -4,7 +4,7 @@ import { setDefaultHighWaterMark } from "stream";
 
 export function runTests(output: string,
   expectedOutput: string,
-  linesPerTest: number, timeLimit: number): string {
+  linesPerTest: number): string {
   let verdict: string;
   if (output.length != expectedOutput.length)
     return "Runtime Error";
@@ -19,6 +19,5 @@ export function runTests(output: string,
     if (lines % linesPerTest) if (!fail) testsPassed++;
     if (expectedOutput[i] != output[i]) fail = true;
   }
-  const end = performance.now();
   return (fail ? "Wrong Answer" : "Accepted");
 }

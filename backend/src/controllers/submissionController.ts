@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import mongoose, { Model } from 'mongoose';
 import Submission from '../models/submissionModels/Submission.js'
+
+const compiler = process.env.COMPILER;
 // import { submissionQueue } from '../queue.js';
 
 
@@ -20,12 +22,23 @@ export const createSubmission = async (req: Request, res: Response) => {
       problemId,
       code,
       language,
-      status: "Pending",
       submissionTime: new Date(),
       verdictId: null,
     });
 
     // handleSubmission(submission._id.toString());
+    const dopost = await fetch(`${compiler}/`, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({
+        submissionId: submission._id,
+      }),
+    })
+
+    const dopostJSON = await dopost.json();
+    console.log(dopostJSON);
     res.status(200).json({
       success: false,
       message: "Submission successfully added to queue.",
