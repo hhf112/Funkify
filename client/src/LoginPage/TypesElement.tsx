@@ -8,7 +8,7 @@ export function TypeLoginButton({ display, doThisAsync }: {
       my-4 text-lg border border-neutral-700 
       bg-neutral-800 text-neutral-100 p-3 mx-2
           shadow-neutral-500 shadow-lg
-        transition delay-100 hover:-translate-y-2 hover:scale-100">
+        transition delay-75 hover:-translate-y-2 hover:scale-100">
       {display}
     </button>
   )

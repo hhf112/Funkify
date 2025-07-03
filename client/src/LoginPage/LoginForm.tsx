@@ -32,11 +32,11 @@ export function LoginForm({
 
   return (
     <div className={`bg-white relative flex flex-col w-2/6 h-3/5 items-center justify-center border-2 border-neutral-700 shadow-xl p-5
-${formMount ? "opacity-100 -translate-y-2" : "opacity-0 translate-2"} transition delay-150`}>
+${formMount ? "opacity-100 -translate-y-2" : "opacity-0 translate-2"} transition delay-100`}>
 
       {/*Top Text*/}
       <div className="prose prose-sm absolute  top-0 m-4">
-        <h3 className="hover:-translate-y-1 transition delay-100 text-neutral-700">
+        <h3 className="hover:-translate-y-1 transition delay-75 text-neutral-700">
           {login ? "Don't have an account?" : "Already have an account?"}
           <a className="text-amber-300 font-semibold cursor-pointer"
             onClick={() => {
@@ -90,7 +90,7 @@ ${formMount ? "opacity-100 -translate-y-2" : "opacity-0 translate-2"} transition
           colorClass="red"
         />
       }
-      {loader && <Loader display="loading ..."/> }
+      {loader && <Loader display="LOGGING YOU IN!"/> }
     </div>
   )
 }
