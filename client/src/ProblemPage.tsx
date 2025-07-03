@@ -7,8 +7,6 @@ import Editor from "@monaco-editor/react";
 import * as monaco from "monaco-editor"
 const backend: string = import.meta.env.VITE_BACKEND || "";
 
-
-
 export interface Submission {
   problemId: string,
   userId: string,
@@ -48,7 +46,6 @@ export function ProblemPage() {
           }
         });
         const getJSON = await get.json();
-        console.log(getJSON);
         const prob: problem = getJSON.problem;
         if (!prob) throw new Error("Problem not found!")
         setErrMsg("");
@@ -93,14 +90,16 @@ export function ProblemPage() {
           verdictId: null,
         }),
       });
+      const postJSON = await post.json();
+      console.log(postJSON);
       if (post.ok) return "submitted successfully";
       else return "submission failed!"
     } catch (err: string | any) {
+      console.log(err);
       return "unexpected error occured"
     }
   }
 
-  console.log(prob);
   /* Component */
 
   return (
@@ -126,7 +125,7 @@ export function ProblemPage() {
       <div className="h-19/20 w-full  flex my-0.5 ">
         {/*Problem*/}
         <div className=" bg-white min-w-1/2  shrink-0 h-full 
-          mx-1 p-5 text-neutral-900 prose  prose-sm">
+          mx-1 p-10 text-neutral-900 prose  prose-sm">
           {prob == null ? (<h1 className="animate-pulse"> {errMsg} </h1>) : (
             <ProblemContents problem={prob} />
           )}
@@ -159,17 +158,12 @@ export function ProblemPage() {
 
           <div className="grow flex flex-col bg-white">
             <div className="flex w-full bg-neutral-200">
-              {prob?.sampleTests.map((test: {
-                input: string,
-                output: string,
-              }, index: number) => {
+              {prob?.sampleTests.map((_, index: number) => {
                 return (
                   <div key={index}
-                    className={`${sampleTestView == index ? "bg-white text-neutral-800" :
-                      "bg-neutral-900 text-neutral-50 hover:-translate-y-1 hover:bg-blue-400 border-neutral-900  cursor-pointer"}
-                       px-10 py-2 border-neutral-200 mx-1 transition delay-75
-                      `}
-                    onClick={() => setSampleTestView(index)}>
+                    className={`${sampleTestView == index ? "bg-white text-neutral-800" : "bg-neutral-900 text-neutral-50"}
+                       px-10 py-2 border-neutral-200 mx-1 cursor-auto `}
+                    onMouseOver={() => setSampleTestView(index)}>
                     Test {index}
                   </div>
                 )
@@ -183,16 +177,16 @@ export function ProblemPage() {
             </div>
 
 
-            {prob &&
+            {prob?.sampleTests &&
               <div className="bg-white text-neutral-800 grow w-full py-5 px-5">
                 <span className="text-xs text-neutral-400 font-bold">Input </span>
                 <div className="border border-neutral-300  p-3">
-                  {prob?.sampleTests[sampleTestView].input}
+                  {prob.sampleTests[sampleTestView].input}
                 </div>
 
                 <span className="text-xs text-neutral-400 font-bold">Output</span>
                 <div className="border border-neutral-300 p-3">
-                  {prob?.sampleTests[sampleTestView].output}
+                  {prob.sampleTests[sampleTestView].output}
                 </div>
               </div>
             }
