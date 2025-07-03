@@ -19,24 +19,6 @@ export interface Submission {
   verdictId: string | null,
 }
 
-async function getProblemOne(Id: string, token: string): Promise<problem | null> {
-  try {
-    console.log("fetching problem ...");
-    const get = await fetch(`${backend}/api/problems/${Id}`, {
-      method: "GET",
-      headers: {
-        "authorization": `Bearer ${token}`,
-      }
-    });
-    const getJSON = await get.json();
-    console.log(getJSON);
-    const prob: problem = getJSON.problem;
-    return prob;
-  } catch (err) {
-    console.log(err);
-    return null;
-  }
-}
 
 const defaultEditorCpp: string = `#include <bits/stdc++.h>
 int main(){
@@ -53,17 +35,33 @@ export function ProblemPage() {
   /* States */
   const [prob, setProb] = useState<problem | null>(null);
   const [sampleTestView, setSampleTestView] = useState<number>(0);
+  const [errMsg, setErrMsg] = useState<string>("");
 
   useEffect(() => {
     const fetchProblem = async () => {
-      if (sessionToken != "" && Id) {
-        const problem = await getProblemOne(Id, sessionToken);
-        setProb(problem);
+      setErrMsg("Fetching problem");
+      try {
+        const get = await fetch(`${backend}/api/problems/${Id}`, {
+          method: "GET",
+          headers: {
+            "authorization": `Bearer ${sessionToken}`,
+          }
+        });
+        const getJSON = await get.json();
+        console.log(getJSON);
+        const prob: problem = getJSON.problem;
+        if (!prob) throw new Error("Problem not found!")
+        setErrMsg("");
+        setProb(prob);
+      } catch (err: any) {
+        console.log(err);
+        setErrMsg(err.message);
       }
     };
 
-    if (user.isValid)
+    if (sessionToken != "")
       fetchProblem();
+    else setErrMsg("Verifying your login")
   }, [sessionToken]);
 
   /* State functions */
@@ -129,20 +127,19 @@ export function ProblemPage() {
         {/*Problem*/}
         <div className=" bg-white min-w-1/2  shrink-0 h-full 
           mx-1 p-5 text-neutral-900 prose  prose-sm">
-          {prob == null ? (<h1 className="animate-pulse"> Fetching problem ... </h1>) : (
+          {prob == null ? (<h1 className="animate-pulse"> {errMsg} </h1>) : (
             <ProblemContents problem={prob} />
           )}
         </div>
 
 
 
-        <div className="flex-1 flex  flex-col h-full gap-4 px-2">
+        <div className="flex-1 flex  flex-col h-full gap-2 px-2">
           <div className="flex flex-col h-4/6">
             <div className="bg-white shrink-0 p-2 my-1 text-neutral-900">
               Select a language
             </div>
-
-            <div className="min-h-0 grow my-1">
+            <div className="min-h-0 grow">
               <Editor
                 onMount={(editor, _) => {
                   editorRef.current = editor;
@@ -160,26 +157,48 @@ export function ProblemPage() {
           </div>
 
 
-          <div className="grow bg-white">
-            <div className="flex bg-neutral-200">
+          <div className="grow flex flex-col bg-white">
+            <div className="flex w-full bg-neutral-200">
               {prob?.sampleTests.map((test: {
                 input: string,
                 output: string,
               }, index: number) => {
                 return (
                   <div key={index}
-                      className={`${sampleTestView == index ? "bg-white text-neutral-800" : "bg-neutral-900 text-neutral-50"}
-border px-10 py-2 border-neutral-200 m-1 transition delay-75 hover:-translate-y-1
-cursor-pointer`}
+                    className={`${sampleTestView == index ? "bg-white text-neutral-800" :
+                      "bg-neutral-900 text-neutral-50 hover:-translate-y-1 hover:bg-blue-400 border-neutral-900  cursor-pointer"}
+                       px-10 py-2 border-neutral-200 mx-1 transition delay-75
+                      `}
                     onClick={() => setSampleTestView(index)}>
                     Test {index}
                   </div>
                 )
               })}
+
+              <div className="text-xl text-white bg-neutral-900 border-neutral-900
+                hover:-translate-y-1 hover:bg-blue-400
+                px-10 py-2  mx-1 transition delay-75 cursor-pointer">
+                +
+              </div>
             </div>
+
+
+            {prob &&
+              <div className="bg-white text-neutral-800 grow w-full py-5 px-5">
+                <span className="text-xs text-neutral-400 font-bold">Input </span>
+                <div className="border border-neutral-300  p-3">
+                  {prob?.sampleTests[sampleTestView].input}
+                </div>
+
+                <span className="text-xs text-neutral-400 font-bold">Output</span>
+                <div className="border border-neutral-300 p-3">
+                  {prob?.sampleTests[sampleTestView].output}
+                </div>
+              </div>
+            }
           </div>
         </div>
       </div>
-    </div>
+    </div >
   )
 }
