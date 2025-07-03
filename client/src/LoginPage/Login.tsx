@@ -9,7 +9,7 @@ const backend: string = import.meta.env.VITE_AUTH || "";
 
 export function Login() {
   /* use */
-  const { setUser, setSessionToken } = useContext<sessionContextType>(sessionContext);
+  const { setUser, setSessionToken, sessionToken } = useContext<sessionContextType>(sessionContext);
   const emailInputRef = useRef<HTMLInputElement>(null)
   const passwordInputRef = useRef<HTMLInputElement>(null)
   const usernameInputRef = useRef<HTMLInputElement>(null)
@@ -49,6 +49,7 @@ export function Login() {
     setErrMsg("");
     if (login) {
       const user = postJSON.user;
+      console.log("what it sent me: ", postJSON.accessToken);
       setSessionToken(postJSON.accessToken);
       setUser({
         isValid: true,

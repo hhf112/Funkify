@@ -5,12 +5,12 @@ import remarkGfm from "remark-gfm"
 
 function DifficultyTag({ attr, color }: { attr: string, color: string }) {
   const diff_colors: Record<string, string> = {
-    green: "border-green-500 mx-2 rounded-lg text-green-200 bg-green-900",
-    red: "border-red-500 mx-2 rounded-lg text-red-200 bg-red-900",
-    amber: "border-amber-500 mx-2 rounded-lg text-amber-200 bg-amber-900",
+    green: "mx-2  text-white bg-green-700 p-10",
+    red: "mx-2  text-white bg-red-700 p-10",
+    amber: "mx-2  text-white bg-amber-700 p-10",
   }
   return (
-    <span className={`border ${diff_colors[color]} px-2 py-1 m-2`}>
+    <span className={`border ${diff_colors[color]} px-5 py-2 m-2 font-semibold`}>
       {attr}
     </span>
   )
@@ -32,20 +32,21 @@ export function ProblemContents({ problem }: { problem: problem }) {
       {/* Description */}
       <Markdown children={problem?.description} remarkPlugins={[remarkGfm]} />
 
-      {/* Tags */}
-      {problem?.tags &&
-        (
-          problem?.tags.map((tag, index) => {
-            return
-            <span className="flex max-w-20 justify-center items-center 
-                        rounded-xl bg-neutral-900 py-2 px-1 m-2 text-blue-50 
-                border border-neutral-500" key={index} >
-              <img src="/tag.png" className="w-3 h-3 mx-1" />
-              {tag}
-            </span>
-          })
-        )
-      }
+      {/* Tags 
+      <div className="">
+        {problem?.tags.map((tag, index) => {
+          return <div key={index}
+            className="flex max-w-20 justify-center items-center 
+            bg-neutral-900 text-neutral-50 hover:-translate-y-1 hover:bg-blue-400 border-neutral-900  cursor-pointer
+                       px-2 py-2  mx-1 transition delay-75"
+          >
+            <img src="/tag.png" className = "w-1/6 h-full object-cover"/>
+            {tag}
+          </div>
+        })
+        }
+      </div>
+      */}
     </>
   )
 }

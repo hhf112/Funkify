@@ -2,12 +2,12 @@ import { Route, Routes } from "react-router-dom"
 import { Login } from "./LoginPage/Login"
 import { Home } from "./Home";
 import { ProblemPage } from "./ProblemPage";
-import { sessionContext} from "./contexts/SessionContextProvider";
+import { sessionContext } from "./contexts/SessionContextProvider";
 import { useContext, useEffect } from "react";
 
 
 function App() {
-  const { user, sessionToken, getSessionToken } = useContext(sessionContext);
+  const { user, getSessionToken } = useContext(sessionContext);
 
   useEffect(() => {
     if (user.isValid) {
@@ -15,13 +15,6 @@ function App() {
     }
   }, [user.isValid]);
 
-  if (import.meta.env.VITE_ENV === "dev") {
-    useEffect(() => {
-      if (sessionToken != "") {
-        console.log("user in session.");
-      }
-    }, [sessionToken])
-  }
 
   return (
     <>
