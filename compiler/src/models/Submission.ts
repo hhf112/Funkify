@@ -12,6 +12,7 @@ export interface SubmissionType {
     runtime_s: Number,
     memory_mb: Number,
   }
+  testId?: string,
 }
 
 const submissionSchema = new mongoose.Schema({
@@ -20,6 +21,10 @@ const submissionSchema = new mongoose.Schema({
     required: true,
     unique: true,
     trim: true
+  },
+  testId: {
+    type: String,
+    default: null,
   },
   userId: {
     type: String,
@@ -40,8 +45,8 @@ const submissionSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["Pending", "Processing", "Processed"],
-    default: 'Pending'
+    enum: ["pending", "processing", "processed"],
+    default: 'pending'
   },
   constraints: {
     runtime_s: Number,

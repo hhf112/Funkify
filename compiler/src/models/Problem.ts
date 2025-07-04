@@ -16,7 +16,9 @@ export interface ProblemType {
     runtime_s: string,
     memory_mb: string,
   },
-  testSolution: string,
+  testSolution: {
+    cpp: string,
+  },
   linesPerTestCase: number
 }
 
@@ -64,7 +66,7 @@ const problemSchema = new mongoose.Schema({
         required: true
       }
     }],
-    default: []
+    required: true,
   },
   constraints: {
     runtime_s: {
@@ -77,13 +79,14 @@ const problemSchema = new mongoose.Schema({
     }
   },
   testSolution: {
-    type: String,
+    type: {
+      cpp: String,
+    },
     required: true,
     trim: true
   },
   linesPerTestCase: {
     type: Number,
-    required: true,
     default: 1,
   }
 })

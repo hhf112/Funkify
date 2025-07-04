@@ -24,19 +24,17 @@ const langs: Record<string, any> = {
 export const runCode = async (req: Request, res: Response) => {
   const submissionId = req.body.submissionId;
   if (!submissionId) {
-    console.log("wrong submisssion")
     res.status(400).json({
       success: true,
       message: "submissionId required."
     })
     return;
   }
-
   let submission: SubmissionType | null;
   let tests: SystemTestsType | null;
   try {
     submission = await Submission.findById(submissionId);
-    tests = await SystemTests.findById(submission?.problemId);
+    tests = await SystemTests.findById(submission?.testId);
   } catch (err) {
     console.log(err);
     res.status(500).json({
@@ -46,7 +44,6 @@ export const runCode = async (req: Request, res: Response) => {
     return;
   }
   if (!submission || !tests) {
-    console.log("submission or problem not found")
     res.status(404).json({
       success: true,
       message: "submission or tests not found",
@@ -64,21 +61,24 @@ export const runCode = async (req: Request, res: Response) => {
     return;
   }
 
-  const inputs = "", outputs = "";
+  let inputs = "", outputs = "";
   tests.tests.forEach((test: {
     input: string,
     output: string,
   }) => {
-    inputs.concat(test.input)
-    outputs.concat(test.output)
+    inputs += test.input;
+    outputs += test.output;
   });
 
+  await Submission.findByIdAndUpdate(submissionId, {
+    status: "processing",
+  });
   // check for exec error.
   try {
     const start: [number, number] = process.hrtime();
     const output = await langs[submission.language](filePath, inputPath, submission.constraints.runtime_s);
     const end: [number, number] = process.hrtime(start);
-    const verdict = runTests(output, outputs, tests.linesPerTestcase);
+    const { verdict, testsPassed } = runTests(output, outputs, tests.linesPerTestcase);
     // check for mongoose error.
     try {
       const { _id } = await Verdict.create({
@@ -87,16 +87,20 @@ export const runCode = async (req: Request, res: Response) => {
         userId: submission.userId,
         output: output,
         verdict: verdict,
+        testsPassed: testsPassed,
+        runtime_ms: end[1]/100000,
       })
+
+      await Submission.findByIdAndUpdate(submissionId, {
+        status: "processed",
+        verdictId: _id
+      });
 
       res.status(200).json({
         success: true,
         message: "verdict created successfully",
         verdictId: _id,
       });
-
-      console.log("job completed: ", filePath);
-
     } catch (err) {
       console.log(err);
       res.status(500).json({

@@ -39,7 +39,7 @@ const systemTestsSchema = new mongoose.Schema({
         required: true
       }
     }],
-    default: []
+    required: true,
   },
   createdAt: {
     type: Date,

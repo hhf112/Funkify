@@ -46,6 +46,10 @@ const verdictSchema = new mongoose.Schema({
     type: Number,
     default: null,
   },
+  testsPassed: {
+    type: Number,
+    required: true,
+  }
 })
 
 const Verdict = mongoose.model('verdicts', verdictSchema);
