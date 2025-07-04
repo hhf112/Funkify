@@ -24,7 +24,12 @@ export const generateFile = async (directory: string, format: string, content: s
   const jobID = uuid();
   const filename = `${jobID}.${format}`;
   const filePath = path.join(dir, filename);
+  try {
   await fs.writeFileSync(filePath, content);
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
   return filePath;
 };
 
