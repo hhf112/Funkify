@@ -1,5 +1,16 @@
 import mongoose from 'mongoose';
 
+export interface SystemTestsType {
+  problemId: string,
+  tested?: boolean,
+  tests: {
+    input: string,
+    output: string,
+  }[],
+  createdAt?: Date,
+  author: true,
+}
+
 const systemTestsSchema = new mongoose.Schema({
   problemId: {
     type: String,

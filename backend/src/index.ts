@@ -1,22 +1,12 @@
 import express, { Application, Request, Response } from 'express';
+
 import "dotenv/config.js";
 import { DBConnection } from './db.js';
 import { Authenticate } from './middleware/authentication.js';
 import SubmissionRoutes from './routes/submissionRoutes.js';
 import ProblemsRoutes from './routes/problemRoutes.js';
+import TestRoutes from './routes/systemTestRoutes.js';
 import cors from "cors";
-import { warn } from 'console';
-// import { Queue } from "bullmq";
-// import IORedis from "ioredis"
-//
-//
-// const connection = new IORedis({
-// host: 'localhost',
-//   port: 6379,
-//   maxRetriesPerRequest: null
-// });
-//
-// export const submissionQueue = new Queue('submissions', { connection });
 
 const PORT = process.env.PORT || 3000;
 
@@ -44,6 +34,7 @@ app.get("/", (req: Request, res: Response) => {
   return;
 })
 app.use('/api/submissions', SubmissionRoutes);
+app.use("/api/tests", TestRoutes)
 app.use('/api/problems', ProblemsRoutes);
 
 

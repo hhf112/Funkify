@@ -8,20 +8,36 @@ import { warn } from 'console';
 
 
 export const createProblem = async (req: Request, res: Response) => {
-  console.log("called createProblem")
-  let problem: ProblemType;
-  try {
-    problem = req.body.problem;
-  } catch (err) {
-    console.log(err);
+  console.log(req.body);
+  const {
+    difficulty,
+    description,
+    title,
+    tags,
+    sampleTests,
+    constraints,
+    testSolution,
+  } = req.body;
+  if (!difficulty || !description || !title || !tags || 
+      !sampleTests || !constraints || !testSolution ) {
     res.status(400).json({
       success: false,
       message: "Required fields not provied",
     });
     return;
   }
+
   try {
-    const newProblem = await Problem.create(problem);
+    const newProblem = await Problem.create({
+      difficulty,
+      description,
+      title,
+      tags,
+      sampleTests,
+      constraints,
+      testSolution,
+    });
+
     res.status(200).json({
       success: true,
       message: "Problem created successfully",

@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 
 export interface SubmissionType {
   problemId: string,
+  testId: string,
   userId: string,
   code: string,
   language: string,
@@ -13,10 +14,13 @@ export interface SubmissionType {
 
 
 const submissionsSchema = new mongoose.Schema({
+  testId: {
+    type: String,
+    required: true,
+  },
   problemId: {
     type: String,
     required: true,
-    unique: true,
     trim: true
   },
   userId: {

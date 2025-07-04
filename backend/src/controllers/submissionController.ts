@@ -2,17 +2,50 @@ import { Request, Response } from 'express';
 import mongoose, { Model } from 'mongoose';
 import Submission from '../models/submissionModels/Submission.js'
 import { SubmissionType } from '../models/submissionModels/Submission.js';
+import Problem from '../models/problemModels/Problem.js';
+import { warn } from 'console';
+import Verdict from '../models/submissionModels/Verdict.js';
 
 const compiler = process.env.COMPILER;
+
+export const getVerdictById = async (req: Request, res: Response) => {
+  console.log(req.params);
+  const { verdictId } = req.params;
+  if (!verdictId) {
+    res.status(400).json({
+      success: true,
+      message: "verdictId not provided",
+    });
+    return;
+  }
+  try {
+    const verdict = await Verdict.findById(verdictId);
+    if (!verdict) throw new Error("verdict not found");
+    res.status(200).json({
+      success: true,
+      message: "Found verdict",
+      verdict: verdict,
+    })
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    })
+  }
+}
+
 export const createSubmission = async (req: Request, res: Response) => {
+  console.log(req.body);
   let submission: SubmissionType;
   const {
     problemId,
     userId,
     code,
-    language
+    language,
+    testId,
   } = req.body;
-  if (!problemId || !userId || !code || !language) {
+  if (!problemId || !userId || !code || !language || !testId) {
     res.status(400).json({
       success: false,
       message: "Required fields not provied",
@@ -20,14 +53,15 @@ export const createSubmission = async (req: Request, res: Response) => {
     return;
   }
 
-  const newSubmission = await Submission.create({
-    problemId,
-    userId,
-    code,
-    language
-  });
-
   try {
+    const newSubmission = await Submission.create({
+      problemId,
+      userId,
+      code,
+      language,
+      testId,
+    });
+
     const dopost = await fetch(`${compiler}/`, {
       method: "POST",
       headers: {
@@ -39,7 +73,7 @@ export const createSubmission = async (req: Request, res: Response) => {
     })
     const dopostJSON = await dopost.json();
     res.status(200).json({
-      success: false,
+      success: true,
       message: "Submission successfully added to queue.",
       submissionId: newSubmission._id,
     });

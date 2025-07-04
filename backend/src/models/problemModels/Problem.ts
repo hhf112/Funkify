@@ -5,8 +5,8 @@ export interface ProblemType {
   description: string,
   difficulty: string,
   tags: string[],
-  createdAt: Date,
-  author: string,
+  createdAt?: Date,
+  author?: string,
   userId: string,
   sampleTests:  {
     input: string,
@@ -75,6 +75,10 @@ const problemSchema = new mongoose.Schema({
       type: Number,
       default: 256
     }
+  },
+  testId: {
+    type: String,
+    default: null,
   },
   testSolution: {
     type: String,
