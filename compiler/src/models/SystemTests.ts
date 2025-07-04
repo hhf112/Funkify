@@ -16,7 +16,7 @@ export interface SystemTestsType{
 const systemTestsSchema = new mongoose.Schema({
   linesPerTestcase: {
     type: Number,
-    required: true,
+    default: 1,
   },
   problemId: {
     type: String,

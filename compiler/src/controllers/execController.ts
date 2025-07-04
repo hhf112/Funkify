@@ -51,15 +51,6 @@ export const runCode = async (req: Request, res: Response) => {
     return;
   }
 
-  let filePath: string;
-  let inputPath: string;
-  try {
-    filePath = await generateFile("../../codes/", submission.language, submission.code);
-    inputPath = await generateFile("../../input", "txt", "");
-  } catch (error: Error | any) {
-    console.error("fs error for submissionId: ", submissionId);
-    return;
-  }
 
   let inputs = "", outputs = "";
   tests.tests.forEach((test: {
@@ -69,6 +60,18 @@ export const runCode = async (req: Request, res: Response) => {
     inputs += test.input;
     outputs += test.output;
   });
+  
+
+  let filePath: string;
+  let inputPath: string;
+  try {
+    filePath = await generateFile("../../codes/", submission.language, submission.code);
+    inputPath = await generateFile("../../input", "txt", inputs);
+  } catch (error: Error | any) {
+    console.error("fs error for submissionId: ", submissionId);
+    return;
+  }
+
 
   await Submission.findByIdAndUpdate(submissionId, {
     status: "processing",
@@ -88,13 +91,15 @@ export const runCode = async (req: Request, res: Response) => {
         output: output,
         verdict: verdict,
         testsPassed: testsPassed,
-        runtime_ms: end[1]/100000,
+        runtime_ms: end[1] / 1000000,
       })
 
       await Submission.findByIdAndUpdate(submissionId, {
         status: "processed",
         verdictId: _id
       });
+
+      await SystemTests.findByIdAndUpdate(submission.testId, { tested: true });
 
       res.status(200).json({
         success: true,
