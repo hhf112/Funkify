@@ -18,7 +18,7 @@ export function Disclaimer({ display, colorClass }:
   { display: string, colorClass: string }) {
   colorClass = (colorClass == "green" ? "bg-green-400" : "bg-red-400");
   return (
-    <div className={`border border-neutral-700 p-2 ${colorClass}`}>
+    <div className={`border border-neutral-400 p-2 ${colorClass}`}>
       <h2 className="text-white font-semibold animate-pulse">
         {display}
       </h2>

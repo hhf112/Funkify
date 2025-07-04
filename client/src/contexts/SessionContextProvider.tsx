@@ -26,6 +26,7 @@ export interface problem {
     runtime_s: number,
   },
   testSolution: string,
+  testId: string,
 }
 export interface sessionContextType {
   sessionToken: string,

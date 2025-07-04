@@ -89,6 +89,10 @@ export function ProblemPage() {
   }
 
   async function submitCode(): Promise<void> {
+    setErrMsg({
+      message: "submitting your code ...",
+      color: "green",
+    });
     if (Id == undefined) {
       setErrMsg({
         color: "red",
@@ -156,10 +160,7 @@ export function ProblemPage() {
         <div className="m-0.5 p-2 rounded-xl hover:bg-neutral-300 transition delay-75 hover:scale-90 
           cursor-pointer min-w-0 h-10 flex justify-between gap-1 ">
           <button
-            onClick={async () => {
-              const result = await submitCode();
-              console.log(result);
-            }} className="cursor-pointer">
+            onClick={async () => { await submitCode(); }} className="cursor-pointer">
             Submit
           </button>
           <img src="/submit.png" className="shrink-0 object-cover" />

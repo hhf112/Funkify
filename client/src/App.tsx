@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom"
 import { Login } from "./LoginPage/Login"
 import { Home } from "./Home";
-import { ProblemPage } from "./ProblemPage";
+import { ProblemPage } from "./ProblemPage/Problem.js";
 import { sessionContext } from "./contexts/SessionContextProvider";
 import { useContext, useEffect } from "react";
 
