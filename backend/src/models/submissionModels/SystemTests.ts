@@ -8,7 +8,7 @@ export interface SystemTestsType {
     output: string,
   }[],
   createdAt?: Date,
-  author: true,
+  author: string,
 }
 
 const systemTestsSchema = new mongoose.Schema({

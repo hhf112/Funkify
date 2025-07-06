@@ -9,7 +9,6 @@ import Verdict from '../models/submissionModels/Verdict.js';
 const compiler = process.env.COMPILER;
 
 export const getVerdictById = async (req: Request, res: Response) => {
-  console.log(req.params);
   const { verdictId } = req.params;
   if (!verdictId) {
     res.status(400).json({
@@ -36,7 +35,6 @@ export const getVerdictById = async (req: Request, res: Response) => {
 }
 
 export const createSubmission = async (req: Request, res: Response) => {
-  console.log(req.body);
   let submission: SubmissionType;
   const {
     problemId,

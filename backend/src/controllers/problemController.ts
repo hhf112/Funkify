@@ -5,6 +5,7 @@ import { ObjectId } from 'mongoose';
 import { Types } from 'mongoose';
 import { ProblemType } from '../models/problemModels/Problem.js';
 import { warn } from 'console';
+import SystemTests from '../models/submissionModels/SystemTests.js';
 
 
 export const createProblem = async (req: Request, res: Response) => {
@@ -37,6 +38,12 @@ export const createProblem = async (req: Request, res: Response) => {
       constraints,
       testSolution,
     });
+
+    await SystemTests.create({
+      problemId: newProblem._id,
+      tested: false,
+      tests: sampleTests,
+    })
 
     res.status(200).json({
       success: true,
