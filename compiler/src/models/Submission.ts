@@ -9,8 +9,8 @@ export interface SubmissionType {
   status: string,
   verdictId: string,
   constraints: {
-    runtime_s: Number,
-    memory_mb: Number,
+    runtime_s: number,
+    memory_mb: number,
   }
   testId?: string,
 }

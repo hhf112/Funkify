@@ -117,10 +117,12 @@ export const runCode = async (req: Request, res: Response) => {
         testsPassed: testsPassed,
       })
 
+      await Submission.findByIdAndUpdate(submissionId, { status: "processed" , verdictId: _id});
       res.status(200).json({
         success: true,
         message: "successfully processed verdict.",
       })
+
     } catch (err) {
       console.log(err);
       res.status(500).json({
@@ -147,6 +149,8 @@ export const runCode = async (req: Request, res: Response) => {
         runtime_ms: runtime_s_ns[1] / 1000000,
         testsPassed: 0,
       })
+
+      await Submission.findByIdAndUpdate(submissionId, { status: "processed" , verdictId: _id});
       res.status(200).json({
         success: true,
         message: "successfully processed verdict.",

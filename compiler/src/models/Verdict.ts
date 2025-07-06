@@ -1,5 +1,17 @@
 import mongoose from 'mongoose';
 
+export interface VerdictType {
+  verdict: string,
+  error?: string,
+  stdout: string,
+  stderr: string,
+  submissionId: string,
+  userId: string,
+  memory_mb: number,
+  runtime_ms: number,
+  testsPassed: number,
+}
+
 const verdictSchema = new mongoose.Schema({
   verdict: {
     type: String,
@@ -14,16 +26,15 @@ const verdictSchema = new mongoose.Schema({
     ],
     required: true
   },
-
-  plagReportID: {
+  error: {
+    type: String,
+    default: null
+  },
+  stdout: {
     type: String,
     default: null,
   },
-  error: {
-    type: Boolean,
-    default: null,
-  },
-  output: {
+  stderr: {
     type: String,
     default: null,
   },
