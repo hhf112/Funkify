@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react"
+
 export function TypeLoginButton({ display, doThisAsync }: {
   display: string,
   doThisAsync: () => Promise<void> | void,
@@ -16,10 +18,23 @@ export function TypeLoginButton({ display, doThisAsync }: {
 
 export function Disclaimer({ display, colorClass }:
   { display: string, colorClass: string }) {
-  colorClass = (colorClass == "green" ? "bg-green-400" : "bg-red-400");
+  const [mountAnimation, setMountAnimation] = useState<boolean>(false);
+  useEffect(() => {
+    setMountAnimation(true);
+
+    return () => {
+      setMountAnimation(false);
+    }
+  }, []);
+
+  const color: Record<string, string> = {
+    "green": "bg-green-400",
+    "red": "bg-red-400",
+    "amber": "bg-amber-400",
+  }
   return (
-    <div className={`border border-neutral-400 p-2 ${colorClass}`}>
-      <h2 className="text-white font-semibold animate-pulse">
+    <div className={`${mountAnimation ? "-translate-y-2" : "translate-y-2"} transition delay-00  border border-neutral-400 p-2 ${color[colorClass]}`}>
+      <h2 className="text-white font-semibold ">
         {display}
       </h2>
     </div>

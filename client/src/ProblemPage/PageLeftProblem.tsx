@@ -16,7 +16,7 @@ function DifficultyTag({ attr, color }: { attr: string, color: string }) {
   )
 }
 
-export function ProblemContents({ problem }: { problem: problem }) {
+export function PageLeftProblem({ problem }: { problem: problem }) {
   return (
     <>
       {/* Title */}
