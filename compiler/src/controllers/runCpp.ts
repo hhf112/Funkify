@@ -46,7 +46,7 @@ export const execCpp = async (filepath: string, inputPath: string): Promise<Outp
       runtime: false,
       stdout: err.stdout,
       stderr: err.stderr,
-      error: `g++ xited with code ${err.error.code}`,
+      error: `g++ exited with code ${err.error.code}`,
     }
   }
 

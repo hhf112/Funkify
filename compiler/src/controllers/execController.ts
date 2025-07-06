@@ -99,10 +99,11 @@ export const runCode = async (req: Request, res: Response) => {
 
 
   if (output.error == null) {
-    const { verdict, testsPassed, error } =
+    let { verdict, testsPassed, error } =
       runTests(output.stdout,
         outputs, tests.linesPerTestcase)
 
+    if (runtime_s_ns[1] > submission.constraints.runtime_s * 1000) verdict = "Time Limit Exceeded";
     try {
       const { _id } = await Verdict.create({
         submissionId: submissionId,
@@ -130,8 +131,10 @@ export const runCode = async (req: Request, res: Response) => {
   }
 
   else {
-    const verdict = (output.compilation ? 
-                     "Runtime Error": "Compilation Error");
+    let verdict = (output.compilation ?
+      "Runtime Error" : "Compilation Error");
+
+    if (runtime_s_ns[1] > submission.constraints.runtime_s * 1000) verdict = "Time Limit Exceeded";
     try {
       const { _id } = await Verdict.create({
         verdict: verdict,
