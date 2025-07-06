@@ -11,9 +11,9 @@ export function runTests(output: string,
   } {
   if (output.length != expectedOutput.length) {
     return {
-      error: "output length does not match.",
-      verdict: "Runtime Error",
-      testsPassed: -1,
+      error: "output length does not match. testing halted",
+      verdict: "Wrong Answer",
+      testsPassed: 0,
     }
   }
 
