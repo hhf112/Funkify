@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 
 /* models and types */
 import Submission from '../models/Submission.js';
-import Verdict from '../models/Verdict.js';
+import Verdict, { VerdictType } from '../models/Verdict.js';
 import Problem from '../models/Problem.js';
 import SystemTests from '../models/SystemTests.js';
 import type { SubmissionType } from '../models/Submission.js';
@@ -13,7 +13,8 @@ import type { SystemTestsType } from '../models/SystemTests.js';
 /* impl */
 import { runTests } from './runTests.js';
 import { generateFile } from './generateFile.js';
-import { execCpp } from "./runCpp.js"
+import { execCpp, OutputType } from "./runCpp.js"
+import { warn } from 'console';
 
 
 /* Languages supported */
@@ -60,7 +61,7 @@ export const runCode = async (req: Request, res: Response) => {
     inputs += test.input;
     outputs += test.output;
   });
-  
+
 
   let filePath: string;
   let inputPath: string;
@@ -69,6 +70,10 @@ export const runCode = async (req: Request, res: Response) => {
     inputPath = await generateFile("../../input", "txt", inputs);
   } catch (error: Error | any) {
     console.error("fs error for submissionId: ", submissionId);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    })
     return;
   }
 
@@ -76,49 +81,80 @@ export const runCode = async (req: Request, res: Response) => {
   await Submission.findByIdAndUpdate(submissionId, {
     status: "processing",
   });
-  // check for exec error.
+
+  let output: OutputType;
+  let runtime_s_ns: [number, number];
   try {
     const start: [number, number] = process.hrtime();
-    const output = await langs[submission.language](filePath, inputPath, submission.constraints.runtime_s);
-    const end: [number, number] = process.hrtime(start);
-    const { verdict, testsPassed } = runTests(output, outputs, tests.linesPerTestcase);
-    // check for mongoose error.
+    output = await langs[submission.language](filePath, inputPath, submission.constraints.runtime_s);
+    runtime_s_ns = process.hrtime(start);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error."
+    })
+    return;
+  }
+
+
+  if (output.error == null) {
+    const { verdict, testsPassed, error } =
+      runTests(output.stdout,
+        outputs, tests.linesPerTestcase)
+
     try {
       const { _id } = await Verdict.create({
-        plagReportID: null,
         submissionId: submissionId,
         userId: submission.userId,
-        output: output,
+        error: error,
+        stdout: output.stdout,
+        stderr: output.stderr,
         verdict: verdict,
+        memory_mb: null,
+        runtime_ms: runtime_s_ns[1] / 1000000,
         testsPassed: testsPassed,
-        runtime_ms: end[1] / 1000000,
       })
-
-      await Submission.findByIdAndUpdate(submissionId, {
-        status: "processed",
-        verdictId: _id
-      });
-
-      await SystemTests.findByIdAndUpdate(submission.testId, { tested: true });
 
       res.status(200).json({
         success: true,
-        message: "verdict created successfully",
-        verdictId: _id,
-      });
+        message: "successfully processed verdict.",
+      })
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({
+        succcess: false,
+        message: "Database Error.",
+      })
+    }
+  }
+
+  else {
+    const verdict = (output.compilation ? 
+                     "Runtime Error": "Compilation Error");
+    try {
+      const { _id } = await Verdict.create({
+        verdict: verdict,
+        submissionId: submissionId,
+        userId: submission.userId,
+        error: output.error,
+        stdout: output.stdout,
+        stderr: output.stderr,
+        memory_mb: null,
+        runtime_ms: runtime_s_ns[1] / 1000000,
+        testsPassed: 0,
+      })
+      res.status(200).json({
+        success: true,
+        message: "successfully processed verdict.",
+      })
     } catch (err) {
       console.log(err);
       res.status(500).json({
         success: false,
-        message: "Internal server Error",
+        message: "Database Error",
       })
-      return;
     }
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      success: false,
-      message: "Internal Server Error",
-    })
   }
 }
+

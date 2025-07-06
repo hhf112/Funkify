@@ -7,9 +7,11 @@ export function runTests(output: string,
   linesPerTest: number): {
     verdict: string,
     testsPassed: number,
+    error: string | null,
   } {
   if (output.length != expectedOutput.length) {
     return {
+      error: "output length does not match.",
       verdict: "Runtime Error",
       testsPassed: -1,
     }
@@ -29,11 +31,11 @@ export function runTests(output: string,
         testsPassed++;
       }
     }
-    // console.log("\n\nno, of lines seen: ", lines, "\ndid it fail?: ", fail, "\nLines per test: ", linesPerTest, "\nnumber of tests passed: ", testsPassed);
   }
 
   return {
     verdict: (fail ? "Wrong Answer" : "Accepted"),
     testsPassed: testsPassed,
+    error: null,
   }
 }
