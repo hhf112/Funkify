@@ -2,7 +2,7 @@ import express, { Application, Request, Response } from 'express';
 import "dotenv/config.js";
 import { DBConnection } from './db.js';
 import { Authenticate } from './middleware/authentication.js';
-import execRoutes from './routes/execRoutes.js';
+import execRoutes from './routes/comRoutes.js';
 import { warn } from 'console';
 import cors from "cors"
 
