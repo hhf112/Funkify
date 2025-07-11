@@ -14,15 +14,52 @@ import type { SystemTestsType } from '../models/SystemTests.js';
 import { runTests } from './runTests.js';
 import { generateFile } from './generateFile.js';
 import { execCpp, OutputType } from "./runCpp.js"
-import { warn } from 'console';
 
 
 /* Languages supported */
-const langs: Record<string, any> = {
+const runFor: Record<string, any> = {
   "cpp": execCpp,
 }
 
+
 export const runCode = async (req: Request, res: Response) => {
+  const {
+    code,
+    language,
+    tests,
+    timeLimit,
+    linesPerTestCase,
+  } = req.body;
+
+
+
+  console.log("code:", code);
+  if (!code || !language || !tests) {
+    res.status(400).json({
+      success: true,
+      message: "Required fields not provided.",
+    })
+    return;
+  }
+
+  const codeFile = generateFile("../../codes", language, code);
+
+  const ordered_results: { output: string, verdict: { verdict: string, testsPassed: number, error: string | null } }[] = new Array(tests.length);
+  const tot_tests = tests.length
+  for (let i = 0; i < tot_tests; i++) {
+    const output = await runFor[language](codeFile, tests[i].input);
+    const verdict = runTests(output.stdout, tests[i].output, linesPerTestCase);
+    ordered_results[i] = {output, verdict}
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "job finished.",
+    ordered_results: ordered_results,
+  })
+}
+
+export const submitCode = async (req: Request, res: Response) => {
   const submissionId = req.body.submissionId;
   if (!submissionId) {
     res.status(400).json({
@@ -53,7 +90,8 @@ export const runCode = async (req: Request, res: Response) => {
   }
 
 
-  let inputs = "", outputs = "";
+  let inputs = "";
+  let outputs = "";
   tests.tests.forEach((test: {
     input: string,
     output: string,
@@ -66,8 +104,8 @@ export const runCode = async (req: Request, res: Response) => {
   let filePath: string;
   let inputPath: string;
   try {
-    filePath = await generateFile("../../codes/", submission.language, submission.code);
-    inputPath = await generateFile("../../input", "txt", inputs);
+    filePath = generateFile("../../codes/", submission.language, submission.code);
+    inputPath = generateFile("../../input", "txt", inputs);
   } catch (error: Error | any) {
     console.error("fs error for submissionId: ", submissionId);
     res.status(500).json({
@@ -86,7 +124,8 @@ export const runCode = async (req: Request, res: Response) => {
   let runtime_s_ns: [number, number];
   try {
     const start: [number, number] = process.hrtime();
-    output = await langs[submission.language](filePath, inputPath, submission.constraints.runtime_s);
+    output = await runFor[submission.language](filePath, inputs);
+    console.log(output);
     runtime_s_ns = process.hrtime(start);
   } catch (err) {
     console.log(err);
@@ -99,9 +138,8 @@ export const runCode = async (req: Request, res: Response) => {
 
 
   if (output.error == null) {
-    let { verdict, testsPassed, error } =
-      runTests(output.stdout,
-        outputs, tests.linesPerTestcase)
+    let { verdict, testsPassed, error } = await runTests(output.stdout,
+      tests.tests.map((test: { input: string, output: string }) => test.output), tests.linesPerTestCase)
 
     if (runtime_s_ns[1] > submission.constraints.runtime_s * 1000) verdict = "Time Limit Exceeded";
     try {
@@ -115,9 +153,10 @@ export const runCode = async (req: Request, res: Response) => {
         memory_mb: null,
         runtime_ms: runtime_s_ns[1] / 1000000,
         testsPassed: testsPassed,
+        totalTests: tests.tests.length,
       })
 
-      await Submission.findByIdAndUpdate(submissionId, { status: "processed" , verdictId: _id});
+      await Submission.findByIdAndUpdate(submissionId, { status: "processed", verdictId: _id });
       res.status(200).json({
         success: true,
         message: "successfully processed verdict.",
@@ -148,9 +187,10 @@ export const runCode = async (req: Request, res: Response) => {
         memory_mb: null,
         runtime_ms: runtime_s_ns[1] / 1000000,
         testsPassed: 0,
+        totalTests: tests.tests.length,
       })
 
-      await Submission.findByIdAndUpdate(submissionId, { status: "processed" , verdictId: _id});
+      await Submission.findByIdAndUpdate(submissionId, { status: "processed", verdictId: _id });
       res.status(200).json({
         success: true,
         message: "successfully processed verdict.",

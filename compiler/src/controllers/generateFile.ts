@@ -14,7 +14,7 @@ const __dirname = dirname(__filename);
 /**
  * @param {string} directory - path with directory name relative to compiler/src/controllers/.
  */
-export const generateFile = async (directory: string, format: string, content: string) => {
+export const generateFile =  (directory: string, format: string, content: string) => {
 
   const dir = path.join(__dirname, directory);
 
@@ -25,7 +25,7 @@ export const generateFile = async (directory: string, format: string, content: s
   const filename = `${jobID}.${format}`;
   const filePath = path.join(dir, filename);
   try {
-  await fs.writeFileSync(filePath, content);
+    fs.writeFileSync(filePath, content, { flag: "w+" });
   } catch (err) {
     console.log(err);
     throw err;
