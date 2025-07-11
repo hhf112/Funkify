@@ -1,41 +1,52 @@
-import fs from "fs"
-import { setDefaultHighWaterMark } from "stream";
+import fs, { read } from "fs"
+import { loadEnvFile } from "process";
+import { OutputFileType } from "typescript";
+
+export function runTests(output: string, testLines: string[], linesPerTest: number): {
+  verdict: string,
+  testsPassed: number,
+  error: string | null,
+} {
+  const outputLines = output.split('\n');
+
+  let lout = outputLines.length;
+  let ltest = testLines.length;
+
+  if (!outputLines[lout - 1]) lout--;
 
 
-export function runTests(output: string,
-  expectedOutput: string,
-  linesPerTest: number): {
-    verdict: string,
-    testsPassed: number,
-    error: string | null,
-  } {
-  if (output.length != expectedOutput.length) {
-    return {
-      error: "output length does not match. testing halted",
-      verdict: "Wrong Answer",
-      testsPassed: 0,
-    }
-  }
+  let testsPassed = 0;
+  let fail = -1;
+  let outputBuffer = "", testBuffer = ""
 
-  const n: number = output.length;
-  let lines: number = 0;
-  let fail: boolean = false;
-  let testsPassed: number = 0;
-
-  for (let i = 0; i < n; i++) {
-    if (expectedOutput[i] != output[i]) fail = true;
-    if (output[i] === '\n') {
-      lines++;
-      if (lines % linesPerTest == 0) {
-        if (fail) break;
+  let testcnt = 0;
+  for (let i = 1; i <= Math.min(ltest, lout); i++) {
+    outputBuffer += outputLines[i - 1].trim();
+    testBuffer += testLines[i - 1].trim();
+    if (i % linesPerTest == 0) {
+      testcnt++;
+      if (outputBuffer != testBuffer) {
+        if (fail < 0) fail = i;
+      }
+      else {
         testsPassed++;
       }
+      outputBuffer = "";
+      testBuffer = "";
+    }
+  }
+  if (lout != ltest) {
+    return {
+      verdict: "Wrong Answer",
+      testsPassed: testsPassed,
+      error: "Output length mismatch",
     }
   }
 
   return {
-    verdict: (fail ? "Wrong Answer" : "Accepted"),
+    verdict: (fail < 0 ? "Accepted" : "Wrong Answer"),
     testsPassed: testsPassed,
     error: null,
   }
+
 }
