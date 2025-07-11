@@ -12,6 +12,10 @@ export interface ProblemType {
     input: string,
     output: string,
   }[],
+  hiddenTests: {
+    input: string,
+    output: string,
+  }
   constraints: {
     runtime_s: string,
     memory_mb: string,
@@ -54,6 +58,19 @@ const problemSchema = new mongoose.Schema({
     default: null,
   },
   sampleTests: {
+    type: [{
+      input: {
+        type: String,
+        required: true
+      },
+      output: {
+        type: String,
+        required: true
+      }
+    }],
+    default: []
+  },
+  hiddenTests: {
     type: [{
       input: {
         type: String,
