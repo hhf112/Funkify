@@ -10,6 +10,7 @@ export interface VerdictType {
   memory_mb: number,
   runtime_ms: number,
   testsPassed: number,
+  totalTests: number,
 }
 
 const verdictSchema = new mongoose.Schema({
@@ -58,6 +59,10 @@ const verdictSchema = new mongoose.Schema({
     default: null,
   },
   testsPassed: {
+    type: Number,
+    required: true,
+  },
+  totalTests: {
     type: Number,
     required: true,
   }

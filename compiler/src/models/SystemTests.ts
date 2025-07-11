@@ -10,13 +10,13 @@ export interface SystemTestsType{
   createdAt: Date,
   author: string,
   userId: string,
-  linesPerTestcase: number,
+  linesPerTestCase: number,
 }
 
 const systemTestsSchema = new mongoose.Schema({
-  linesPerTestcase: {
+  linesPerTestCase: {
     type: Number,
-    default: 1,
+    required: true,
   },
   problemId: {
     type: String,
