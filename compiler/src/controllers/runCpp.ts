@@ -1,5 +1,4 @@
 import { exec, ExecFileException } from "child_process";
-import { warn } from "console";
 import fs from "fs";
 import path, { resolve } from "path";
 import { dirname } from 'path';
@@ -55,7 +54,7 @@ export const execCpp = async (filepath: string, inputPath: string): Promise<Outp
       stderr: string,
       stdout: string,
     }>((resolve, reject) => {
-      exec(`cd ${outputPath} && ./${jobId}.out < ${inputPath}`,
+      exec(`cd ${outputPath} && echo "${inputPath}" | ./${jobId}.out`,
         { timeout: 5000 },
         (error: ExecFileException | null, stdout: string, stderr: string) => {
           if (error) {
