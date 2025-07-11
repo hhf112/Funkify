@@ -17,8 +17,10 @@ export const DBConnection = async () => {
     // has implied unique index
     const Problem = (await import("./models/problemModels/Problem.js")).default;
     const Submission = (await import("./models/submissionModels/Submission.js")).default;
+    const SystemTests = (await import("./models/submissionModels/SystemTests.js")).default;
     await Submission.syncIndexes();
     await Problem.syncIndexes();
+    await SystemTests.syncIndexes();
 
     console.log("Database connected successfully");
   } catch (err) {

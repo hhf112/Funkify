@@ -4,23 +4,25 @@ import { Error, MongooseError } from 'mongoose';
 import { ObjectId } from 'mongoose';
 import { Types } from 'mongoose';
 import { ProblemType } from '../models/problemModels/Problem.js';
-import { warn } from 'console';
 import SystemTests from '../models/submissionModels/SystemTests.js';
 
 
 export const createProblem = async (req: Request, res: Response) => {
-  console.log(req.body);
+  // console.log(req.body);
   const {
     difficulty,
     description,
     title,
     tags,
     sampleTests,
+    hiddenTests,
     constraints,
     testSolution,
+    linesPerTestCase,
+    author,
   } = req.body;
-  if (!difficulty || !description || !title || !tags || 
-      !sampleTests || !constraints || !testSolution ) {
+  if (!difficulty || !description || !title || !tags ||
+    !sampleTests || !constraints || !testSolution || !author || !hiddenTests) {
     res.status(400).json({
       success: false,
       message: "Required fields not provied",
@@ -37,13 +39,21 @@ export const createProblem = async (req: Request, res: Response) => {
       sampleTests,
       constraints,
       testSolution,
+      linesPerTestCase,
     });
 
-    await SystemTests.create({
+
+    console.log(linesPerTestCase);
+    const newTest = await SystemTests.create({
       problemId: newProblem._id,
       tested: false,
-      tests: sampleTests,
+      tests: [...sampleTests, ...hiddenTests],
+      author: author,
+      linesPerTestCase: linesPerTestCase,
     })
+    console.log(newTest);
+
+    await Problem.findByIdAndUpdate(newProblem._id, { testId: newTest._id })
 
     res.status(200).json({
       success: true,
@@ -121,62 +131,6 @@ export const deleteProblem = async (req: Request, res: Response) => {
       error: error.name,
       message: error.message,
     });
-  }
-}
-export const getProblemsByCount = async (req: Request, res: Response) => {
-  console.log("called getProblemsByCount")
-  try {
-    const count = parseInt(req.query.count as string) || 1;
-    const problems = await Problem.find().limit(count);
-    res.status(200).json({
-      success: true,
-      message: "Found expected number of problems",
-      problems: problems,
-    });
-    return;
-  } catch (error: any) {
-    console.error('Error fetching problems:', error);
-    res.status(500).json({
-      success: false,
-      error: error.name,
-      message: error.message,
-    });
-    return;
-  }
-}
-
-
-export const getProblemById = async (req: Request, res: Response) => {
-  console.log("called getProblemById")
-  const problemId: string = req.params.problemId;
-  if (!problemId) {
-    res.status(400).json({ error: 'Problem ID is required' });
-    return;
-  }
-  try {
-    const problem = await Problem.findById(problemId).exec();
-    if (!problem) {
-      res.status(404).json({
-        success: false,
-        message: "No problems found",
-        problem: problem,
-      });
-      return;
-    }
-    res.status(200).json({
-      success: true,
-      message: "Found problem successfully",
-      problem: problem
-    })
-    return;
-  } catch (error: any) {
-    console.error('Error fetching problem by ID:', error);
-    res.status(500).json({
-      success: false,
-      error: error.name,
-      message: error.message,
-    });
-    return;
   }
 }
 

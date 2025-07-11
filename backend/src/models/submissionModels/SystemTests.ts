@@ -9,9 +9,14 @@ export interface SystemTestsType {
   }[],
   createdAt?: Date,
   author: string,
+  linesPerTestCase: number,
 }
 
 const systemTestsSchema = new mongoose.Schema({
+  linesPerTestCase: {
+      type: Number,
+      required: true,
+  },
   problemId: {
     type: String,
     required: true,

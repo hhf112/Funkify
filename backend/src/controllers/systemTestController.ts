@@ -9,6 +9,7 @@ export const addTests = async (req: Request, res: Response) => {
     problemId,
     tests,
     author,
+    linesPerTestCase,
   } = req.body;
 
   if (!problemId || !tests || !author) {
@@ -24,8 +25,11 @@ export const addTests = async (req: Request, res: Response) => {
       problemId,
       tests,
       author,
+      linesPerTestCase,
     });
 
+
+  console.log(systests);
     await Problem.findOneAndUpdate({ _id: problemId }, { testId: systests._id });
     res.status(200).json({
       success: true,

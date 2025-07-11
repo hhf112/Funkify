@@ -4,7 +4,8 @@ import "dotenv/config.js";
 import { DBConnection } from './db.js';
 import { Authenticate } from './middleware/authentication.js';
 import SubmissionRoutes from './routes/submissionRoutes.js';
-import ProblemsRoutes from './routes/problemRoutes.js';
+import publicProblemRoutes from "./routes/publicProblemRoutes.js"
+import userProblemRoutes from "./routes/userProblemRoutes.js"
 import TestRoutes from './routes/systemTestRoutes.js';
 import cors from "cors";
 
@@ -24,7 +25,7 @@ app.use(cors({
   credentials: true
 }));
 
-app.use("/", Authenticate);
+app.use("/api/user", Authenticate);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -33,9 +34,14 @@ app.get("/", (req: Request, res: Response) => {
   res.status(200).json({ message: "working" });
   return;
 })
-app.use('/api/submissions', SubmissionRoutes);
-app.use("/api/tests", TestRoutes)
-app.use('/api/problems', ProblemsRoutes);
+
+/* User routes */
+app.use("/api/user/problems", userProblemRoutes)
+app.use("/api/user/tests", TestRoutes)
+app.use('/api/user/submissions', SubmissionRoutes);
+
+/* Public routes */
+app.use("/api/problems", publicProblemRoutes)
 
 
 
