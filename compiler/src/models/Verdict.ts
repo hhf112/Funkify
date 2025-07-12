@@ -1,10 +1,22 @@
 import mongoose from 'mongoose';
 
+
+export interface ResultType {
+  verdict: string,
+  passed: boolean,
+  error: {
+    stderr: string,
+    error: string,
+  } | null,
+}
+
 export interface VerdictType {
   verdict: string,
-  error?: string,
-  stdout: string,
-  stderr: string,
+  error?: {
+    stderr: string,
+    error: string,
+  } | null
+  results: { output: string, verdict: ResultType }[],
   submissionId: string,
   userId: string,
   memory_mb: number,
@@ -27,17 +39,47 @@ const verdictSchema = new mongoose.Schema({
     ],
     required: true
   },
+  results: {
+    type: [{
+      output: {
+        type: String,
+        required: true
+      },
+      verdict: {
+        type: {
+          verdict: {
+            type: String,
+            required: true,
+          },
+          passed: {
+            type: Boolean,
+            required: true,
+          },
+          error: {
+            type: {
+              stderr: {
+                type: String,
+                required: true,
+              },
+              error: {
+                type: String,
+                required: true,
+              }
+            },
+            default: null
+          }
+        },
+        required: true,
+      }
+    }],
+    required: true
+  },
   error: {
-    type: String,
+    type: {
+      stderr: String,
+      error: String,
+    },
     default: null
-  },
-  stdout: {
-    type: String,
-    default: null,
-  },
-  stderr: {
-    type: String,
-    default: null,
   },
   submissionId: {
     type: String,
