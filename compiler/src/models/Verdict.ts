@@ -16,7 +16,7 @@ export interface VerdictType {
     stderr: string,
     error: string,
   } | null
-  results: { output: string, verdict: ResultType }[],
+  results: ResultType[],
   submissionId: string,
   userId: string,
   memory_mb: number,
@@ -41,35 +41,26 @@ const verdictSchema = new mongoose.Schema({
   },
   results: {
     type: [{
-      output: {
+      verdict: {
         type: String,
         required: true
       },
-      verdict: {
+      passed: {
+        type: Boolean,
+        required: true
+      },
+      error: {
         type: {
-          verdict: {
+          stderr: {
             type: String,
-            required: true,
-          },
-          passed: {
-            type: Boolean,
-            required: true,
+            required: true
           },
           error: {
-            type: {
-              stderr: {
-                type: String,
-                required: true,
-              },
-              error: {
-                type: String,
-                required: true,
-              }
-            },
-            default: null
+            type: String,
+            required: true
           }
         },
-        required: true,
+        default: null
       }
     }],
     required: true
