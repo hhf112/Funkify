@@ -11,7 +11,6 @@ import type { ProblemType } from '../models/Problem.js';
 import type { SystemTestsType } from '../models/SystemTests.js';
 
 /* impl */
-import { runTests } from './runTests.js';
 import { generateFile } from './generateFile.js';
 import { execCpp, OutputType } from "./runCpp.js"
 import { ResultType } from '../models/Verdict.js';

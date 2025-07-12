@@ -66,13 +66,13 @@ export const execCpp = async (filepath: string, input: string, timelimit: number
     return {
       compilation: true,
       runtime: true,
-      stdout: stdout,
-      stderr: stderr,
+      stdout: stdout || "",
+      stderr: stderr || "",
       error: null,
     }
   } catch (err: any) {
     let errorMsg = null;
-    if (err.error.signal) {
+    if (err.error?.signal) {
       switch (err.error.signal) {
         case "SIGSEGV":
           errorMsg = "Segmentation fault.";
@@ -93,12 +93,12 @@ export const execCpp = async (filepath: string, input: string, timelimit: number
           errorMsg = `Terminated by signal: ${err.error.signal}. Timed out.`;
       }
     }
-    else if (err.error.code) errorMsg = `Exited with code ${err.error.code}`;
+    else if (err.error?.code) errorMsg = `Exited with code ${err.error.code}`;
     return {
       compilation: true,
       runtime: false,
-      stdout: err.stdout,
-      stderr: err.stderr,
+      stdout: err.stdout || "",
+      stderr: err.stderr || "",
       error: errorMsg,
     }
   }
