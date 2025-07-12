@@ -20,7 +20,7 @@ export interface OutputType {
   stderr: string,
   error: string | null,
 }
-export const execCpp = async (filepath: string, inputPath: string): Promise<OutputType> => {
+export const execCpp = async (filepath: string, input: string): Promise<OutputType> => {
 
   const jobId = path.basename(filepath).split(".")[0];
   const outPath = path.join(outputPath, `${jobId}.out`);
@@ -54,7 +54,7 @@ export const execCpp = async (filepath: string, inputPath: string): Promise<Outp
       stderr: string,
       stdout: string,
     }>((resolve, reject) => {
-      exec(`cd ${outputPath} && echo "${inputPath}" | ./${jobId}.out`,
+      exec(`cd ${outputPath} && echo "${input}" | ./${jobId}.out`,
         { timeout: 5000 },
         (error: ExecFileException | null, stdout: string, stderr: string) => {
           if (error) {
