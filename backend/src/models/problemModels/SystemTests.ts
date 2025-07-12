@@ -28,6 +28,10 @@ const systemTestsSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  runtime_s: {
+    type: Number,
+    required: true,
+  },
   tests: {
     type: [{
       input: {

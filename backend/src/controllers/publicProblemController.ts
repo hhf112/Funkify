@@ -24,7 +24,6 @@ export const getProblemsByCount = async (req: Request, res: Response) => {
 
 
 export const getProblemById = async (req: Request, res: Response) => {
-  console.log("called getProblemById")
   const problemId: string = req.params.problemId;
   if (!problemId) {
     res.status(400).json({ error: 'Problem ID is required' });

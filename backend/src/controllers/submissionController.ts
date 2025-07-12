@@ -11,7 +11,6 @@ const compiler = process.env.COMPILER;
 export const getVerdictById = async (req: Request, res: Response) => {
   const { verdictId } = req.params;
   if (!verdictId) {
-    console.log("400 on getVerdictById");
     res.status(400).json({
       success: true,
       message: "verdictId not provided",
@@ -63,7 +62,7 @@ export const createSubmission = async (req: Request, res: Response) => {
       testId,
     });
 
-    const dopost = await fetch(`${compiler}/`, {
+    const dopost = fetch(`${compiler}/`, {
       method: "POST",
       headers: {
         "Content-type": "application/json",
@@ -72,7 +71,6 @@ export const createSubmission = async (req: Request, res: Response) => {
         submissionId: newSubmission._id,
       }),
     })
-    const dopostJSON = await dopost.json();
     res.status(200).json({
       success: true,
       message: "Submission successfully added to queue.",
@@ -84,7 +82,6 @@ export const createSubmission = async (req: Request, res: Response) => {
       success: false,
       message: "Internal Server error"
     });
-    return;
   }
 }
 

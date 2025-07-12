@@ -10,6 +10,7 @@ export interface SystemTestsType {
   createdAt?: Date,
   author: string,
   linesPerTestCase: number,
+  runtime_s: number,
 }
 
 const systemTestsSchema = new mongoose.Schema({
@@ -46,6 +47,10 @@ const systemTestsSchema = new mongoose.Schema({
   },
   author: {
     type: String,
+    required: true,
+  },
+  runtime_s: {
+    type: Number,
     required: true,
   },
 })

@@ -43,15 +43,14 @@ export const createProblem = async (req: Request, res: Response) => {
     });
 
 
-    console.log(linesPerTestCase);
     const newTest = await SystemTests.create({
       problemId: newProblem._id,
       tested: false,
       tests: [...sampleTests, ...hiddenTests],
       author: author,
       linesPerTestCase: linesPerTestCase,
+      runtime_s: newProblem.constraints?.runtime_s,
     })
-    console.log(newTest);
 
     await Problem.findByIdAndUpdate(newProblem._id, { testId: newTest._id })
 
