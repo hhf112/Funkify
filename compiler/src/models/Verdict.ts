@@ -98,7 +98,11 @@ const verdictSchema = new mongoose.Schema({
   totalTests: {
     type: Number,
     required: true,
-  }
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now(),
+  },
 })
 
 const Verdict = mongoose.model('verdicts', verdictSchema);
