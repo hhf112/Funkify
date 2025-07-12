@@ -32,9 +32,6 @@ export const runCode = async (req: Request, res: Response) => {
     linesPerTestCase,
   } = req.body;
 
-
-
-  console.log("code:", code);
   if (!code || !language || !tests) {
     res.status(400).json({
       success: true,
@@ -45,18 +42,55 @@ export const runCode = async (req: Request, res: Response) => {
 
   const codeFile = generateFile("../../codes", language, code);
 
-  const ordered_results: { output: string, verdict: { verdict: string, testsPassed: number, error: string | null } }[] = new Array(tests.length);
-  const tot_tests = tests.length
-  for (let i = 0; i < tot_tests; i++) {
-    const output = await runFor[language](codeFile, tests[i].input);
-    const verdict = runTests(output.stdout, tests[i].output, linesPerTestCase);
-    ordered_results[i] = { output, verdict }
+  const results: { output: string, verdict: ResultType }[] = new Array(tests.length);
+  let verdict: ResultType, output: OutputType;
+  let testno = 0;
+  for (const test of tests) {
+    const start: [number, number] = process.hrtime();
+    try {
+      output = await runFor[language](codeFile, test.input);
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({
+        success: false,
+        message: "Internal server error."
+      });
+      return;
+    }
+    const end: [number, number] = process.hrtime(start);
+    if (output.error == null) {
+      if (output.stdout.trim() == test.output.trim()) {
+        verdict = {
+          verdict: "Accepted",
+          passed: true,
+          error: null,
+        }
+      }
+      else {
+        verdict = {
+          verdict: "Wrong Answer",
+          passed: false,
+          error: null,
+        }
+      }
+      if (end[0] / 1000000 > timeLimit)
+        verdict.verdict = "Time Limit Exceeded";
+    } else {
+      verdict = {
+        verdict: (output.compilation ? "Runtime Error" : "Compilation Error"),
+        passed: false,
+        error: {
+          stderr: output.stderr,
+          error: output.error,
+        }
+      }
+    }
+    results[testno++] = { output: output.stdout.trim(), verdict }
   }
-
   res.status(200).json({
     success: true,
     message: "job finished.",
-    ordered_results: ordered_results,
+    results: results,
   })
 }
 
