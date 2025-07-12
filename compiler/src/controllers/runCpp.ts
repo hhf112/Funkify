@@ -20,7 +20,7 @@ export interface OutputType {
   stderr: string,
   error: string | null,
 }
-export const execCpp = async (filepath: string, input: string): Promise<OutputType> => {
+export const execCpp = async (filepath: string, input: string, timelimit: number): Promise<OutputType> => {
 
   const jobId = path.basename(filepath).split(".")[0];
   const outPath = path.join(outputPath, `${jobId}.out`);
@@ -29,7 +29,6 @@ export const execCpp = async (filepath: string, input: string): Promise<OutputTy
   try {
     await new Promise((resolve, reject) => {
       exec(`g++ ${filepath} -o ${outPath}`,
-        { timeout: 5000 },
         (error: ExecFileException | null, stdout: string, stderr: string) => {
           if (error) {
             reject({ error, stderr, stdout });
@@ -39,7 +38,7 @@ export const execCpp = async (filepath: string, input: string): Promise<OutputTy
       );
     });
   } catch (err: any) {
-    console.log(err.error);
+    console.log(err);
     return {
       compilation: false,
       runtime: false,
@@ -55,7 +54,7 @@ export const execCpp = async (filepath: string, input: string): Promise<OutputTy
       stdout: string,
     }>((resolve, reject) => {
       exec(`cd ${outputPath} && echo "${input}" | ./${jobId}.out`,
-        { timeout: 5000 },
+        { timeout: timelimit * 1000 },
         (error: ExecFileException | null, stdout: string, stderr: string) => {
           if (error) {
             reject({ error, stdout, stderr });

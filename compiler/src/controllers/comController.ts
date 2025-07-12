@@ -28,7 +28,7 @@ export const runCode = async (req: Request, res: Response) => {
     code,
     language,
     tests,
-    timeLimit,
+    timeLimit, // seconds
     linesPerTestCase,
   } = req.body;
 
@@ -42,13 +42,14 @@ export const runCode = async (req: Request, res: Response) => {
 
   const codeFile = generateFile("../../codes", language, code);
 
+  let passed = 0;
   const results: { output: string, verdict: ResultType }[] = new Array(tests.length);
   let verdict: ResultType, output: OutputType;
   let testno = 0;
   for (const test of tests) {
     const start: [number, number] = process.hrtime();
     try {
-      output = await runFor[language](codeFile, test.input);
+      output = await runFor[language](codeFile, test.input, timeLimit);
     } catch (err) {
       console.log(err);
       res.status(500).json({
@@ -60,6 +61,7 @@ export const runCode = async (req: Request, res: Response) => {
     const end: [number, number] = process.hrtime(start);
     if (output.error == null) {
       if (output.stdout.trim() == test.output.trim()) {
+        passed++;
         verdict = {
           verdict: "Accepted",
           passed: true,
@@ -91,6 +93,7 @@ export const runCode = async (req: Request, res: Response) => {
     success: true,
     message: "job finished.",
     results: results,
+    passsed: (passed == tests.length),
   })
 }
 
@@ -151,7 +154,8 @@ export const submitCode = async (req: Request, res: Response) => {
     for (const test of tests.tests) {
       const start: [number, number] = process.hrtime();
       try {
-        output = await runFor[submission.language](filePath, test.input);
+        output = await runFor[submission.language](filePath, test.input, 
+                                                  submission.constraints.runtime_s);
       } catch (err) {
         console.log(err);
         res.status(500).json({
