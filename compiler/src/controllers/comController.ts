@@ -153,8 +153,8 @@ export const submitCode = async (req: Request, res: Response) => {
     for (const test of tests.tests) {
       const start: [number, number] = process.hrtime();
       try {
-        output = await runFor[submission.language](filePath, test.input, 
-                                                  submission.constraints.runtime_s);
+        output = await runFor[submission.language](filePath, test.input,
+          tests.runtime_s);
       } catch (err) {
         console.log(err);
         res.status(500).json({
@@ -167,7 +167,7 @@ export const submitCode = async (req: Request, res: Response) => {
 
       /* error handling */
       if (output.error == null) {
-        if (output.stdout.trim() == test.output.trim()) {
+        if (output.stdout.trim() === test.output.trim()) {
           passed++;
           verdict = {
             verdict: "Accepted",
@@ -206,11 +206,13 @@ export const submitCode = async (req: Request, res: Response) => {
     finalVerdict.results = results;
 
     try {
-      await Verdict.create(finalVerdict);
+      const { _id } = await Verdict.create(finalVerdict);
 
       await Submission.findByIdAndUpdate(submissionId, {
         status: "processed",
+        verdictId: _id,
       });
+
 
       res.status(200).json({
         success: true,
