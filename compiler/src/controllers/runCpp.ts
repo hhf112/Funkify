@@ -43,8 +43,8 @@ export const execCpp = async (filepath: string, input: string, timelimit: number
     return {
       compilation: false,
       runtime: false,
-      stdout: err.stdout,
-      stderr: err.stderr,
+      stdout: err.stdout || "null",
+      stderr: err.stderr || "null",
       error: `g++ exited with code ${err.error.code}`,
     }
   }
@@ -67,12 +67,13 @@ export const execCpp = async (filepath: string, input: string, timelimit: number
     return {
       compilation: true,
       runtime: true,
-      stdout: stdout || "",
-      stderr: stderr || "",
+      stdout: stdout || "null" ,
+      stderr: stderr || "null",
       error: null,
     }
   } catch (err: any) {
-    let errorMsg = null;
+    console.log(err);
+    let errorMsg = "";
     if (err.error?.signal) {
       switch (err.error.signal) {
         case "SIGSEGV":
@@ -98,8 +99,8 @@ export const execCpp = async (filepath: string, input: string, timelimit: number
     return {
       compilation: true,
       runtime: false,
-      stdout: err.stdout || "",
-      stderr: err.stderr || "",
+      stdout: err.stdout ||"null",
+      stderr: err.stderr || "null",
       error: errorMsg,
     }
   }

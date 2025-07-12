@@ -42,7 +42,7 @@ export const runCode = async (req: Request, res: Response) => {
   const codeFile = generateFile("../../codes", language, code);
 
   let passed = 0;
-  const results: { output: string, verdict: ResultType }[] = new Array(tests.length);
+  const results: { test: string, output: string, verdict: ResultType }[] = new Array(tests.length);
   let verdict: ResultType, output: OutputType;
   let testno = 0;
   for (const test of tests) {
@@ -86,7 +86,7 @@ export const runCode = async (req: Request, res: Response) => {
         }
       }
     }
-    results[testno++] = { output: output.stdout.trim(), verdict }
+    results[testno++] = { test, output: output.stdout.trim(), verdict }
   }
   res.status(200).json({
     success: true,
@@ -134,7 +134,11 @@ export const submitCode = async (req: Request, res: Response) => {
     status: "processing",
   });
 
-  const results: ResultType[] = new Array(tests.tests.length);
+  const results: ResultType[] = new Array(tests.tests.length).fill({
+    verdict: "Compilation Error",
+    error: null,
+    passed: false,
+  });
 
   const finalVerdict: VerdictType = {
     verdict: "Accepted",
@@ -188,6 +192,7 @@ export const submitCode = async (req: Request, res: Response) => {
           verdict.verdict = "Time Limit Exceeded";
         else finalVerdict.runtime_ms = end[0] / 1000000;
       } else {
+        console.log(output.error);
         verdict = {
           verdict: (output.compilation ? "Runtime Error" : "Compilation Error"),
           passed: false,
@@ -196,8 +201,10 @@ export const submitCode = async (req: Request, res: Response) => {
             error: output.error,
           }
         }
+
         finalVerdict.verdict = verdict.verdict;
         finalVerdict.error = verdict.error;
+        if (!output.compilation) break;
       }
       results[testno++] = verdict;
     }

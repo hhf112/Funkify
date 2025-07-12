@@ -53,7 +53,7 @@ const verdictSchema = new mongoose.Schema({
         type: {
           stderr: {
             type: String,
-            required: true
+            required: true,
           },
           error: {
             type: String,
