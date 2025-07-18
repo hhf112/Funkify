@@ -1,4 +1,5 @@
 import React, { createContext, useState, type Dispatch, type SetStateAction } from "react";
+import { useNavigate } from "react-router-dom";
 
 // interfaces
 export interface User {
@@ -27,6 +28,7 @@ export interface problem {
   },
   testSolution: string,
   testId: string,
+  linesPerTestCase: number,
 }
 export interface sessionContextType {
   sessionToken: string,
@@ -35,10 +37,10 @@ export interface sessionContextType {
   setUser: Dispatch<SetStateAction<User>>,
   getSessionToken: () => Promise<void>,
   doRefreshToken: () => Promise<void>,
+  Fetch: (ur: string, opts: any) => Promise<Response | null>,
 }
 
 export const sessionContext = createContext<sessionContextType>({
-  sessionToken: "",
   user: {
     isValid: true,
     username: "",
@@ -46,15 +48,19 @@ export const sessionContext = createContext<sessionContextType>({
     email: "",
     userId: "",
   },
+  sessionToken: "",
   setUser: () => { },
   setSessionToken: () => { },
   getSessionToken: async () => { },
-  doRefreshToken: async () => { }
+  doRefreshToken: async () => { },
+  Fetch: async (url: string, opts: any) => null,
 });
 
 export function SessionContextProvider(
   { children }: { children: React.ReactNode }) {
 
+  //
+  const navigate = useNavigate();
   // states
   const [sessionToken, setSessionToken] = useState<string>("");
   const [user, setUser] = useState<User>({
@@ -62,11 +68,31 @@ export function SessionContextProvider(
     username: "test",
     password: "test",
     email: "test",
-    userId: "test",
+    userId: "6864d87ecae8dcff198a5bff",
+
   })
 
-  /* funcs */
+  /* state funcs */
+  async function Fetch(url: string, opts: any): Promise<Response> {
+    const { headers = {}, ...rest } = opts;
+    const authHeaders = {
+      ...headers,
+      authorization: `Bearer ${sessionToken}`,
+    }
+    const authOpts = { ...rest, headers: authHeaders }
+    let opt = await fetch(url, authOpts);
+    if (opt.status === 401) {
+      await doRefreshToken();
+      opt = await fetch(url, authOpts);
+    }
+    return opt;
+  }
+
   async function getSessionToken(): Promise<void> {
+    if (!user) {
+      console.log("user is not valid. cannot fetch session token");
+      return;
+    }
     if (user.email == "" || user.password == "") return;
     try {
       const post: Response = await fetch(`http://localhost:5000/login`, {
@@ -89,18 +115,11 @@ export function SessionContextProvider(
   }
 
   async function doRefreshToken(): Promise<void> {
-    try {
-      const get: Response = await fetch(`http://localhost:5000/token`);
-      const getJSON = await get.json();
-      const token = getJSON.accessToken;
-      setSessionToken(token);
-    } catch (err) {
-      console.error(err);
-    }
-    return;
+    const get: Response = await fetch(`http://localhost:5000/token`);
+    const getJSON = await get.json();
+    const token = getJSON.accessToken;
+    setSessionToken(token);
   }
-
-
 
   return (
     <sessionContext.Provider value={{
@@ -110,6 +129,7 @@ export function SessionContextProvider(
       setSessionToken,
       getSessionToken,
       doRefreshToken,
+      Fetch,
     }}>
 
       {children}

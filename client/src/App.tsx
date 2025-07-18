@@ -2,19 +2,11 @@ import { Route, Routes } from "react-router-dom"
 import { Login } from "./LoginPage/Login"
 import { Home } from "./Home";
 import { ProblemPage } from "./ProblemPage/Problem.js";
-import { sessionContext } from "./contexts/SessionContextProvider";
-import { useContext, useEffect } from "react";
+import { User } from "./User.js";
+import { Problems } from "./Problems.js";
 
 
 function App() {
-  const { user, getSessionToken } = useContext(sessionContext);
-
-  useEffect(() => {
-    if (user.isValid) {
-      getSessionToken();
-    }
-  }, [user.isValid]);
-
 
   return (
     <>
@@ -22,6 +14,8 @@ function App() {
         <Route path="/Login" element={<Login />} />
         <Route path="/Problem/:Id" element={<ProblemPage />} />
         <Route path="/" element={<Home />} />
+        <Route path="/user" element={<User />} />
+        <Route path="/problems" element={<Problems />} />
       </Routes>
 
     </>

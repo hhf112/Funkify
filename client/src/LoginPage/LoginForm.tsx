@@ -31,7 +31,8 @@ export function LoginForm({
   }, [])
 
   return (
-    <div className={`bg-white relative flex flex-col w-2/6 h-3/5 items-center justify-center border-2 border-neutral-700 shadow-xl p-5
+    <div className={`bg-white relative flex flex-col w-2/6 h-3/5 items-center justify-center 
+  border-2 border-neutral-300 rounded-xl shadow-xl p-5
 ${formMount ? "opacity-100 -translate-y-2" : "opacity-0 translate-2"} transition delay-100`}>
 
       {/*Top Text*/}

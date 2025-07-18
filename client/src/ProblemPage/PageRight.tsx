@@ -5,6 +5,7 @@ import type { problem } from "../contexts/SessionContextProvider.js";
 
 
 const defaultEditorCpp: string = `#include <bits/stdc++.h>
+using namespace std;
 int main(){
 
 return 0; 
@@ -27,15 +28,16 @@ export function PageRight({
   }, [sampleTests.length]);
 
 
+  /* Component */
   return (
     <div className="flex-4 flex flex-col justify-between gap-2 h-full">
 
       {/* EDITOR */}
-      <div className="flex flex-col min-h-0 flex-2">
-        <div className="bg-white flex-1 min-h-0  p-2 my-1 text-neutral-900 border-neutral-400 border">
+      <div className="flex flex-col min-h-0 flex-2 mx-1">
+        <div className="rounded-lg bg-white flex-1 min-h-0  p-2 my-1 text-neutral-900 border-neutral-400 border">
           Select a language
         </div>
-        <div className="flex-13 min-h-0">
+        <div className=" bg-black flex-13 min-h-0">
           <Editor
             onMount={(editor, _) => {
               editorRef.current = editor;

@@ -18,7 +18,7 @@ function DifficultyTag({ attr, color }: { attr: string, color: string }) {
 
 export function PageLeftProblem({ problem }: { problem: problem }) {
   return (
-    <>
+    <div className="prose ">
       {/* Title */}
       <h1 className="text-3xl font-bold my-2"> {problem?.title} </h1>
 
@@ -47,6 +47,6 @@ export function PageLeftProblem({ problem }: { problem: problem }) {
         }
       </div>
       */}
-    </>
+    </div>
   )
 }

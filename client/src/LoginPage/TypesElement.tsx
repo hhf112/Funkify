@@ -6,7 +6,7 @@ export function TypeLoginButton({ display, doThisAsync }: {
 }) {
   return (
     <button onClick={() => doThisAsync()}
-      className="cursor-pointer hover:bg-amber-300 hover:text-black 
+      className="cursor-pointer hover:bg-cyan-300 hover:text-black 
       my-4 text-lg border border-neutral-700 
       bg-neutral-800 text-neutral-100 p-3 mx-2
           shadow-neutral-500 shadow-lg
@@ -46,7 +46,7 @@ export function Loader({ display }: { display: string }) {
   return (
     <div className="flex">
       <p className="text-neutral-800"> {display} </p>
-      <img src="/loader.png" className=" animate-spin w-4 h-4 my-1 mx-1" />
+      <img src="/loader.png" className=" animate-pusle w-4 h-4 my-1 mx-1" />
     </div>
   )
 
