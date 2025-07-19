@@ -1,5 +1,22 @@
-import { useEffect, useState, type Dispatch, type RefObject, type SetStateAction } from "react";
+import React, { useEffect, useState, type Dispatch, type RefObject, type SetStateAction } from "react";
 import { TypeLoginButton, Disclaimer, Loader } from "./TypesElement";
+
+function InputBox({ ref,
+  imgSrc,
+  placeholder,
+  type
+}: {
+    type: string,
+    ref: RefObject<HTMLInputElement | null>,
+    imgSrc: string,
+    placeholder: string
+  }) {
+  return <div className="flex items-stretch h-12">
+    <img src={imgSrc} className=" my-1 mx-1" />
+    <input ref={ref} type={type} id="email" placeholder={placeholder} 
+      className="w-65  p-4 border border-neutral-500 my-1 mx-1 rounded-xl focus:border-cyan-100" />
+  </div>
+}
 
 export function LoginForm({
   login,
@@ -33,11 +50,14 @@ export function LoginForm({
   return (
     <div className={`bg-white relative flex flex-col w-2/6 h-3/5 items-center justify-center 
   border-2 border-neutral-300 rounded-xl shadow-xl p-5
-${formMount ? "opacity-100 -translate-y-2" : "opacity-0 translate-2"} transition delay-100`}>
+${formMount ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"} transform duration-500
+ transition delay-100`}>
 
       {/*Top Text*/}
       <div className="prose prose-sm absolute  top-0 m-4">
-        <h3 className="hover:-translate-y-1 transition delay-75 text-neutral-700">
+        <h3 className={`hover:-translate-y-1 transition delay-75 text-neutral-700
+          transform duration-1000 
+${formMount ? "opacity-100": "opacity-0" }`}>
           {login ? "Don't have an account?" : "Already have an account?"}
           <a className="text-amber-300 font-semibold cursor-pointer"
             onClick={() => {
@@ -55,29 +75,19 @@ ${formMount ? "opacity-100 -translate-y-2" : "opacity-0 translate-2"} transition
         </h3>
       </div>
 
-      <img src="/unlock.png" className="animate-bounce w-15 h-15 object-fill m-2" />
+      <img src="/unlock.png" className={`animate-bounce w-15 h-15 object-fill m-2
+    ${formMount?  "opacity-100": "opacity-0"} transform duration-1000 transition delay-1000`}/>
 
       <h3 className="text-neutral-700 my-2 font-semibold">
-        {login ? "Login is required to access further content" : 
+        {login ? "Login is required to access further content" :
           "access the best coding platform today!"}
       </h3>
 
-      <div className="flex items-stretch h-12">
-        <img src="/mail.png" className="my-1 mx-1" />
-        <input ref={emailInputRef} type="email" id="email " placeholder="your email goes here" className="w-65 p-4 border border-neutral-500 my-1 mx-1" />
-      </div>
+      <InputBox type="email" ref={emailInputRef} imgSrc="/mail.png" placeholder="your email goes here" />
 
-      {signUp && (
-        <div className="flex items-stretch h-12">
-          <img src="/user.png" className="my-1 mx-1" />
-          <input ref={usernameInputRef} type="email" id="email " placeholder="your username goes here" className="w-65 p-4 border border-neutral-500 my-1 mx-1" />
-        </div>
-      )}
+      {signUp && <InputBox type="text" ref={usernameInputRef} imgSrc="/user.png" placeholder="your username goes here" />}
 
-      <div className="flex items-stretch h-12">
-        <img src="/globe.png" className=" my-1 mx-1" />
-        <input ref={passwordInputRef} type="password" id="email " placeholder="your password goes here" className="w-65  p-4 border border-neutral-500 my-1 mx-1" />
-      </div>
+      <InputBox type="password" ref={passwordInputRef} imgSrc="/globe.png" placeholder="your password goes here" />
 
       {/*Submit*/}
       <TypeLoginButton
@@ -91,7 +101,7 @@ ${formMount ? "opacity-100 -translate-y-2" : "opacity-0 translate-2"} transition
           colorClass="red"
         />
       }
-      {loader && <Loader display="LOGGING YOU IN!"/> }
+      {loader && <Loader display="LOGGING YOU IN!" />}
     </div>
   )
 }

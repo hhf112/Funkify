@@ -6,11 +6,10 @@ export function TypeLoginButton({ display, doThisAsync }: {
 }) {
   return (
     <button onClick={() => doThisAsync()}
-      className="cursor-pointer hover:bg-cyan-300 hover:text-black 
-      my-4 text-lg border border-neutral-700 
-      bg-neutral-800 text-neutral-100 p-3 mx-2
-          shadow-neutral-500 shadow-lg
-        transition delay-75 hover:-translate-y-2 hover:scale-100">
+      className="cursor-pointer shadow-neutral-500 shadow-lg rounded-xl
+      my-4 text-lg border-2 border-neutral-500 bg-neutral-800 text-neutral-100 p-3 mx-2 
+      hover:bg-cyan-300 hover:text-black hover:-translate-y-2 hover:scale-100 hover:shadow-yellow-100
+      transition delay-75 ">
       {display}
     </button>
   )
@@ -21,7 +20,6 @@ export function Disclaimer({ display, colorClass }:
   const [mountAnimation, setMountAnimation] = useState<boolean>(false);
   useEffect(() => {
     setMountAnimation(true);
-
     return () => {
       setMountAnimation(false);
     }
@@ -33,9 +31,11 @@ export function Disclaimer({ display, colorClass }:
     "amber": "bg-amber-400",
   }
   return (
-    <div className={`${mountAnimation ? "-translate-y-2" : "translate-y-2"} transition delay-00  border border-neutral-400 p-2 ${color[colorClass]}`}>
+    <div className={`${mountAnimation ? "translate-y-0 scale-100" : "scale-80 translate-y-2"} 
+transform duration-300 transition-all delay-75  border 
+border-neutral-400  ${color[colorClass]} py-2 px-3 rounded-xl opacity-80`}>
       <h2 className="text-white font-semibold ">
-        {display}
+        {display}!
       </h2>
     </div>
   )

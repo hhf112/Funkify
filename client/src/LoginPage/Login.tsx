@@ -1,3 +1,4 @@
+import React from "react";
 import { useRef, useState, useContext } from "react"
 import { sessionContext, type sessionContextType } from "../contexts/SessionContextProvider";
 import { LoginForm } from "./LoginForm";
@@ -5,13 +6,13 @@ import { LoginSubmitted } from "./LoginSubmitted";
 import { Disclaimer, TypeLoginButton } from "./TypesElement";
 import { useNavigate } from "react-router-dom";
 
-const backend: string = import.meta.env.VITE_AUTH || "";
+const authentication: string = import.meta.env.VITE_AUTH || "";
 
 
 
 export function Login() {
   /* use */
-  const { setUser, setSessionToken, sessionToken , user} = useContext<sessionContextType>(sessionContext);
+  const { setUser, setSessionToken, sessionToken, user } = useContext<sessionContextType>(sessionContext);
   const emailInputRef = useRef<HTMLInputElement>(null)
   const passwordInputRef = useRef<HTMLInputElement>(null)
   const usernameInputRef = useRef<HTMLInputElement>(null)
@@ -24,45 +25,22 @@ export function Login() {
   const [errMsg, setErrMsg] = useState<string | null>(null);
   const [loader, setLoader] = useState<boolean>(false);
 
-  if (sessionToken.length) {
-    return (
-    <div className="bg-white relative flex flex-col w-2/6 h-3/5 items-center justify-center 
-        border border-neutral-200 shadow-xl p-15">
-
-      {/*Top Text*/}
-      <div className="prose prose-sm absolute  top-0 m-4">
-        <h3 className="text-neutral-700">
-          {`Welcome back ${user.username}!`}
-        </h3>
-      </div>
-
-      {/*Banner */}
-      <img src="/logged-in.png" className="w-25 h-25 object-fill m-2" />
-      <Disclaimer
-        display="Already LoggedIn!"
-        colorClass="green"
-      />
-      {login &&
-        <div className="flex">
-          <TypeLoginButton
-            display="Continue to Homepage!"
-            doThisAsync={() => navigate("/")}
-          />
-        </div>
-      }
-
-      {signUp &&
-        <TypeLoginButton
-          doThisAsync={() => {
-            setSubmitted(false);
-            setLogin(true);
-            setSignUp(false);
-          }}
-          display="Logout"
-        />
-      }
-    </div>
-    )
+  async function Logout() {
+    try {
+      const post = await fetch(`${authentication}/logout`, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        credentials: "include"
+      })
+      const postJSON = await post.json();
+      // console.log(postJSON);
+      setSessionToken("");
+      setSubmitted(false);
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   async function Submit() {
@@ -70,7 +48,7 @@ export function Login() {
     const email = emailInputRef.current?.value;
     const password = passwordInputRef.current?.value;
 
-    const req = backend + (login ? "/login" : "/register");
+    const req = authentication + (login ? "/login" : "/register");
     setLoader(true);
     const post = await fetch(req, {
       method: "POST",
@@ -110,13 +88,14 @@ export function Login() {
   return (
     <div className="h-screen w-full"> {/*BG*/}
       <div className="flex h-screen justify-center items-center">
-        {submitted ? <LoginSubmitted
+        {submitted || sessionToken.length ? <LoginSubmitted
           login={login}
           signUp={signUp}
           setSignUp={setSignUp}
           setLogin={setLogin}
           setSubmitted={setSubmitted}
           Submit={Submit}
+          Logout={Logout}
 
         /> : <LoginForm
           login={login}

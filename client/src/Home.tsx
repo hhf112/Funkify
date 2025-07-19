@@ -1,3 +1,4 @@
+import React from "react";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom"
 import { sessionContext } from "./contexts/SessionContextProvider";
@@ -63,20 +64,32 @@ export function Home() {
       {/* NAVBAR */}
       <h1 className="fixed top-0 left-0 p-2 text-cyan-500 font-bold font-Inter bg-white/20
         backdrop-blur-xs w-full tex-sm h-5">
-        Funkify 
+        Funkify
       </h1>
 
       {/* HEADER */}
       <div className="text-neutral-700 items-center text-xl font-Inter flex justify-center">
-        <h1
-          className={`px-4 cursor-pointer py-3 mx-2 border-4 border-neutral-700 
+        {sessionToken ?
+          <h1
+            className={`px-4 cursor-pointer py-3 mx-2 border-4 border-neutral-700 
           rounded-full  font-semibold 
   ${hoverCreateAccount && "translate-y-1 text-white scale-105 shadow-2xl bg-cyan-500"}
           hover:bg-cyan-500 hover:translate-y-1 hover:text-white hover:scale-105 hover:shadow-2xl  
           transition-all delay-200`}
-          onClick={() => navigate("/Login")}>
-          {sessionToken ? `Hi ${user.username}! 👋` : "Create an Account / Login"}
-        </h1>
+            onClick={() => navigate("/User")}>
+            Hi {user.username}! 👋
+          </h1>
+          :
+          <h1
+            className={`px-4 cursor-pointer py-3 mx-2 border-4 border-neutral-700 
+          rounded-full  font-semibold 
+  ${hoverCreateAccount && "translate-y-1 text-white scale-105 shadow-2xl bg-cyan-500"}
+          hover:bg-cyan-500 hover:translate-y-1 hover:text-white hover:scale-105 hover:shadow-2xl  
+          transition-all delay-200`}
+            onClick={() => navigate("/Login")}>
+            Create an Account/Login
+          </h1>
+        }
 
         <h1
           className={`px-4 cursor-pointer py-3 mx-2 border-4 border-neutral-700 
@@ -88,7 +101,7 @@ export function Home() {
         </h1>
 
 
-        <h1 
+        <h1
           className="px-4 cursor-pointer 
           rounded-full hover:bg-yellow-300 font-semibold 
               hover:translate-y-1  hover:scroll-m-2

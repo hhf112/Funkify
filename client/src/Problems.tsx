@@ -1,5 +1,7 @@
+import React, { useContext } from "react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { sessionContext } from "./contexts/SessionContextProvider";
 
 const backend = import.meta.env.VITE_BACKEND;
 if (!backend) {
@@ -8,20 +10,23 @@ if (!backend) {
 }
 
 export function Problems() {
-  /* States */
+  /* states */
+  const { sessionToken, user } = useContext(sessionContext);
+  const [hoverAddProblem, setHoverAddProblemm] = useState<boolean>(false);
+  const [addProblemWindow, setAddProblemWindow] = useState<boolean>(false);
   const [problems, seteProblems] = useState<any[]>([]);
   const [mount, setMount] = useState<boolean[]>([false, false]);
   const navigate = useNavigate();
 
   useEffect(() => {
     setMount([true, false]);
-    setTimeout(()=> setMount([true, true]), 3000)
+    setTimeout(() => setMount([true, true]), 3000)
     const getProbs = async () => {
       try {
         const get = await fetch(`${backend}/api/problems/count?count=10`);
         const getJSON = await get.json();
         console.log(getJSON.problems);
-        seteProblems(getJSON.problems);
+        if (getJSON.problems) seteProblems(getJSON.problems);
       } catch (err) {
         console.log(err);
       }
@@ -29,6 +34,9 @@ export function Problems() {
     getProbs();
   }, [])
 
+
+  // console.log(sessionToken);
+  /* component */
   return (
     <div className="py-5  h-screen items-center w-full flex flex-col">
 
@@ -37,8 +45,31 @@ export function Problems() {
         Funkify
       </h1>
 
-
       <div className="w-full flex flex-col px-40 my-5">
+
+        <div className="my-5 flex justify-between items-center w-full px-10">
+          <h1 className={`font-Inter font-semibold text-3xl text-neutral-600 transform
+${mount[0] ? "opacity-100 translate-y-0 scale-100" : "scale-90 translate-y-2 opacity-0"} transition-all delay-100  duration-500`}>
+            {
+              sessionToken.length ?
+                hoverAddProblem ? "Contribute a problem!" : `Hi ${user.username}! Challenge yourself everyday!`
+                :
+                hoverAddProblem ? "Create an account to contribute problems!" : "Create an account today to start solving!"
+            }
+          </h1>
+
+          <button
+            className={`px-20 cursor-pointer py-3 mx-2 border-4 border-neutral-700 
+          rounded-full  font-semibold text-xl font-Inter
+          hover:bg-green-500  hover:scale-105 hover:translate-y-2 hover:text-white  hover:shadow-2xl  
+          transition-all delay-200`}
+            onMouseOver={() => setHoverAddProblemm(true)}
+            onMouseOut={() => setHoverAddProblemm(false)}
+            onClick={() => setAddProblemWindow(true)}>
+            +
+          </button>
+        </div>
+
         {!problems.length ?
           <h1 className="font-mono animate-pulse"> LOADING... </h1>
           :
@@ -67,7 +98,6 @@ export function Problems() {
                     </p>
                   )}
                   </div>
-
                 </div>
               </div>
             )
