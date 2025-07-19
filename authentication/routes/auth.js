@@ -9,7 +9,7 @@ import {
 
 const auth = express.Router();
 
-auth.delete("/logout", logoutHandler);
+auth.post("/logout", logoutHandler);
 auth.get("/token", tokenHandler);
 auth.post("/login", loginHandler);
 auth.post("/register", registerHandler);

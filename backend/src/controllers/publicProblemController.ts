@@ -1,10 +1,10 @@
-import {Request, Response} from "express"
+import { Request, Response } from "express"
 import Problem from "../models/problemModels/Problem.js";
 
 export const getProblemsByCount = async (req: Request, res: Response) => {
   try {
     const count = parseInt(req.query.count as string) || 1;
-    const problems = await Problem.find().limit(count);
+    const problems = await Problem.find({}, "title tags difficulty").limit(count);
     res.status(200).json({
       success: true,
       message: "Found problems",

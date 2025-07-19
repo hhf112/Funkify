@@ -62,7 +62,9 @@ export function Login() {
       }),
       credentials: "include",
     })
+
     const postJSON = await post.json();
+    // console.log(postJSON);
     setLoader(false);
     if (!post.ok) {
       setErrMsg(postJSON.message);

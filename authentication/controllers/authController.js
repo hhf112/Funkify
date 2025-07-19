@@ -10,7 +10,7 @@ function generateAccessToken(user) {
   return jwt.sign({
     username: user.username,
     email: user.email
-  }, process.env.JWT_SECRET, { expiresIn: "5h" })
+  }, process.env.JWT_SECRET, { expiresIn: "5s" })
 }
 
 export const loginHandler = async (req, res) => {
@@ -46,9 +46,11 @@ export const loginHandler = async (req, res) => {
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: true,
-      sameSite: 'Strict',
-      mexAge: 30 * 24 * 60 * 60 * 1000  // 30 days
+      sameSite: 'None',
+      path: '/',
+      maxAge: 30 * 24 * 60 * 60 * 1000  // 30 days
     })
+
     return res.status(200).json({
       success: true,
       message: "Successfully logged in user",
@@ -137,8 +139,9 @@ export const logoutHandler = async (req, res) => {
         path: '/',
         httpOnly: true,
         secure: true,
-        sameSite: 'Strict',
+        sameSite: 'None',
       });
+
       return res
         .status(200).json({
           success: true,

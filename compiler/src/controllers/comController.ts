@@ -45,6 +45,7 @@ export const runCode = async (req: Request, res: Response) => {
   const results: { test: string, output: string, verdict: ResultType }[] = new Array(tests.length);
   let verdict: ResultType, output: OutputType;
   let testno = 0;
+  let finalVerdict: string | null = null;
   for (const test of tests) {
     const start: [number, number] = process.hrtime();
     try {
@@ -73,9 +74,12 @@ export const runCode = async (req: Request, res: Response) => {
           passed: false,
           error: null,
         }
+        if (!finalVerdict) finalVerdict = "Wrong Answer";
       }
-      if (end[0] / 1000000 > timeLimit)
+      if (end[0] / 1000000 > timeLimit) {
         verdict.verdict = "Time Limit Exceeded";
+        if (!finalVerdict) finalVerdict = "Time Limit Exceeded";
+      }
     } else {
       verdict = {
         verdict: (output.compilation ? "Runtime Error" : "Compilation Error"),
@@ -85,10 +89,13 @@ export const runCode = async (req: Request, res: Response) => {
           error: output.error,
         }
       }
+      if (!finalVerdict) finalVerdict = verdict.verdict;
     }
     results[testno++] = { test, output: output.stdout.trim(), verdict }
   }
+  if (!finalVerdict) finalVerdict = "Accepted"
   res.status(200).json({
+    finalVerdict: finalVerdict,
     success: true,
     message: "job finished.",
     results: results,
@@ -201,8 +208,12 @@ export const submitCode = async (req: Request, res: Response) => {
             error: output.error,
           }
         }
-
-        finalVerdict.verdict = verdict.verdict;
+        const err = verdict.error?.error;
+        if (err && err == "timed out.") {
+          finalVerdict.verdict = "Time Limit Exceeded";
+          finalVerdict.error = verdict.error;
+          break;
+        } else finalVerdict.verdict = verdict.verdict;
         finalVerdict.error = verdict.error;
         if (!output.compilation) break;
       }

@@ -7,6 +7,7 @@ import SubmissionRoutes from './routes/submissionRoutes.js';
 import publicProblemRoutes from "./routes/publicProblemRoutes.js"
 import userProblemRoutes from "./routes/userProblemRoutes.js"
 import TestRoutes from './routes/systemTestRoutes.js';
+import UserRoutes from './routes/userRoutes.js';
 import cors from "cors";
 
 const PORT = process.env.PORT || 3000;
@@ -39,6 +40,7 @@ app.get("/", (req: Request, res: Response) => {
 app.use("/api/user/problems", userProblemRoutes)
 app.use("/api/user/tests", TestRoutes)
 app.use('/api/user/submissions', SubmissionRoutes);
+app.use("api/user/", UserRoutes);
 
 /* Public routes */
 app.use("/api/problems", publicProblemRoutes)

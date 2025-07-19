@@ -92,7 +92,8 @@ export const execCpp = async (filepath: string, input: string, timelimit: number
           errorMsg = "Bus error.";
           break;
         default:
-          errorMsg = `Terminated by signal: ${err.error.signal}. Timed out.`;
+          
+          errorMsg = `timed out.`;
       }
     }
     else if (err.error?.code) errorMsg = `Exited with code ${err.error.code}`;
