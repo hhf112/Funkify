@@ -1,7 +1,7 @@
 import * as monaco from "monaco-editor"
 import Editor from "@monaco-editor/react";
 import { useEffect, useState, type Dispatch, type RefObject, type SetStateAction } from "react";
-import type { problem } from "../contexts/SessionContextProvider.js";
+import type { problem } from "../contexts/SessionContextProvider";
 
 
 const defaultEditorCpp: string = `#include <bits/stdc++.h>

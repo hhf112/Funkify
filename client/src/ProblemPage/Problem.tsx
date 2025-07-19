@@ -8,7 +8,7 @@ import { PageRight } from "./PageRight";
 import { PageLeftRun } from "./PageLeftRun";
 import type { testResult } from "./types";
 
-import type { VerdictType } from "./types.js";
+import type { VerdictType } from "./types";
 
 import * as monaco from "monaco-editor"
 

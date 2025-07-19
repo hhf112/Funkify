@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router-dom"
 import { Login } from "./LoginPage/Login"
 import { Home } from "./Home";
 import { ProblemPage } from "./ProblemPage/Problem";
-import { User } from "./User.js";
+import { User } from "./User";
 import { Problems } from "./Problems";
 
 
