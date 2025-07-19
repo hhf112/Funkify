@@ -148,9 +148,9 @@ hover:text-white  hover:bg-black   hover:translate-y-2  hover:italic transition`
             transition delay-150`}>
             CHECKOUT
             {hoverCheckout ?
-              <img src="./home-next-dark.png" className=" mx-5 h-8 inline-block" />
+              <img src="/home-next-dark.png" className=" mx-5 h-8 inline-block" />
               :
-              <img src="./home-next-white.png" className=" mx-5 h-8 inline-block" />
+              <img src="/home-next-white.png" className=" mx-5 h-8 inline-block" />
             }
           </button>
         </div >
@@ -160,7 +160,7 @@ hover:text-white  hover:bg-black   hover:translate-y-2  hover:italic transition`
 
         <div className="flex-1 max-w-full max-h-full flex items-center justify-center ">
           <img
-            src="./landing.png"
+            src="/landing.png"
             alt="banner"
             className="max-h-full max-w-full 
             rounded-xl object-contain "
