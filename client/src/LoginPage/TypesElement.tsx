@@ -45,8 +45,7 @@ export function Loader({ display }: { display: string }) {
 
   return (
     <div className="flex">
-      <p className="text-neutral-800"> {display} </p>
-      <img src="/loader.png" className=" animate-pusle w-4 h-4 my-1 mx-1" />
+      <p className="text-neutral-800 font-mono animate-pulse"> {display} </p>
     </div>
   )
 

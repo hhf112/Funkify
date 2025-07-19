@@ -1,12 +1,12 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom"
 import { sessionContext, type problem } from "../contexts/SessionContextProvider";
-import { PageLeftProblem } from "./PageLeftProblem.js";
-import { PageLeftSubmit } from "./PageLeftSubmit.js";
-import { Disclaimer } from "../LoginPage/TypesElement.js";
-import { PageRight } from "./PageRight.js";
-import { PageLeftRun } from "./PageLeftRun.js";
-import type { testResult } from "./types.js";
+import { PageLeftProblem } from "./PageLeftProblem";
+import { PageLeftSubmit } from "./PageLeftSubmit";
+import { Disclaimer } from "../LoginPage/TypesElement";
+import { PageRight } from "./PageRight";
+import { PageLeftRun } from "./PageLeftRun";
+import type { testResult } from "./types";
 
 import type { VerdictType } from "./types.js";
 

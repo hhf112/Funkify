@@ -1,9 +1,9 @@
 import { Route, Routes } from "react-router-dom"
 import { Login } from "./LoginPage/Login"
 import { Home } from "./Home";
-import { ProblemPage } from "./ProblemPage/Problem.js";
+import { ProblemPage } from "./ProblemPage/Problem";
 import { User } from "./User.js";
-import { Problems } from "./Problems.js";
+import { Problems } from "./Problems";
 
 
 function App() {

@@ -13,6 +13,8 @@ export function Home() {
   const [doneMount, setDoneMount] = useState<boolean>(false);
   const { sessionToken, user } = useContext(sessionContext);
 
+
+  /* effect */
   let flag = 0;
   useEffect(() => {
     const interval = setInterval(() => {
@@ -54,9 +56,11 @@ export function Home() {
     return () => clearInterval(interval);
   }, [])
 
+  /* component */
   return (
     <div className="py-5 px-40 h-screen items-center w-full flex flex-col">
 
+      {/* NAVBAR */}
       <h1 className="fixed top-0 left-0 p-2 text-cyan-500 font-bold font-Inter bg-white/20
         backdrop-blur-xs w-full tex-sm h-5">
         Funkify 
@@ -74,13 +78,23 @@ export function Home() {
           {sessionToken ? `Hi ${user.username}! 👋` : "Create an Account / Login"}
         </h1>
 
+        <h1
+          className={`px-4 cursor-pointer py-3 mx-2 border-4 border-neutral-700 
+          rounded-full  font-semibold 
+          hover:bg-green-500 hover:translate-y-1 hover:text-white hover:scale-105 hover:shadow-2xl  
+          transition-all delay-200`}
+          onClick={() => navigate("/Problems")}>
+          Problems
+        </h1>
+
+
         <h1 
           className="px-4 cursor-pointer 
           rounded-full hover:bg-yellow-300 font-semibold 
               hover:translate-y-1  hover:scroll-m-2
           hover:scale-105 transition-all delay-200 hover:shadow-2xl  
           py-3 mx-2 border-4 border-neutral-700 "
-          onClick={() => navigate("/Login")}>
+          onClick={() => navigate("/Problems")}>
           About us
         </h1>
       </div>
