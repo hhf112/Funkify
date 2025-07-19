@@ -10,7 +10,7 @@ function generateAccessToken(user) {
   return jwt.sign({
     username: user.username,
     email: user.email
-  }, process.env.JWT_SECRET, { expiresIn: "5s" })
+  }, process.env.JWT_SECRET, { expiresIn: "5h" })
 }
 
 export const loginHandler = async (req, res) => {

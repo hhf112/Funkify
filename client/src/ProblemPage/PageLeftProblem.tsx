@@ -5,12 +5,12 @@ import remarkGfm from "remark-gfm"
 
 function DifficultyTag({ attr, color }: { attr: string, color: string }) {
   const diff_colors: Record<string, string> = {
-    green: "mx-2  text-white bg-green-700 p-10",
-    red: "mx-2  text-white bg-red-700 p-10",
-    amber: "mx-2  text-white bg-amber-700 p-10",
+    green: "mx-2  text-white bg-green-500 p-10",
+    red: "mx-2  text-white bg-red-500 p-10",
+    amber: "mx-2  text-white bg-amber-500 p-10",
   }
   return (
-    <span className={`border ${diff_colors[color]} px-5 py-2 m-2 font-semibold`}>
+    <span className={` ${diff_colors[color]} px-5 py-2 m-2 font-semibold rounded-xl shadow`}>
       {attr}
     </span>
   )

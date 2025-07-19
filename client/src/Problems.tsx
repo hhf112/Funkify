@@ -2,6 +2,15 @@ import React, { useContext } from "react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { sessionContext } from "./contexts/SessionContextProvider";
+import { diff } from "util";
+import { AddProblem } from "./AddProblem";
+
+interface ProblemCompact {
+  title: string,
+  difficulty: string,
+  tags: string[],
+  _id: string,
+}
 
 const backend = import.meta.env.VITE_BACKEND;
 if (!backend) {
@@ -9,12 +18,66 @@ if (!backend) {
   process.exit(1);
 }
 
+function getColor(difficulty: string) {
+  switch (difficulty) {
+    case "Easy":
+      return "bg-green-500"
+    case "Hard":
+      return "bg-red-500"
+    case "Medium":
+      return "bg-amber-500"
+    default:
+      return "bg-black"
+  }
+}
+
+function ProblemCard({ prob, key }: { prob: ProblemCompact, key: number }) {
+  const [mount, setMount] = useState<boolean>(false);
+  const navigate = useNavigate();
+
+  useEffect(() => setMount(true), []);
+  return (
+    <div className={`border border-neutral-200 rounded-lg p-3 mx-4 my-2 shadow-xs
+                      flex flex-col cursor-pointer
+        ${mount ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"} transform duration-300
+              hover:scale-95 hover:shadow-cyan-200
+              transition delay-100`}
+      onClick={() => navigate(`/Problem/${prob._id}`)}
+      key={key}>
+      <p className="my-2">
+        {prob.title}
+      </p>
+
+      <div className="flex justify-between gap-5">
+        <p className={`rounded-lg px-3 py-2 shadow text-sm
+        ${getColor(prob.difficulty)} text-white`}>
+          {prob.difficulty}
+        </p>
+
+        <div className="flex items-center">
+          <img src="/tag.png" className="h-5 w-5 mx-2" />
+          {prob.tags.map((tag: any, index: number) =>
+            <p
+              className="p-2 border border-neutral-300 text-xs rounded-full"
+              key={index}>
+              {tag}
+            </p>
+          )}
+        </div>
+
+      </div>
+
+    </div>
+  )
+
+}
+
 export function Problems() {
   /* states */
   const { sessionToken, user } = useContext(sessionContext);
   const [hoverAddProblem, setHoverAddProblemm] = useState<boolean>(false);
   const [addProblemWindow, setAddProblemWindow] = useState<boolean>(false);
-  const [problems, seteProblems] = useState<any[]>([]);
+  const [problems, seteProblems] = useState<ProblemCompact[]>([]);
   const [mount, setMount] = useState<boolean[]>([false, false]);
   const navigate = useNavigate();
 
@@ -45,7 +108,7 @@ export function Problems() {
         Funkify
       </h1>
 
-      <div className="w-full flex flex-col px-40 my-5">
+      <div className="w-full flex flex-col  px-40 my-5">
 
         <div className="my-5 flex justify-between items-center w-full px-10">
           <h1 className={`font-Inter font-semibold text-3xl text-neutral-600 transform
@@ -70,39 +133,17 @@ ${mount[0] ? "opacity-100 translate-y-0 scale-100" : "scale-90 translate-y-2 opa
           </button>
         </div>
 
-        {!problems.length ?
-          <h1 className="font-mono animate-pulse"> LOADING... </h1>
-          :
-          problems.map((prob, index) => {
-            return (
-              <div className="border border-neutral-200 rounded-lg p-5 mx-4 my-2 shadow-xs
-              flex flex-col cursor-pointer
-              hover:scale-95 hover:shadow-cyan-200
-              transition delay-75"
-                onClick={() => navigate(`/Problem/${prob._id}`)}
-                key={index.toString()}>
-                <p className="my-2">
-                  {prob.title}
-                </p>
+        {
+          !problems.length ?
+            <h1 className="font-mono animate-pulse"> LOADING... </h1>
+            :
+            problems.map((prob, index) => <ProblemCard prob={prob} key={index} />)
+        }
 
-                <div className="flex justify-between gap-5">
-                  <p className="rounded-lg px-3 py-2 border border-neutral-300 text-sm">
-                    {prob.difficulty}
-                  </p>
+        {addProblemWindow && <AddProblem setAddProblemWindow={setAddProblemWindow} />}
 
-                  <div> {prob.tags.map((tag: any, index: number) =>
-                    <p
-                      className="p-2 border border-neutral-300 text-xs rounded-full"
-                      key={index}>
-                      {tag}
-                    </p>
-                  )}
-                  </div>
-                </div>
-              </div>
-            )
-          })}
       </div>
+
     </div>
   )
 }
