@@ -1,4 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom";
 
 function Test({ key }: { key: number }) {
   return <div className="flex flex-col mb-4 border p-2 rounded-xl border-neutral-200">
@@ -13,6 +14,7 @@ export function AddProblem({ setAddProblemWindow }: {
 
   const [mount, setMount] = useState<boolean>(false);
   useEffect(() => setMount(true));
+  
 
   return (
     <div className="fixed z-50  flex inset-0 justify-center items-center bg-neutral-700/50">

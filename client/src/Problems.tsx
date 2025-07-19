@@ -128,7 +128,10 @@ ${mount[0] ? "opacity-100 translate-y-0 scale-100" : "scale-90 translate-y-2 opa
           transition-all delay-200`}
             onMouseOver={() => setHoverAddProblemm(true)}
             onMouseOut={() => setHoverAddProblemm(false)}
-            onClick={() => setAddProblemWindow(true)}>
+            onClick={() => {
+              if (!sessionToken) navigate("/Login");
+              setAddProblemWindow(true)
+            }}>
             +
           </button>
         </div>
