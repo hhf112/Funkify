@@ -59,7 +59,7 @@ export const runCode = async (req: Request, res: Response) => {
       return;
     }
     const end: [number, number] = process.hrtime(start);
-    if (output.error == null) {
+    if (output.error === null) {
       if (output.stdout.trim() == test.output.trim()) {
         passed++;
         verdict = {
@@ -76,20 +76,18 @@ export const runCode = async (req: Request, res: Response) => {
         }
         if (!finalVerdict) finalVerdict = "Wrong Answer";
       }
-      if (end[0] / 1000000 > timeLimit) {
-        verdict.verdict = "Time Limit Exceeded";
-        if (!finalVerdict) finalVerdict = "Time Limit Exceeded";
-      }
     } else {
       verdict = {
-        verdict: (output.compilation ? "Runtime Error" : "Compilation Error"),
+        verdict: (output.compilation ?
+          (output.error === "timed out." ? "Time Limit Exceeded" : "Runtime Error")
+          : "Compilation Error"),
         passed: false,
         error: {
           stderr: output.stderr,
           error: output.error,
         }
       }
-      if (!finalVerdict) finalVerdict = verdict.verdict;
+      finalVerdict = verdict.verdict;
     }
     results[testno++] = { test, output: output.stdout.trim(), verdict }
   }
@@ -99,7 +97,7 @@ export const runCode = async (req: Request, res: Response) => {
     success: true,
     message: "job finished.",
     results: results,
-    passsed: (passed == tests.length),
+    passsed: (passed === tests.length),
   })
 }
 
@@ -148,7 +146,7 @@ export const submitCode = async (req: Request, res: Response) => {
   });
 
   const finalVerdict: VerdictType = {
-    verdict: "Accepted",
+    verdict: "",
     results: [],
     submissionId: submissionId,
     userId: submission.userId,
@@ -177,7 +175,7 @@ export const submitCode = async (req: Request, res: Response) => {
       const end: [number, number] = process.hrtime(start);
 
       /* error handling */
-      if (output.error == null) {
+      if (output.error === null) {
         if (output.stdout.trim() === test.output.trim()) {
           passed++;
           verdict = {
@@ -192,14 +190,9 @@ export const submitCode = async (req: Request, res: Response) => {
             passed: false,
             error: null,
           }
-          if (finalVerdict.verdict === "Accepted")
-            finalVerdict.verdict = verdict.verdict;
+          if (!finalVerdict.verdict) finalVerdict.verdict = verdict.verdict;
         }
-        if (end[0] > submission.constraints.runtime_s)
-          verdict.verdict = "Time Limit Exceeded";
-        else finalVerdict.runtime_ms = end[0] / 1000000;
       } else {
-        console.log(output.error);
         verdict = {
           verdict: (output.compilation ? "Runtime Error" : "Compilation Error"),
           passed: false,
@@ -220,10 +213,13 @@ export const submitCode = async (req: Request, res: Response) => {
       results[testno++] = verdict;
     }
 
+
+    if (!finalVerdict.verdict) finalVerdict.verdict = "Accepted";
     finalVerdict.testsPassed = passed;
     finalVerdict.results = results;
 
     try {
+      console.log("final", finalVerdict);
       const { _id } = await Verdict.create(finalVerdict);
 
       await Submission.findByIdAndUpdate(submissionId, {

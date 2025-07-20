@@ -39,7 +39,6 @@ export const execCpp = async (filepath: string, input: string, timelimit: number
       );
     });
   } catch (err: any) {
-    console.log(err);
     return {
       compilation: false,
       runtime: false,
@@ -72,7 +71,7 @@ export const execCpp = async (filepath: string, input: string, timelimit: number
       error: null,
     }
   } catch (err: any) {
-    console.log(err);
+    // console.log(err);
     let errorMsg = "";
     if (err.error?.signal) {
       switch (err.error.signal) {
@@ -92,7 +91,6 @@ export const execCpp = async (filepath: string, input: string, timelimit: number
           errorMsg = "Bus error.";
           break;
         default:
-          
           errorMsg = `timed out.`;
       }
     }
