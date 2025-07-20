@@ -26,7 +26,6 @@ app.use(cors({
   credentials: true
 }));
 
-app.use("/api/user", Authenticate);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -36,14 +35,18 @@ app.get("/", (req: Request, res: Response) => {
   return;
 })
 
+
+/* Public routes */
+app.use("/api/problems", publicProblemRoutes)
+
+
 /* User routes */
+app.use("/api/user", Authenticate);
 app.use("/api/user/problems", userProblemRoutes)
 app.use("/api/user/tests", TestRoutes)
 app.use('/api/user/submissions', SubmissionRoutes);
 // app.use("api/user/", UserRoutes);
 
-/* Public routes */
-app.use("/api/problems", publicProblemRoutes)
 
 
 
