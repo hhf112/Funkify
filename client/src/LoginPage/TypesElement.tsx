@@ -31,9 +31,8 @@ export function Disclaimer({ display, colorClass }:
     "amber": "bg-amber-400",
   }
   return (
-    <div className={`${mountAnimation ? "translate-y-0 scale-100" : "scale-80 translate-y-2"} 
-transform duration-300 transition-all delay-75  border 
-border-neutral-400  ${color[colorClass]} py-2 px-3 rounded-xl opacity-80`}>
+    <div className={`fixed bottom-5 ${mountAnimation ? "translate-y-0 scale-100" : "scale-80 translate-y-2"} 
+transform duration-300 transition-all delay-75 ${color[colorClass]} py-2 px-3 rounded-xl opacity-100`}>
       <h2 className="text-white font-semibold ">
         {display}!
       </h2>
