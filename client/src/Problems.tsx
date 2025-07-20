@@ -88,7 +88,6 @@ export function Problems() {
       try {
         const get = await fetch(`${backend}/api/problems/count?count=10`);
         const getJSON = await get.json();
-        console.log(getJSON.problems);
         if (getJSON.problems) seteProblems(getJSON.problems);
       } catch (err) {
         console.log(err);

@@ -97,7 +97,6 @@ export function ProblemPage() {
       return;
     }
 
-    console.log(sampleTests);
     setContent(2);
     setLoadMsg("Running your code")
     try {
@@ -116,7 +115,7 @@ export function ProblemPage() {
         })
       });
       const getJSON = await get?.json();
-      console.log(getJSON);
+      // console.log(getJSON);
       setRunVerdict({ finalVerdict: getJSON.finalVerdict, results: getJSON.results });
     } catch (err: any) {
       console.log(err);

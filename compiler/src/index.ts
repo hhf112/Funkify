@@ -7,7 +7,11 @@ import { warn } from 'console';
 import cors from "cors"
 
 
-const PORT = process.env.PORT || 4000;
+const PORT: number  | null  = parseInt(process.env.PORT || "4000", 10);
+if (!PORT) {
+  console.log("port not found")
+  process.exit(1);
+}
 
 try {
   DBConnection();
@@ -30,6 +34,6 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use("/", execRoutes);
 
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log('server is RUNNING ON', PORT);
 })

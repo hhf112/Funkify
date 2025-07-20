@@ -115,7 +115,7 @@ export function PageLeftSubmit({
               }
             });
             const getJSON = await get?.json();
-            console.log(getJSON);
+            // console.log(getJSON);
             setVerdict(getJSON.verdict);
             setErrMsg({
               color: "",
