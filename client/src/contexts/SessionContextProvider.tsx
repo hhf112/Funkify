@@ -1,6 +1,12 @@
 import React, { createContext, useState, type Dispatch, type SetStateAction } from "react";
 import { useNavigate } from "react-router-dom";
 
+const authentication = import.meta.env.VITE_AUTH;
+if (!authentication) {
+  console.error("authentication url not found");
+  process.exit(1);
+}
+
 // interfaces
 export interface User {
   isValid: Boolean,
@@ -38,6 +44,7 @@ export interface sessionContextType {
   getSessionToken: () => Promise<void>,
   doRefreshToken: () => Promise<void>,
   Fetch: (ur: string, opts: any) => Promise<Response | null>,
+  Logout: () => Promise<void>,
 }
 
 export const sessionContext = createContext<sessionContextType>({
@@ -54,6 +61,7 @@ export const sessionContext = createContext<sessionContextType>({
   getSessionToken: async () => { },
   doRefreshToken: async () => { },
   Fetch: async (url: string, opts: any) => null,
+  Logout: async () => {},
 });
 
 export function SessionContextProvider(
@@ -73,6 +81,7 @@ export function SessionContextProvider(
   })
 
   /* state funcs */
+
   async function Fetch(url: string, opts: any): Promise<Response> {
     const { headers = {}, ...rest } = opts;
     const authHeaders = {
@@ -88,6 +97,25 @@ export function SessionContextProvider(
     return opt;
   }
 
+
+  async function Logout() {
+    try {
+      const post = await fetch(`${authentication}/logout`, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        credentials: "include"
+      })
+      const postJSON = await post.json();
+      // console.log(postJSON);
+      setSessionToken("");
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+
   async function getSessionToken(): Promise<void> {
     if (!user) {
       console.log("user is not valid. cannot fetch session token");
@@ -95,7 +123,7 @@ export function SessionContextProvider(
     }
     if (user.email == "" || user.password == "") return;
     try {
-      const post: Response = await fetch(`http://localhost:5000/login`, {
+      const post: Response = await fetch(`${authentication}/login`, {
         method: "POST",
         headers: {
           "Content-type": "application/json",
@@ -115,7 +143,7 @@ export function SessionContextProvider(
   }
 
   async function doRefreshToken(): Promise<void> {
-    const get: Response = await fetch(`http://localhost:5000/token`);
+    const get: Response = await fetch(`${authentication}/token`);
     const getJSON = await get.json();
     const token = getJSON.accessToken;
     setSessionToken(token);
@@ -130,6 +158,7 @@ export function SessionContextProvider(
       getSessionToken,
       doRefreshToken,
       Fetch,
+      Logout,
     }}>
 
       {children}

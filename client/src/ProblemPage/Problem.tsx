@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom"
 import { sessionContext, type problem } from "../contexts/SessionContextProvider";
 import { PageLeftProblem } from "./PageLeftProblem";
 import { PageLeftSubmit } from "./PageLeftSubmit";
-import { Disclaimer } from "../LoginPage/TypesElement";
+import { Disclaimer } from "../AuthPage/TypesElement";
 import { PageRight } from "./PageRight";
 import { PageLeftRun } from "./PageLeftRun";
 import type { testResult } from "./types";
@@ -85,7 +85,11 @@ export function ProblemPage() {
 
   async function runCode() {
     if (!sessionToken) {
-      navigate("/Login")
+      navigate("/Login", {
+        state: {
+          previous: `/Problem/${Id}`
+        }
+      })
       return;
     }
     setRunVerdict(null);
@@ -128,7 +132,11 @@ export function ProblemPage() {
   }
   async function submitCode(): Promise<void> {
     if (!sessionToken) {
-      navigate("/Login")
+      navigate("/Login", {
+        state: {
+          previous: `/Problem/${Id}`,
+        }
+      })
       return;
     }
     setVerdict(null);

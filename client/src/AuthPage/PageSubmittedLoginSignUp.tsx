@@ -3,15 +3,17 @@ import { sessionContext } from "../contexts/SessionContextProvider"
 import { useNavigate } from "react-router-dom";
 import { TypeLoginButton, Disclaimer } from "./TypesElement";
 
-export function LoginSubmitted({
+export function PageSubmittedLoginSignUp({
   login,
   signUp,
+  previous,
   setSignUp,
   setLogin,
   setSubmitted,
   Submit,
   Logout,
 }: {
+  previous: string | {},
   login: boolean,
   signUp: boolean,
   setLogin: Dispatch<SetStateAction<boolean>>,
@@ -50,12 +52,15 @@ export function LoginSubmitted({
       {login &&
         <div className="flex">
           <TypeLoginButton
-            display="Continue to Homepage!"
-            doThisAsync={() => navigate("/")}
+            display="Back to where you left off!"
+            doThisAsync={() => navigate(previous || "/")}
           />
           <TypeLoginButton
             display="Logout"
-            doThisAsync={() => Logout()}
+            doThisAsync={() => {
+              Logout()
+              setSubmitted(false);
+            }}
           />
         </div>
       }

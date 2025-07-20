@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router-dom"
-import { Login } from "./LoginPage/Login"
+import { Auth } from "./AuthPage/Auth"
 import { Home } from "./Home";
 import { ProblemPage } from "./ProblemPage/Problem";
 import { User } from "./User";
@@ -11,7 +11,7 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/Login" element={<Login />} />
+        <Route path="/Login" element={<Auth />} />
         <Route path="/Problem/:Id" element={<ProblemPage />} />
         <Route path="/" element={<Home />} />
         <Route path="/user" element={<User />} />

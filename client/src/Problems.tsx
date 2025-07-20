@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { sessionContext } from "./contexts/SessionContextProvider";
 import { diff } from "util";
 import { AddProblem } from "./AddProblem";
+import { preview } from "vite";
 
 interface ProblemCompact {
   title: string,
@@ -31,7 +32,7 @@ function getColor(difficulty: string) {
   }
 }
 
-function ProblemCard({ prob, key }: { prob: ProblemCompact, key: number }) {
+function ProblemCard({ prob }: { prob: ProblemCompact }) {
   const [mount, setMount] = useState<boolean>(false);
   const navigate = useNavigate();
 
@@ -42,8 +43,7 @@ function ProblemCard({ prob, key }: { prob: ProblemCompact, key: number }) {
         ${mount ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"} transform duration-300
               hover:scale-95 hover:shadow-cyan-200
               transition delay-100`}
-      onClick={() => navigate(`/Problem/${prob._id}`)}
-      key={key}>
+      onClick={() => navigate(`/Problem/${prob._id}`)}>
       <p className="my-2">
         {prob.title}
       </p>
@@ -128,7 +128,11 @@ ${mount[0] ? "opacity-100 translate-y-0 scale-100" : "scale-90 translate-y-2 opa
             onMouseOver={() => setHoverAddProblemm(true)}
             onMouseOut={() => setHoverAddProblemm(false)}
             onClick={() => {
-              if (!sessionToken) navigate("/Login");
+              if (!sessionToken) navigate("/Login",{
+                state: {
+                  previous: "/Problems",
+                }
+              });
               setAddProblemWindow(true)
             }}>
             +
@@ -139,7 +143,7 @@ ${mount[0] ? "opacity-100 translate-y-0 scale-100" : "scale-90 translate-y-2 opa
           !problems.length ?
             <h1 className="font-mono animate-pulse"> LOADING... </h1>
             :
-            problems.map((prob, index) => <ProblemCard prob={prob} key={index} />)
+            problems.map((prob, index) => <ProblemCard key={index} prob={prob} />)
         }
 
         {addProblemWindow && <AddProblem setAddProblemWindow={setAddProblemWindow} />}

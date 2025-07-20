@@ -4,21 +4,21 @@ import { TypeLoginButton, Disclaimer, Loader } from "./TypesElement";
 function InputBox({ ref,
   imgSrc,
   placeholder,
-  type
+  type,
 }: {
-    type: string,
-    ref: RefObject<HTMLInputElement | null>,
-    imgSrc: string,
-    placeholder: string
-  }) {
+  type: string,
+  ref: RefObject<HTMLInputElement | null>,
+  imgSrc: string,
+  placeholder: string
+}) {
   return <div className="flex items-stretch h-12">
     <img src={imgSrc} className=" my-1 mx-1" />
-    <input ref={ref} type={type} id="email" placeholder={placeholder} 
+    <input ref={ref} type={type} id="email" placeholder={placeholder}
       className="w-65  p-4 border border-neutral-500 my-1 mx-1 rounded-xl focus:border-cyan-100" />
   </div>
 }
 
-export function LoginForm({
+export function PageLoginSignUp({
   login,
   signUp,
   emailInputRef,
@@ -26,10 +26,12 @@ export function LoginForm({
   usernameInputRef,
   errMsg,
   loader,
+  previous,
   setLogin,
   setSignUp,
   Submit,
 }: {
+  previous: string | {},
   login: boolean,
   signUp: boolean,
   emailInputRef: RefObject<HTMLInputElement | null>,
@@ -57,7 +59,7 @@ ${formMount ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"} transform
       <div className="prose prose-sm absolute  top-0 m-4">
         <h3 className={`hover:-translate-y-1 transition delay-75 text-neutral-700
           transform duration-1000 
-${formMount ? "opacity-100": "opacity-0" }`}>
+${formMount ? "opacity-100" : "opacity-0"}`}>
           {login ? "Don't have an account?" : "Already have an account?"}
           <a className="text-amber-300 font-semibold cursor-pointer"
             onClick={() => {
@@ -76,7 +78,7 @@ ${formMount ? "opacity-100": "opacity-0" }`}>
       </div>
 
       <img src="/unlock.png" className={`animate-bounce w-15 h-15 object-fill m-2
-    ${formMount?  "opacity-100": "opacity-0"} transform duration-1000 transition delay-1000`}/>
+    ${formMount ? "opacity-100" : "opacity-0"} transform duration-1000 transition delay-1000`} />
 
       <h3 className="text-neutral-700 my-2 font-semibold">
         {login ? "Login is required to access further content" :

@@ -1,22 +1,25 @@
 import React from "react";
 import { useRef, useState, useContext } from "react"
 import { sessionContext, type sessionContextType } from "../contexts/SessionContextProvider";
-import { LoginForm } from "./LoginForm";
-import { LoginSubmitted } from "./LoginSubmitted";
+import { PageLoginSignUp } from "./PageLoginSignUp";
+import { PageSubmittedLoginSignUp } from "./PageSubmittedLoginSignUp";
 import { Disclaimer, TypeLoginButton } from "./TypesElement";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { preview } from "vite";
 
 const authentication: string = import.meta.env.VITE_AUTH || "";
 
 
 
-export function Login() {
+export function Auth() {
   /* use */
-  const { setUser, setSessionToken, sessionToken, user } = useContext<sessionContextType>(sessionContext);
+  const { Logout, setUser, setSessionToken, sessionToken, user } = useContext<sessionContextType>(sessionContext);
   const emailInputRef = useRef<HTMLInputElement>(null)
   const passwordInputRef = useRef<HTMLInputElement>(null)
   const usernameInputRef = useRef<HTMLInputElement>(null)
   const navigate = useNavigate();
+  const location = useLocation();
+  const { previous }: { previous: string } = location.state || {};
 
   /* states */
   const [login, setLogin] = useState<boolean>(true);
@@ -24,25 +27,7 @@ export function Login() {
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [errMsg, setErrMsg] = useState<string | null>(null);
   const [loader, setLoader] = useState<boolean>(false);
-
-  async function Logout() {
-    try {
-      const post = await fetch(`${authentication}/logout`, {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-        },
-        credentials: "include"
-      })
-      const postJSON = await post.json();
-      // console.log(postJSON);
-      setSessionToken("");
-      setSubmitted(false);
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
+  
   async function Submit() {
     const username = usernameInputRef.current?.value;
     const email = emailInputRef.current?.value;
@@ -90,8 +75,9 @@ export function Login() {
   return (
     <div className="h-screen w-full"> {/*BG*/}
       <div className="flex h-screen justify-center items-center">
-        {submitted || sessionToken.length ? <LoginSubmitted
+        {submitted || sessionToken.length ? <PageSubmittedLoginSignUp
           login={login}
+          previous={previous}
           signUp={signUp}
           setSignUp={setSignUp}
           setLogin={setLogin}
@@ -99,7 +85,8 @@ export function Login() {
           Submit={Submit}
           Logout={Logout}
 
-        /> : <LoginForm
+        /> : <PageLoginSignUp
+          previous={previous}
           login={login}
           signUp={signUp}
           emailInputRef={emailInputRef}

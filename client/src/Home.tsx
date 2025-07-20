@@ -76,7 +76,7 @@ export function Home() {
   ${hoverCreateAccount && "translate-y-1 text-white scale-105 shadow-2xl bg-cyan-500"}
           hover:bg-cyan-500 hover:translate-y-1 hover:text-white hover:scale-105 hover:shadow-2xl  
           transition-all delay-200`}
-            onClick={() => navigate("/User")}>
+            onClick={() => navigate("/user")}>
             Hi {user.username}! 👋
           </h1>
           :

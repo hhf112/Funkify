@@ -17,6 +17,9 @@ importers:
       dotenv:
         specifier: ^17.0.0
         version: 17.0.0
+      monaco-editor:
+        specifier: ^0.52.2
+        version: 0.52.2
       react:
         specifier: ^19.1.0
         version: 19.1.0
