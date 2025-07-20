@@ -48,6 +48,7 @@ function VerdictCard({ message }: { message: string }) {
     "Compilation Error": "bg-amber-400", // ERROR
     "Runtime Error": "bg-amber-400", // ERROR
     "Accepted": "bg-green-400", // ACCEPTED
+    "Time Limit Exceeded": "bg-neutral-400",
   }
 
   return (
