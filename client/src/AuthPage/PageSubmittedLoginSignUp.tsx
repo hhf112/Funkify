@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import { sessionContext } from "../contexts/SessionContextProvider"
 import { useNavigate } from "react-router-dom";
-import { TypeLoginButton, Disclaimer } from "./TypesElement";
+import { TypeLoginButton, Disclaimer } from "./components";
 
 export function PageSubmittedLoginSignUp({
   login,

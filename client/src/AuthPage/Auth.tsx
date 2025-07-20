@@ -3,7 +3,7 @@ import { useRef, useState, useContext } from "react"
 import { sessionContext, type sessionContextType } from "../contexts/SessionContextProvider";
 import { PageLoginSignUp } from "./PageLoginSignUp";
 import { PageSubmittedLoginSignUp } from "./PageSubmittedLoginSignUp";
-import { Disclaimer, TypeLoginButton } from "./TypesElement";
+import { Disclaimer, TypeLoginButton } from "./components";
 import { useLocation, useNavigate } from "react-router-dom";
 import { preview } from "vite";
 

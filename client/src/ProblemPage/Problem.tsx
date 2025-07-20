@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom"
 import { sessionContext, type problem } from "../contexts/SessionContextProvider";
 import { PageLeftProblem } from "./PageLeftProblem";
 import { PageLeftSubmit } from "./PageLeftSubmit";
-import { Disclaimer } from "../AuthPage/TypesElement";
+import { Disclaimer } from "../AuthPage/components";
 import { PageRight } from "./PageRight";
 import { PageLeftRun } from "./PageLeftRun";
 import type { testResult } from "./types";

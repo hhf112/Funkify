@@ -1,5 +1,5 @@
 import React, { useEffect, useState, type Dispatch, type RefObject, type SetStateAction } from "react";
-import { TypeLoginButton, Disclaimer, Loader } from "./TypesElement";
+import { TypeLoginButton, Disclaimer, Loader } from "./components";
 
 function InputBox({ ref,
   imgSrc,
