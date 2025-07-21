@@ -1,6 +1,7 @@
 import { type problem } from "../contexts/SessionContextProvider"
 import Markdown from "react-markdown"
 import remarkGfm from "remark-gfm"
+import { useEffect } from "react";
 
 
 function DifficultyTag({ attr, color }: { attr: string, color: string }) {
@@ -16,37 +17,42 @@ function DifficultyTag({ attr, color }: { attr: string, color: string }) {
   )
 }
 
+
 export function PageLeftProblem({ problem }: { problem: problem }) {
+
+
   return (
-    <div className="prose ">
+    <div className="p-3">
       {/* Title */}
       <h1 className="text-3xl font-bold my-2"> {problem?.title} </h1>
 
-      {/* Diffuculty */}
-      <div className="my-4 text-sm">
-        {problem?.difficulty == "Easy" && <DifficultyTag attr="Easy" color="green" />}
-        {problem?.difficulty == "Medium" && <DifficultyTag attr="Medium" color="amber" />}
-        {problem?.difficulty == "Hard" && <DifficultyTag attr="Hard" color="red" />}
+
+      <div className="flex justify-between not-prose items-center">
+        {/* Diffuculty */}
+        <div className="my-4 text-sm">
+          {problem?.difficulty == "Easy" && <DifficultyTag attr="Easy" color="green" />}
+          {problem?.difficulty == "Medium" && <DifficultyTag attr="Medium" color="amber" />}
+          {problem?.difficulty == "Hard" && <DifficultyTag attr="Hard" color="red" />}
+        </div>
+
+      {/* Tags */}
+        <div className="flex items-center overflow-x-auto">
+          <div className="w-5 h-5 mr-1 " >
+            <img src="/tag.png" className="block my-0 w-fit h-fit" />
+          </div>
+          {problem?.tags.map((tag, index) => {
+            return <div key={index}
+              className="text-sm mr-1 text-neutral-700 rounded-full border border-neutral-200 px-2 py-2" >
+              {tag}
+            </div>
+          })}
+        </div>
+
       </div>
+
 
       {/* Description */}
       <Markdown children={problem?.description} remarkPlugins={[remarkGfm]} />
-
-      {/* Tags 
-      <div className="">
-        {problem?.tags.map((tag, index) => {
-          return <div key={index}
-            className="flex max-w-20 justify-center items-center 
-            bg-neutral-900 text-neutral-50 hover:-translate-y-1 hover:bg-blue-400 border-neutral-900  cursor-pointer
-                       px-2 py-2  mx-1 transition delay-75"
-          >
-            <img src="/tag.png" className = "w-1/6 h-full object-cover"/>
-            {tag}
-          </div>
-        })
-        }
-      </div>
-      */}
     </div>
   )
 }

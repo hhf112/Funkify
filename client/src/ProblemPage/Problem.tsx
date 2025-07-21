@@ -1,13 +1,14 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom"
 import { sessionContext, type problem } from "../contexts/SessionContextProvider";
+
 import { PageLeftProblem } from "./PageLeftProblem";
 import { PageLeftSubmit } from "./PageLeftSubmit";
 import { Disclaimer } from "../AuthPage/components";
 import { PageRight } from "./PageRight";
 import { PageLeftRun } from "./PageLeftRun";
-import type { testResult } from "./types";
 
+import type { testResult } from "./types";
 import type { VerdictType } from "./types";
 
 import * as monaco from "monaco-editor"
@@ -16,6 +17,7 @@ const backend: string = import.meta.env.VITE_BACKEND || "";
 const compiler: string = import.meta.env.VITE_COMPILER || "";;
 
 export function ProblemPage() {
+
   /* use */
   const { Id } = useParams();
   if (!Id) {
@@ -27,7 +29,11 @@ export function ProblemPage() {
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
   const navigate = useNavigate();
 
-  /* States */
+  /* states */
+  const [hoverAI, setHoverAI] = useState<boolean>(false);
+  const [AIAdvice, setAIAdvice] = useState<"">("");
+  const [submittedCount, setSubmittedCount] = useState<number>(0);
+
   const [mount, setMount] = useState<boolean>(false);
   const [done, setDone] = useState<boolean>(false);
   const [verdict, setVerdict] = useState<VerdictType | null>(null)
@@ -39,6 +45,7 @@ export function ProblemPage() {
     finalVerdict: string,
     results: testResult[]
   } | null>(null);
+
 
   // PROBLEM 0 
   // SUBMISSIONS 1,
@@ -74,6 +81,25 @@ export function ProblemPage() {
   }, []);
 
   /* State functions */
+
+
+  async function getAIAdvice() {
+    try {
+      const advice = await fetch(`${backend}/api/user/problems/sum/${Id}`, {
+        method: "GET",
+        headers: {
+          "authorization": `Bearer ${sessionToken}`,
+        }
+      });
+
+      const adviceJSON = await advice.json();
+      console.log(adviceJSON);
+      setAIAdvice(adviceJSON.summary.slice(1, -1));
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   const getCodeFromEditor = (): string => {
     if (editorRef.current) {
       const code = editorRef.current.getValue();
@@ -131,6 +157,7 @@ export function ProblemPage() {
 
   }
   async function submitCode(): Promise<void> {
+    setSubmittedCount(prev => prev + 1);
     if (!sessionToken) {
       navigate("/Login", {
         state: {
@@ -201,8 +228,8 @@ export function ProblemPage() {
         <div className="flex m-2 flex-1 justify-begin items-center w-1/2   h-1/20 p-1">
           <button className="py-2 px-2 z-10 shadow-xl cursor-pointer
               border rounded-xl bg-white m-0.5 hover:scale-90 hover:bg-neutral-400 transition delay-75"
-          onClick={()=> navigate("/")}>
-            Back to Home
+            onClick={() => navigate("/Problems")}>
+            Back to Problems
           </button>
         </div>
 
@@ -235,37 +262,99 @@ cursor-pointer min-w-0 h-10 flex justify-between gap-1 border border-neutral-400
 
 
       {/* CONTENT */}
-      <div className="h-19/20 w-full flex justify-between gap-1 my-0.5 ">
+      <div className="h-19/20 w-full flex  justify-between gap-1 my-0.5 ">
         {/* CONTENT-LEFT */}
-        <div className={`rounded-lg bg-white  h-full flex-3 basis-0 mx-1 p-3 w-full  text-neutral-900 border-neutral-400 border 
-          shadow-lg shadow-neutral-800 ${mount ? "translate-y-0" : "translate-y-5"} transition delay-150`}>
-          <div className=" prose prose-sm max-w-none h-full w-full ">
-            {!content &&
-              <div>
-                {prob == null ? (<h1 className="animate-pulse"> {loadMsg} </h1>) : (
-                  <PageLeftProblem problem={prob} />)}
-              </div>
-            }
+        <div className="flex-3  flex flex-col mx-1 justify-between gap-2">
 
-            {content === 1 &&
-              <PageLeftSubmit
-                setContent={setContent}
-                submissionId={submissionId}
-                verdict={verdict}
-                setVerdict={setVerdict}
-                done={done}
-                setDone={setDone}
-                setErrMsg={setErrMsg}
-              />}
+          {/* ACTION WINDOW */}
+          <div className={`relative rounded-lg bg-white  h-full  flex-3 basis-0  p-3 w-full  text-neutral-900 
+          border-neutral-400 border  overflow-y-auto shadow
+          ${mount ? "translate-y-0" : "translate-y-5"} transition delay-150`}>
 
-            {content === 2 &&
-              <PageLeftRun
-                setContent={setContent}
-                runVerdict={runVerdict}
-                setRunVerdict={setRunVerdict}
-              />}
+            <div className="flex flex-col  prose min-w-full h-full">
+              {!content &&
+                <div>
+                  {prob === null ?
+                    <h1 className="animate-pulse"> {loadMsg} </h1>
+                    : <PageLeftProblem problem={prob} />}
+                </div>
+              }
+
+              {content === 1 &&
+                <PageLeftSubmit
+                  setContent={setContent}
+                  submissionId={submissionId}
+                  verdict={verdict}
+                  setVerdict={setVerdict}
+                  done={done}
+                  setDone={setDone}
+                  setErrMsg={setErrMsg}
+                />}
+
+              {content === 2 &&
+                <PageLeftRun
+                  setContent={setContent}
+                  runVerdict={runVerdict}
+                  setRunVerdict={setRunVerdict}
+                />}
+            </div>
+          </div>
+
+          {/* AI WINDOW */}
+          <div className={`relative flex-1 rounded-xl border-neutral-400 mb-1 shadow border bg-white
+          ${hoverAI && "border-3 shadow-xl shadow-cyan-400 border-yellow-400"} 
+           ${mount ? "opacity-100 translate-y-0" : "opacity-5 -translate-y-2"} 
+      transform duration-200 transition delay-200 p-3`}>
+
+
+            <div className="flex">
+              <button
+                className="absolute -top-7 -right-5 m-2 p-3 
+                  border-neutral-200 border shadow font-bold  text-sm text-neutral-700 rounded-full bg-white
+                  cursor-pointer opacity-50
+                  hover:scale-110 hover:-translate-y-1 hover:text-white hover:bg-cyan-400 hover:opacity-100
+                  transform duration-100 transition-all delay-100"
+                onClick={() => {
+                  if (submittedCount < 1) {
+                    setErrMsg({
+                      color: "amber",
+                      message: "You have to submit code at least once to use this feature!"
+                    })
+                    return;
+                  }
+
+                  if (submittedCount > 2) {
+                    setErrMsg({
+                      color: "amber",
+                      message: "You get only 2 tries! Refer to the editorial!"
+                    })
+                    return;
+                  }
+
+                  setErrMsg({
+                    message: "Fetching advice ...",
+                    color: "amber",
+                  })
+                  setAIAdvice("");
+                  getAIAdvice()
+                }}
+                onMouseOver={() => setHoverAI(true)}
+                onMouseLeave={() => setHoverAI(false)}>
+                Ask AI {hoverAI ? "💁‍♀️" : "✨"}
+              </button>
+            </div>
+
+            <p className="mt-2 italic font-Inter text-neutral-700 whitespace-pre-wrap">
+              {AIAdvice ?
+                AIAdvice :
+                submittedCount > 0 ?
+                  "Would like a simpler summary of the problem statement?"
+                  : "Nothing to see here! try your best at the problem statement!"
+              }
+            </p>
           </div>
         </div>
+
 
         <PageRight
           editorRef={editorRef}
@@ -276,6 +365,6 @@ cursor-pointer min-w-0 h-10 flex justify-between gap-1 border border-neutral-400
       </div>
 
       {errMsg.message.length != 0 && <Disclaimer display={errMsg.message} colorClass={errMsg.color} />}
-    </div>
+    </div >
   )
 }
