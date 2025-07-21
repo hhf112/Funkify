@@ -16,7 +16,7 @@ import * as monaco from "monaco-editor"
 const backend: string = import.meta.env.VITE_BACKEND || "";
 const compiler: string = import.meta.env.VITE_COMPILER || "";;
 
-export function ProblemPage() {
+export function Problem() {
 
   /* use */
   const { Id } = useParams();

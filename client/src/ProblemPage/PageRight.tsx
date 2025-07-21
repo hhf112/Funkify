@@ -62,11 +62,26 @@ export function PageRight({
           {sampleTests.map((_, index: number) => {
             return (
               <div key={index.toString()}
-                className={`${sampleTestView == index ? "bg-white text-neutral-800" :
+                className={`relative ${sampleTestView == index ? "bg-white text-neutral-800" :
                   "bg-neutral-900 text-neutral-50"}
-                       shrink-0 px-10 py-2 border-neutral-200 mx-1 cursor-auto `}
+                       shrink-0 px-10 py-3  border-neutral-200 mx-1 cursor-auto `}
                 onMouseOver={() => setSampleTestView(index)}>
-                Test {index}
+                {sampleTests.length > 1 &&
+                  <div
+                    className="absolute top-0 right-0 p-1 w-6 h-6
+                  cursor-pointer hover:bg-red-400 rounded-lg"
+                    onClick={() => {
+                      setSampleTestView(prev => prev - 1);
+                      setSampleTests((prev) => {
+                        const cp = [...prev];
+                        return prev.filter((tes, inde) => inde !== index);
+                      })
+                    }}>
+                    <img src="/remove.png" className="w-full h-full" />
+                  </div>
+                }
+
+                <p>Test {index}</p>
               </div>
             )
           })}
@@ -97,7 +112,8 @@ export function PageRight({
                     new_tests[sampleTestView].input = e.target.value;
                     return new_tests;
                   })
-                }} />
+                }}
+              />
             </div>
 
             <div className="grow-1 flex flex-col m-1 h-full">
