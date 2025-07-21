@@ -27,6 +27,7 @@ export function PageLeftProblem({ problem }: { problem: problem }) {
       <h1 className="text-3xl font-bold my-2"> {problem?.title} </h1>
 
 
+      {/* Additional Info */}
       <div className="flex justify-between not-prose items-center">
         {/* Diffuculty */}
         <div className="my-4 text-sm">

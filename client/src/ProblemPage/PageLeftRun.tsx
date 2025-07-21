@@ -26,10 +26,10 @@ export function PageLeftRun({
       </button>
 
       {!runVerdict ?
-        (<div className="p-10 text-lg prose prose-sm bg-neutral-100 animate-pulse w-full">
+        <div className="p-10 text-lg prose prose-sm bg-neutral-100 animate-pulse w-full">
           <h1 className="text-white text-center"> Waiting </h1>
-        </div>) :
-        <VerdictCard message={runVerdict.finalVerdict} />
+        </div>
+        : <VerdictCard key={runVerdict === null ? 1 : 0 } message={runVerdict.finalVerdict} />
       }
 
       {runVerdict?.results.map((test, index) => (

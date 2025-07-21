@@ -156,13 +156,15 @@ export function PageLeftSubmit({
           <>
             <h1> Verdict </h1>
             <div className="flex flex-col mx-1 p-1 w-full">
-              <VerdictCard message={verdict.verdict} />
+              <VerdictCard key={Number(verdict == null)} message={verdict.verdict} />
               <div className="flex flex-wrap overflow-y-scroll  px-2">
                 {verdict.results.map((result, index) => {
-                  return <p className={`mx-0.5 px-3 py-1 border 
+                  return <p
+                    key={index}
+                    className={`mx-0.5 px-3 py-1 border 
                       ${result.passed ? "bg-green-400" :
-                      result.error ? "bg-neutral-600" :
-                        "bg-red-400"} text-white border-neutral-900 font-semibold font-mono`}>
+                        result.error ? "bg-neutral-600" :
+                          "bg-red-400"} text-white border-neutral-900 font-semibold font-mono`}>
                     TEST {index}
                   </p>
                 })}

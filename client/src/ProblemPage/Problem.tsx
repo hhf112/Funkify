@@ -1,17 +1,19 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom"
 import { sessionContext, type problem } from "../contexts/SessionContextProvider";
+import * as monaco from "monaco-editor"
+
+import type { testResult } from "./types";
+import type { VerdictType } from "./types";
+
 
 import { PageLeftProblem } from "./PageLeftProblem";
 import { PageLeftSubmit } from "./PageLeftSubmit";
 import { Disclaimer } from "../AuthPage/components";
 import { PageRight } from "./PageRight";
 import { PageLeftRun } from "./PageLeftRun";
+import { AIWindow } from "./AIWindow";
 
-import type { testResult } from "./types";
-import type { VerdictType } from "./types";
-
-import * as monaco from "monaco-editor"
 
 const backend: string = import.meta.env.VITE_BACKEND || "";
 const compiler: string = import.meta.env.VITE_COMPILER || "";;
@@ -30,11 +32,7 @@ export function Problem() {
   const navigate = useNavigate();
 
   /* states */
-  const [hoverAI, setHoverAI] = useState<boolean>(false);
-  const [AIAdvice, setAIAdvice] = useState<"">("");
   const [submittedCount, setSubmittedCount] = useState<number>(0);
-  const [askAICount, setaskAICount] = useState<number>(0);
-
   const [mount, setMount] = useState<boolean>(false);
   const [done, setDone] = useState<boolean>(false);
   const [verdict, setVerdict] = useState<VerdictType | null>(null)
@@ -82,24 +80,6 @@ export function Problem() {
   }, []);
 
   /* State functions */
-
-
-  async function getAIAdvice() {
-    try {
-      const advice = await fetch(`${backend}/api/user/problems/sum/${Id}`, {
-        method: "GET",
-        headers: {
-          "authorization": `Bearer ${sessionToken}`,
-        }
-      });
-
-      const adviceJSON = await advice.json();
-      setAIAdvice(adviceJSON.summary.slice(1, -1));
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
   const getCodeFromEditor = (): string => {
     if (editorRef.current) {
       const code = editorRef.current.getValue();
@@ -225,6 +205,8 @@ export function Problem() {
 
       {/* Header */}
       <div className="flex  mt-2 w-full h-1/20">
+
+        {/* BACK */}
         <div className="flex m-2 flex-1 justify-begin items-center w-1/2   h-1/20 p-1">
           <button className="py-2 px-2 z-10 shadow-xl cursor-pointer
               border rounded-xl bg-white m-0.5 hover:scale-90 hover:bg-neutral-400 transition delay-75"
@@ -234,6 +216,8 @@ export function Problem() {
         </div>
 
         <div className="flex m-2 flex-1 justify-center items-center w-1/2   h-1/20 p-1">
+
+          {/* RUN */}
           <button
             onClick={async () => {
               await runCode();
@@ -245,13 +229,18 @@ export function Problem() {
             <img src="/play.png" className="object-cover" />
           </button>
 
+
+          {/* SUBMIT */}
           <button className="m-1 p-2 rounded-lg hover:bg-neutral-300 transition delay-75 hover:scale-90 
 cursor-pointer min-w-0 h-10 flex justify-between gap-1 border border-neutral-400 shadow-xl z-10 bg-white"
             onClick={async () => { await submitCode(); }} >
             <img src="/submit.png" className="shrink-0 object-cover " />
             Submit
           </button>
+
         </div>
+
+        {/* USER */}
         <div className="flex-1 flex justify-end items-center">
           <div>
             <button> Profile</button>
@@ -301,64 +290,13 @@ cursor-pointer min-w-0 h-10 flex justify-between gap-1 border border-neutral-400
           </div>
 
           {/* AI WINDOW */}
-          <div className={`relative flex-1 rounded-xl border-neutral-400 mb-1 shadow border bg-white
-          ${hoverAI && "border-3 shadow-xl shadow-cyan-400 border-yellow-400"} 
-           ${mount ? "opacity-100 translate-y-0" : "opacity-5 -translate-y-2"} 
-      transform duration-200 transition delay-200 p-3`}>
+          <AIWindow
+            errMsg={errMsg}
+            submittedCount={submittedCount}
+            problemId={Id}
+            code={editorRef}
+            setErrMsg={setErrMsg} />
 
-
-            <div className="flex">
-              <button
-                className="absolute -top-7 -right-5 m-2 p-3 
-                  border-neutral-200 border shadow font-bold  text-sm text-neutral-700 rounded-full bg-white
-                  cursor-pointer opacity-50
-                  hover:scale-110 hover:-translate-y-1 hover:text-white hover:bg-cyan-400 hover:opacity-100
-                  transform duration-100 transition-all delay-100"
-                onClick={async () => {
-                  if (submittedCount < 1) {
-                    setErrMsg({
-                      color: "amber",
-                      message: "You have to submit code at least once to use this feature!"
-                    })
-                    return;
-                  }
-
-                  if (askAICount > 1) {
-                    setErrMsg({
-                      color: "amber",
-                      message: "You get only 2 tries! Refer to the editorial!"
-                    })
-                    return;
-                  }
-
-                  setaskAICount(prev => prev + 1);
-
-                  setErrMsg({
-                    message: "Fetching advice ...",
-                    color: "amber",
-                  })
-                  setAIAdvice("");
-                  await getAIAdvice()
-                  setErrMsg({
-                    message: "",
-                    color: "amber",
-                  })
-                }}
-                onMouseOver={() => setHoverAI(true)}
-                onMouseLeave={() => setHoverAI(false)}>
-                Ask AI {hoverAI ? "💁‍♀️" : "✨"}
-              </button>
-            </div>
-
-            <p className="mt-2 italic font-Inter text-neutral-700 whitespace-pre-wrap">
-              {AIAdvice ?
-                AIAdvice :
-                submittedCount > 0 ?
-                  "Would like a simpler summary of the problem statement?"
-                  : "Nothing to see here! try your best at the problem statement!"
-              }
-            </p>
-          </div>
         </div>
 
 
