@@ -314,7 +314,7 @@ cursor-pointer min-w-0 h-10 flex justify-between gap-1 border border-neutral-400
                   cursor-pointer opacity-50
                   hover:scale-110 hover:-translate-y-1 hover:text-white hover:bg-cyan-400 hover:opacity-100
                   transform duration-100 transition-all delay-100"
-                onClick={() => {
+                onClick={async () => {
                   if (submittedCount < 1) {
                     setErrMsg({
                       color: "amber",
@@ -336,7 +336,11 @@ cursor-pointer min-w-0 h-10 flex justify-between gap-1 border border-neutral-400
                     color: "amber",
                   })
                   setAIAdvice("");
-                  getAIAdvice()
+                  await getAIAdvice()
+                  setErrMsg({
+                    message: "",
+                    color: "amber",
+                  })
                 }}
                 onMouseOver={() => setHoverAI(true)}
                 onMouseLeave={() => setHoverAI(false)}>
