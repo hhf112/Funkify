@@ -71,7 +71,7 @@ export function PageRight({
                     className="absolute top-0 right-0 p-1 w-6 h-6
                   cursor-pointer hover:bg-red-400 rounded-lg"
                     onClick={() => {
-                      setSampleTestView(prev => prev - 1);
+                      if (sampleTestView >= 1) setSampleTestView(prev => prev - 1);
                       setSampleTests((prev) => {
                         const cp = [...prev];
                         return prev.filter((tes, inde) => inde !== index);
