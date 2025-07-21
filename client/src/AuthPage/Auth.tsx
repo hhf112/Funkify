@@ -27,7 +27,7 @@ export function Auth() {
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [errMsg, setErrMsg] = useState<string | null>(null);
   const [loader, setLoader] = useState<boolean>(false);
-  
+
   async function Submit() {
     const username = usernameInputRef.current?.value;
     const email = emailInputRef.current?.value;
@@ -72,8 +72,20 @@ export function Auth() {
     }
   }
 
+  /* component */
   return (
     <div className="h-screen w-full"> {/*BG*/}
+
+      <div className="fixed flex justify-center items-center w-full">
+        <button className="m-5 text-4xl rounded-full p-5 bg-white text-neutral-800 
+           font-bold border-4 font-Inter z-5 shadow cursor-pointer
+           hover:bg-red-400 hover:-translate-x-5
+          transition-all transform duration-100 delay-75"
+        onClick={()=>navigate(previous)}>
+          NO. TAKE ME BACK.
+        </button>
+      </div>
+
       <div className="flex h-screen justify-center items-center">
         {submitted || sessionToken.length ? <PageSubmittedLoginSignUp
           login={login}
