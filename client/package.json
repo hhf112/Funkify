@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@google/genai": "^1.10.0",
     "@monaco-editor/react": "4.7.0-rc.0",
     "@tailwindcss/vite": "^4.1.11",
     "dotenv": "^17.0.0",

@@ -5,7 +5,77 @@ import { ObjectId } from 'mongoose';
 import { Types } from 'mongoose';
 import { ProblemType } from '../models/problemModels/Problem.js';
 import SystemTests from '../models/submissionModels/SystemTests.js';
+import { GoogleGenAI, Type } from '@google/genai';
+import { getParsedCommandLineOfConfigFile } from 'typescript';
 
+const ai = new GoogleGenAI({});
+
+export const getSummary = async (req: Request, res: Response) => {
+  const problemId = req.params.problemId;
+  if (!problemId) {
+    res.status(400).json({
+      success: false,
+      message: "problemId required.",
+    })
+    return;
+  }
+
+  try {
+    const problem = await Problem.findById(problemId).exec();
+    if (!problem) {
+      res.status(404).json({
+        success: false,
+        message: "problem not found.",
+      })
+      return;
+    }
+
+    try {
+      const summary = await ai.models.generateContent({
+        model: "gemini-2.5-flash-lite-preview-06-17",
+        contents: `
+        - backticks are used for inline code.
+        - consider the code given below
+         - ${problem.description}
+         instructions:
+         - provide a less technical translation of the problem statement.
+         - exclude any hints on solving the problem
+         - exlcude any ideas on solving the problem 
+         - exlcude the solution to the problem
+         - output format: 100 words.`,
+        config: {
+          thinkingConfig: {
+            thinkingBudget: 0, // Disables thinking
+          },
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: Type.STRING,
+          },
+        },
+
+      });
+
+      res.status(200).json({
+        success: true,
+        message: "summarized probelm success fully.",
+        summary: summary?.candidates?.[0]?.content?.parts?.[0]?.text ?? "{}",
+      })
+
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({
+        success: false,
+        message: "Internal server error",
+      })
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      success: false,
+      message: "Database error.",
+    })
+  }
+}
 
 export const createProblem = async (req: Request, res: Response) => {
   // console.log(req.body);
@@ -72,7 +142,6 @@ export const createProblem = async (req: Request, res: Response) => {
 
 
 export const updateProblem = async (req: Request, res: Response) => {
-  console.log("called updateProblem")
   const { problemId, updationData } = req.body;
   if (!problemId || !updationData) {
     res.status(400).json({ error: "Problem ID and updation data is required" });
@@ -103,7 +172,6 @@ export const updateProblem = async (req: Request, res: Response) => {
 
 
 export const deleteProblem = async (req: Request, res: Response) => {
-  console.log("called deleteProblem")
   const problemId = req.body.problemId;
   if (!problemId) {
     res.status(400).json({ error: 'Problem ID is required' });
@@ -135,7 +203,6 @@ export const deleteProblem = async (req: Request, res: Response) => {
 
 export const getProblemsByUserId = async (req: Request, res: Response) => {
 
-  console.log("called getProblemsByUserId")
   const userId = req.query.userId?.toString();
   if (!userId) {
     res.status(400).json({ error: 'User ID is required' });
