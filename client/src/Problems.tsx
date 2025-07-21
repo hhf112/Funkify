@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { sessionContext } from "./contexts/SessionContextProvider";
 import { diff } from "util";
 import { AddProblem } from "./AddProblem";
@@ -37,6 +37,7 @@ function ProblemCard({ prob }: { prob: ProblemCompact }) {
   const navigate = useNavigate();
 
   useEffect(() => setMount(true), []);
+
   return (
     <div className={`border border-neutral-200 rounded-lg p-3 mx-4 my-2 shadow-xs
                       flex flex-col cursor-pointer
@@ -80,6 +81,8 @@ export function Problems() {
   const [problems, seteProblems] = useState<ProblemCompact[]>([]);
   const [mount, setMount] = useState<boolean[]>([false, false]);
   const navigate = useNavigate();
+  const location = useLocation();
+  const previous = location?.state?.previous || '/'; 
 
   useEffect(() => {
     setMount([true, false]);
@@ -107,6 +110,18 @@ export function Problems() {
         Funkify
       </h1>
 
+
+
+      <button
+        className={`px-20 cursor-pointer py-3 mx-2 border-4 border-neutral-700 
+          rounded-full  font-semibold text-xl font-Inter
+          hover:bg-yellow-400 hover:-translate-x-5 hover:text-white  hover:shadow-2xl  
+          transition-all delay-200 flex justify-between gap-4 items-center`}
+        onClick={() => navigate(previous)}>
+        <p> Go back </p>
+        <img src="/back.png" className="h-5 w-5" />
+      </button>
+
       <div className="w-full flex flex-col  px-40 my-5">
 
         <div className="my-5 flex justify-between items-center w-full px-10">
@@ -128,7 +143,7 @@ ${mount[0] ? "opacity-100 translate-y-0 scale-100" : "scale-90 translate-y-2 opa
             onMouseOver={() => setHoverAddProblemm(true)}
             onMouseOut={() => setHoverAddProblemm(false)}
             onClick={() => {
-              if (!sessionToken) navigate("/Login",{
+              if (!sessionToken) navigate("/Login", {
                 state: {
                   previous: "/Problems",
                 }
