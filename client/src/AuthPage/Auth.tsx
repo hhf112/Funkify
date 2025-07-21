@@ -25,7 +25,13 @@ export function Auth() {
   const [login, setLogin] = useState<boolean>(true);
   const [signUp, setSignUp] = useState<boolean>(false);
   const [submitted, setSubmitted] = useState<boolean>(false);
-  const [errMsg, setErrMsg] = useState<string | null>(null);
+  const [errMsg, setErrMsg] = useState<{
+    message: string,
+    color: string,
+  }>({
+    message: "",
+    color: "amber",
+  });
   const [loader, setLoader] = useState<boolean>(false);
 
   async function Submit() {
@@ -34,7 +40,11 @@ export function Auth() {
     const password = passwordInputRef.current?.value;
 
     const req = authentication + (login ? "/login" : "/register");
-    setLoader(true);
+    setErrMsg({
+      message: "Loading ...",
+      color: "amber",
+    })
+
     const post = await fetch(req, {
       method: "POST",
       headers: {
@@ -50,12 +60,18 @@ export function Auth() {
 
     const postJSON = await post.json();
     // console.log(postJSON);
-    setLoader(false);
     if (!post.ok) {
-      setErrMsg(postJSON.message);
+      setErrMsg({
+        message: postJSON.message,
+        color: "amber"
+      });
       return;
     }
-    setErrMsg("");
+    setErrMsg({
+      message: "",
+      color: "amber",
+    });
+
     if (login) {
       const user = postJSON.user;
       setSessionToken(postJSON.accessToken);
@@ -74,19 +90,19 @@ export function Auth() {
 
   /* component */
   return (
-    <div className="h-screen w-full"> {/*BG*/}
+    <div> {/*BG*/}
 
       <div className="fixed flex justify-center items-center w-full">
         <button className="m-5 text-4xl rounded-full p-5 bg-white text-neutral-800 
            font-bold border-4 font-Inter z-5 shadow cursor-pointer
            hover:bg-red-400 hover:-translate-x-5
           transition-all transform duration-100 delay-75"
-        onClick={()=>navigate(previous)}>
+          onClick={() => navigate(previous || "/")}>
           NO. TAKE ME BACK.
         </button>
       </div>
 
-      <div className="flex h-screen justify-center items-center">
+      <div className="flex w-full h-screen justify-center items-center">
         {submitted || sessionToken.length ? <PageSubmittedLoginSignUp
           login={login}
           previous={previous}
@@ -110,6 +126,8 @@ export function Auth() {
           setSignUp={setSignUp}
           Submit={Submit}
         />}
+
+      {errMsg.message.length != 0 && <Disclaimer display={errMsg.message} colorClass={errMsg.color} />}
       </div>
     </div>
   )

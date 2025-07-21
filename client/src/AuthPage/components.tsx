@@ -34,7 +34,7 @@ export function Disclaimer({ display, colorClass }:
     <div className={`fixed bottom-5 ${mountAnimation ? "translate-y-0 scale-100" : "scale-80 translate-y-2"} 
 transform duration-300 transition-all delay-75 ${color[colorClass]} py-2 px-3 rounded-xl opacity-100`}>
       <h2 className="text-white font-semibold ">
-        {display}!
+        {display}
       </h2>
     </div>
   )

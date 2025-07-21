@@ -37,7 +37,7 @@ export function PageLoginSignUp({
   emailInputRef: RefObject<HTMLInputElement | null>,
   passwordInputRef: RefObject<HTMLInputElement | null>,
   usernameInputRef: RefObject<HTMLInputElement | null>,
-  errMsg: string | null,
+  errMsg: { message: string, color: string },
   loader: boolean,
   setLogin: Dispatch<SetStateAction<boolean>>,
   setSignUp: Dispatch<SetStateAction<boolean>>,
@@ -96,14 +96,6 @@ ${formMount ? "opacity-100" : "opacity-0"}`}>
         display={(login ? "Login" : "SignUp")}
         doThisAsync={() => Submit()}
       />
-
-      {errMsg &&
-        <Disclaimer
-          display={errMsg}
-          colorClass="red"
-        />
-      }
-      {loader && <Loader display="LOGGING YOU IN!" />}
     </div>
   )
 }
