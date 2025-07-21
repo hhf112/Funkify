@@ -33,6 +33,7 @@ export function ProblemPage() {
   const [hoverAI, setHoverAI] = useState<boolean>(false);
   const [AIAdvice, setAIAdvice] = useState<"">("");
   const [submittedCount, setSubmittedCount] = useState<number>(0);
+  const [askAICount, setaskAICount] = useState<number>(0);
 
   const [mount, setMount] = useState<boolean>(false);
   const [done, setDone] = useState<boolean>(false);
@@ -93,7 +94,6 @@ export function ProblemPage() {
       });
 
       const adviceJSON = await advice.json();
-      console.log(adviceJSON);
       setAIAdvice(adviceJSON.summary.slice(1, -1));
     } catch (err) {
       console.log(err);
@@ -219,7 +219,7 @@ export function ProblemPage() {
   }
 
 
-  /* Component */
+  /* component */
   return (
     <div className="flex flex-col items-center h-screen bg-neutral-100">
 
@@ -323,13 +323,15 @@ cursor-pointer min-w-0 h-10 flex justify-between gap-1 border border-neutral-400
                     return;
                   }
 
-                  if (submittedCount > 2) {
+                  if (askAICount > 1) {
                     setErrMsg({
                       color: "amber",
                       message: "You get only 2 tries! Refer to the editorial!"
                     })
                     return;
                   }
+
+                  setaskAICount(prev => prev + 1);
 
                   setErrMsg({
                     message: "Fetching advice ...",

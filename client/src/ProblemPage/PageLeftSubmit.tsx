@@ -96,7 +96,6 @@ export function PageLeftSubmit({
           },
         });
         const getJSON = await get?.json();
-        console.log("Fetching submission");
 
         if (getJSON.submission.status == "fail") {
           setDone(true);
