@@ -33,7 +33,7 @@ export function AIWindow({
   const { sessionToken } = useContext(sessionContext);
   const [mount, setMount] = useState<boolean>(false);
   const [hoverAI, setHoverAI] = useState<boolean>(false);
-  const [AIAdvice, setAIAdvice] = useState<"">("");
+  const [AIAdvice, setAIAdvice] = useState<string>("Nothing to see here! try your best at the problem statement!");
   const [askAICount, setaskAICount] = useState<number>(0);
   const [what, setWhat] = useState<number>(0);
   const [whatSelector, setWhatSelector] = useState<number>(0);
@@ -41,6 +41,9 @@ export function AIWindow({
 
 
   useEffect(() => setMount(true));
+  useEffect(() => {
+    if (submittedCount > 0) setAIAdvice("Stuck? need some help?~ 🦹‍♀️");
+  }, [submittedCount]);
 
 
   async function getAIAdvice(what: string) {
@@ -49,6 +52,8 @@ export function AIWindow({
       message: "Fetching advice ...",
       color: "amber"
     });
+    setAIAdvice("You only get 5 requests per day! use them carefully! 🙆‍♀️");
+
     try {
       const advice = await fetch(`${backend}/api/user/ai/sum/${problemId}?what=${what}`, {
         method: "GET",
@@ -70,7 +75,6 @@ export function AIWindow({
   }
 
 
-  console.log(AIAdvice);
   /* component */
   return (
     <div className={`relative flex-1 rounded-xl border-neutral-400 mb-1 shadow border bg-white
@@ -128,16 +132,19 @@ export function AIWindow({
             />
           </div>
           :
-          <p className="mt-2 italic font-Inter text-neutral-700 whitespace-pre-wrap">
-            {AIAdvice ?
-              AIAdvice :
-              submittedCount > 0 ?
-                errMsg.message.length ?
-                  "Don't get used to this ~" :
-                  "Stuck? Need some help?~"
-                : "Nothing to see here! try your best at the problem statement!"
-            }
-          </p>
+          <textarea
+            readOnly
+            className="mt-2 font-Inter text-neutral-700 whitespace-pre-wrap resize-none w-full h-full focus:outline-none focus:ring-0 focus:border-transparent"
+            value={AIAdvice} />
+        //   {AIAdvice ?
+        //     AIAdvice :
+        //     submittedCount > 0 ?
+        //       errMsg.message === "Fetching advice ..." ?
+        //         "" :
+        //         ""
+        //       : ""
+        //   }
+        // </textarea>
       }
 
     </div >
