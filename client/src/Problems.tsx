@@ -5,6 +5,7 @@ import { sessionContext } from "./contexts/SessionContextProvider";
 import { diff } from "util";
 import { AddProblem } from "./AddProblem";
 import { preview } from "vite";
+import { Disclaimer } from "./AuthPage/components";
 
 interface ProblemCompact {
   title: string,
@@ -82,7 +83,7 @@ export function Problems() {
   const [mount, setMount] = useState<boolean[]>([false, false]);
   const navigate = useNavigate();
   const location = useLocation();
-  const previous = location?.state?.previous || '/'; 
+  const previous = location?.state?.previous || '/';
 
   useEffect(() => {
     setMount([true, false]);
@@ -156,7 +157,7 @@ ${mount[0] ? "opacity-100 translate-y-0 scale-100" : "scale-90 translate-y-2 opa
 
         {
           !problems.length ?
-            <h1 className="font-mono animate-pulse"> LOADING... </h1>
+            <Disclaimer display="Fetching problems" colorClass="amber" />
             :
             problems.map((prob, index) => <ProblemCard key={index} prob={prob} />)
         }

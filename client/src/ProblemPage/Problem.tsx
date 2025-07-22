@@ -201,15 +201,16 @@ export function Problem() {
 
   /* component */
   return (
-    <div className="flex flex-col items-center h-screen bg-neutral-100">
+    <div className="flex flex-col items-center h-screen bg-gray-400">
 
-      {/* Header */}
-      <div className="flex  mt-2 w-full h-1/20">
+      {/* HEADER */}
+      <div className="flex items-center mt-2 w-full h-1/25 py-2">
 
         {/* BACK */}
         <div className="flex m-2 flex-1 justify-begin items-center w-1/2   h-1/20 p-1">
           <button className="py-2 px-2 z-10 shadow-xl cursor-pointer
-              border rounded-xl bg-white m-0.5 hover:scale-90 hover:bg-neutral-400 transition delay-75"
+              border border-neutral-400 
+            rounded-xl bg-white m-0.5 hover:scale-90 hover:bg-neutral-400 transition delay-75"
             onClick={() => navigate("/Problems")}>
             Back to Problems
           </button>
@@ -251,12 +252,12 @@ cursor-pointer min-w-0 h-10 flex justify-between gap-1 border border-neutral-400
 
 
       {/* CONTENT */}
-      <div className="h-19/20 w-full flex  justify-between gap-1 my-0.5 ">
+      <div className="flex-1 w-full flex  justify-between gap-1 my-0.5 ">
         {/* CONTENT-LEFT */}
         <div className="flex-3  flex flex-col mx-1 justify-between gap-2">
 
           {/* ACTION WINDOW */}
-          <div className={`relative rounded-lg bg-white  h-full  flex-3 basis-0  p-3 w-full  text-neutral-900 
+          <div className={`relative rounded-lg bg-white  h-full  flex-5 basis-0  p-3 w-full  text-neutral-900 
           border-neutral-400 border  overflow-y-auto shadow
           ${mount ? "translate-y-0" : "translate-y-5"} transition delay-150`}>
 

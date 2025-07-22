@@ -50,7 +50,7 @@ export function AIWindow({
       color: "amber"
     });
     try {
-      const advice = await fetch(`${backend}/api/user/problems/sum/${problemId}?what=${what}`, {
+      const advice = await fetch(`${backend}/api/user/ai/sum/${problemId}?what=${what}`, {
         method: "GET",
         headers: {
           "authorization": `Bearer ${sessionToken}`,
@@ -94,16 +94,18 @@ export function AIWindow({
               })
               return;
             }
-
-            if (askAICount > 1) {
-              setErrMsg({
-                color: "amber",
-                message: "You get only 2 tries! Refer to the editorial!"
-              })
-              return;
-            }
-
-            setaskAICount(prev => prev + 1);
+            // const count = parseInt(localStorage.getItem("askAICount") || "0");
+            // if (count > 1) {
+            //   setErrMsg({
+            //     color: "amber",
+            //     message: "You get only 2 tries! Refer to the editorial!"
+            //   })
+            //   return;
+            // }
+            //
+            // localStorage.setItem("askAICount", (count + 1).toString());
+            //
+            // setaskAICount(prev => prev + 1);
             setWhat(-1);
           }}
           onMouseOver={() => setHoverAI(true)}
