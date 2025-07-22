@@ -3,19 +3,62 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom"
 import { sessionContext } from "./contexts/SessionContextProvider";
 import { setUncaughtExceptionCaptureCallback } from "process";
+import { Disclaimer } from "./AuthPage/components";
 
+
+
+const authentication = import.meta.env.VITE_AUTH;
+if (!authentication) {
+  console.error("authentication not provided");
+}
 
 export function Home() {
   /* states */
   const navigate = useNavigate();
+  const { sessionToken, setSessionToken, user, setUser } = useContext(sessionContext);
   const [hoverCheckout, setHoverCheckout] = useState<boolean>(false);
   const [hoverCreateAccount, setHoverCreateAccount] = useState<boolean>(false);
   const [mount, setMount] = useState<boolean[]>([false, false, false]);
   const [doneMount, setDoneMount] = useState<boolean>(false);
-  const { sessionToken, user } = useContext(sessionContext);
-
+  const [errMsg, setErrMsg] = useState<{ message: string, color: string }>({ message: "", color: "" });
 
   /* effect */
+
+  useEffect(() => {
+    //check if user logged in before.
+    (async () => {
+      if (sessionToken) return;
+      try {
+        setErrMsg({ message: "Auto logging you in if any past logins are found :) ...", color: "amber" });
+        const get = await fetch(`${authentication}/token`, {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json",
+          },
+          credentials: "include"
+        })
+        const getJSON = await get.json();
+        setSessionToken(getJSON.accessToken);
+        setUser({
+          isValid: true,
+          username: getJSON.user.username,
+          email: getJSON.user.username,
+          userId: getJSON.user._id,
+          password: getJSON.user.password,
+        });
+        setErrMsg({
+          message: "Youre Logged in! :D",
+          color: "green",
+        })
+        setTimeout(() => setErrMsg({ message: "", color: "" }), 2000)
+      } catch (err) {
+        setErrMsg({ message: "", color: "amber" });
+      }
+    })();
+  }, [])
+
+  // useEffect(() => console.log(user), [user.isValid]);
+
   let flag = 0;
   useEffect(() => {
     const interval = setInterval(() => {
@@ -181,6 +224,8 @@ hover:text-white  hover:bg-black   hover:translate-y-2  hover:italic transition`
         </div>
       </div>
       <p className="relative top-50"> TM </p>
+
+      {errMsg.message.length !== 0 && <Disclaimer display={errMsg.message} colorClass={errMsg.color} />}
     </div>
   )
 }

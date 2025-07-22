@@ -49,7 +49,7 @@ export interface sessionContextType {
 
 export const sessionContext = createContext<sessionContextType>({
   user: {
-    isValid: true,
+    isValid: false,
     username: "",
     password: "",
     email: "",
@@ -72,15 +72,15 @@ export function SessionContextProvider(
   // states
   const [sessionToken, setSessionToken] = useState<string>("");
   const [user, setUser] = useState<User>({
-    isValid: true,
-    username: "test",
-    password: "test",
-    email: "test",
-    userId: "6864d87ecae8dcff198a5bff",
+    isValid: false,
+    username: "",
+    password: "",
+    email: "",
+    userId: "",
 
   })
 
-  /* state funcs */
+  /* state functions */
 
   async function Fetch(url: string, opts: any): Promise<Response> {
     const { headers = {}, ...rest } = opts;

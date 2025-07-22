@@ -34,27 +34,8 @@ export function Auth() {
   });
   const [loader, setLoader] = useState<boolean>(false);
 
+  // useEffect(() => console.log(user), [user.isValid]);
 
-  useEffect(() => {
-    //check if user is already logged in.
-    (async () => {
-      try {
-        const get = await fetch(`${authentication}/token`, {
-          method: "POST",
-          headers: {
-            "Content-type": "application/json",
-          },
-          credentials: "include"
-        })
-        const getJSON = await get.json();
-        setSessionToken(getJSON.accessToken);
-        navigate(previous || "/");
-      } catch (err) {
-        console.error(err);
-      }
-    })();
-
-  }, [])
 
 
   /*functions*/
