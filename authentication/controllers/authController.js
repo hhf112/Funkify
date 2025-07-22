@@ -13,6 +13,7 @@ function generateAccessToken(user) {
   }, process.env.JWT_SECRET, { expiresIn: "5h" })
 }
 
+
 export const loginHandler = async (req, res) => {
   if (!req.body.email || !req.body.password) {
     return res.status(400).json({
@@ -58,7 +59,6 @@ export const loginHandler = async (req, res) => {
       user: user,
     });
 
-  console.log("accessToken given out. ", access, "expires in 5h");
   } catch (err) {
     console.log(err);
     return res.status(500).json({
@@ -161,7 +161,6 @@ export const logoutHandler = async (req, res) => {
 
 export const tokenHandler = async (req, res) => {
   const refreshToken = req.cookies.refreshToken;
-  console.log(refreshToken);
   if (refreshToken == null)
     return res.status(400).json({
       success: false,
@@ -247,7 +246,6 @@ export const modifyUser = async (req, res) => {
       });
 
     } catch (err) {
-      console.error('Error updating problem:', error);
       return res.status(500).json({
         success: false,
         error: error.name,
@@ -256,5 +254,9 @@ export const modifyUser = async (req, res) => {
       return;
     }
   })
+}
+
+const cookieLoginHandler = async (req, res) => {
+
 }
 
