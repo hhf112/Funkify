@@ -187,7 +187,7 @@ export const tokenHandler = async (req, res) => {
       const accessToken = jwt.sign({
         username: result.username,
         email: result.email,
-      }, process.env.REFRESH_SECRET);
+      }, process.env.JWT_SECRET);
       return res.status(200).json({
         success: true,
         message: "Access token generated successfully",
@@ -256,7 +256,4 @@ export const modifyUser = async (req, res) => {
   })
 }
 
-const cookieLoginHandler = async (req, res) => {
-
-}
 
