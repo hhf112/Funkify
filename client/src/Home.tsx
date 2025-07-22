@@ -27,7 +27,8 @@ export function Home() {
   useEffect(() => {
     //check if user logged in before.
     (async () => {
-      if (sessionToken) return;
+      if (sessionToken.length) return;
+
       try {
         setErrMsg({ message: "Auto logging you in if any past logins are found :) ...", color: "amber" });
         const get = await fetch(`${authentication}/token`, {
@@ -38,6 +39,8 @@ export function Home() {
           credentials: "include"
         })
         const getJSON = await get.json();
+        // console.log(getJSON);
+        if (!getJSON.accessToken) return;
         setSessionToken(getJSON.accessToken);
         setUser({
           isValid: true,

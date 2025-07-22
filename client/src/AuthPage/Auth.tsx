@@ -94,6 +94,7 @@ export function Auth() {
   }
 
   /* component */
+  // console.log(sessionToken);
   return (
     <div> {/*BG*/}
 
