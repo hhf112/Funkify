@@ -1,17 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useRef, useState, useContext } from "react"
 import { sessionContext, type sessionContextType } from "../contexts/SessionContextProvider";
 import { PageLoginSignUp } from "./PageLoginSignUp";
 import { PageSubmittedLoginSignUp } from "./PageSubmittedLoginSignUp";
 import { Disclaimer, TypeLoginButton } from "./components";
 import { useLocation, useNavigate } from "react-router-dom";
-import { preview } from "vite";
 
 const authentication: string = import.meta.env.VITE_AUTH || "";
 
 
 
 export function Auth() {
+
   /* use */
   const { Logout, setUser, setSessionToken, sessionToken, user } = useContext<sessionContextType>(sessionContext);
   const emailInputRef = useRef<HTMLInputElement>(null)
@@ -34,6 +34,30 @@ export function Auth() {
   });
   const [loader, setLoader] = useState<boolean>(false);
 
+
+  useEffect(() => {
+    //check if user is already logged in.
+    (async () => {
+      try {
+        const get = await fetch(`${authentication}/token`, {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json",
+          },
+          credentials: "include"
+        })
+        const getJSON = await get.json();
+        setSessionToken(getJSON.accessToken);
+        navigate(previous || "/");
+      } catch (err) {
+        console.error(err);
+      }
+    })();
+
+  }, [])
+
+
+  /*functions*/
   async function Submit() {
     const username = usernameInputRef.current?.value;
     const email = emailInputRef.current?.value;
@@ -127,7 +151,7 @@ export function Auth() {
           Submit={Submit}
         />}
 
-      {errMsg.message.length != 0 && <Disclaimer display={errMsg.message} colorClass={errMsg.color} />}
+        {errMsg.message.length != 0 && <Disclaimer display={errMsg.message} colorClass={errMsg.color} />}
       </div>
     </div>
   )
