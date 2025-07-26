@@ -20,10 +20,6 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'],
   credentials: true,
 }));
-// app.options('*', cors({
-//   origin: process.env.FRONTEND,
-//   credentials: true,
-// }));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
