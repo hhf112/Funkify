@@ -22,8 +22,12 @@ export function AIWindow({
   code,
   submittedCount,
   errMsg,
+  Id,
+  editorRef,
   setErrMsg,
 }: {
+  editorRef: any,
+  Id: string | null,
   errMsg: { message: string, color: string },
   setErrMsg: Dispatch<SetStateAction<{ color: string, message: string }>>,
   code: RefObject<any>,
@@ -40,13 +44,15 @@ export function AIWindow({
   // -1 SELECT
 
 
+
+  // console.log(sessionToken)
   useEffect(() => setMount(true));
   useEffect(() => {
     if (submittedCount > 0) setAIAdvice("Stuck? need some help?~ 🦹‍♀️");
   }, [submittedCount]);
 
 
-  async function getAIAdvice(what: string) {
+  async function getAIAdvice(what: number) {
     setWhat(0);
     setErrMsg({
       message: "Fetching advice ...",
@@ -55,14 +61,39 @@ export function AIWindow({
     setAIAdvice("You only get 5 requests per day! use them carefully! 🙆‍♀️");
 
     try {
-      const advice = await fetch(`${backend}/api/user/ai/sum/${problemId}?what=${what}`, {
+      const advice = await fetch(`${backend}/api/user/ai/sum/${Id}?what=${what}`, {
         method: "GET",
         headers: {
           "authorization": `Bearer ${sessionToken}`,
-        }
+        },
       });
 
+      if (advice.status === 429) {
+        setErrMsg({
+          message: "You are allowed 2 requests per minute and 5 requests per day.",
+          color: "red"
+        });
+        setAIAdvice("don't get ahead of yourself! 🙆‍♀️")
+        setTimeout(() => setErrMsg({ message: "", color: "" }), 3000);
+        return;
+      }
+
       const adviceJSON = await advice.json();
+      console.log(adviceJSON.summary);
+      if (what === 2) {
+        // editorRef.current?.setValue(adviceJSON.summary.slice(7, -4));
+        const raw = adviceJSON.summary.slice(7, -4);
+        const decoded = raw
+          .replace(/\\\\/g, '\\')
+          .replace(/\\n/g, '\n')
+          .replace(/\\r/g, '\r')
+          .replace(/\\t/g, '\t')
+          .replace(/\\"/g, '"')
+          .replace(/\\'/g, "'");
+        editorRef.current?.setValue(decoded);
+        setErrMsg({message: "", color: ""});
+        return;
+      }
       setAIAdvice(adviceJSON.summary.slice(1, -1));
 
       setErrMsg({
@@ -98,18 +129,6 @@ export function AIWindow({
               })
               return;
             }
-            // const count = parseInt(localStorage.getItem("askAICount") || "0");
-            // if (count > 1) {
-            //   setErrMsg({
-            //     color: "amber",
-            //     message: "You get only 2 tries! Refer to the editorial!"
-            //   })
-            //   return;
-            // }
-            //
-            // localStorage.setItem("askAICount", (count + 1).toString());
-            //
-            // setaskAICount(prev => prev + 1);
             setWhat(-1);
           }}
           onMouseOver={() => setHoverAI(true)}
@@ -123,11 +142,11 @@ export function AIWindow({
           <div
             className="flex flex-col items-center h-full w-full bg-neutral-50">
             <Button
-              onClick={() => getAIAdvice("summary")}
+              onClick={() => getAIAdvice(0)}
               text={"Get a summary of the problem statement 📃"}
             />
             <Button
-              onClick={() => getAIAdvice("hint")}
+              onClick={() => getAIAdvice(1)}
               text={"Get a Hint! 💡"}
             />
           </div>
@@ -136,15 +155,6 @@ export function AIWindow({
             readOnly
             className="mt-2 font-Inter text-neutral-700 whitespace-pre-wrap resize-none w-full h-full focus:outline-none focus:ring-0 focus:border-transparent"
             value={AIAdvice} />
-        //   {AIAdvice ?
-        //     AIAdvice :
-        //     submittedCount > 0 ?
-        //       errMsg.message === "Fetching advice ..." ?
-        //         "" :
-        //         ""
-        //       : ""
-        //   }
-        // </textarea>
       }
 
     </div >
