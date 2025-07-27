@@ -170,7 +170,7 @@ export function Problem() {
         },
         body: JSON.stringify({
           code: getCodeFromEditor(),
-          userId: user?.userId,
+          userId: user?._id,
           problemId: Id,
           language: "cpp",
           verdictId: null,
