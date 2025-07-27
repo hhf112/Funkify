@@ -29,7 +29,7 @@ export const addTests = async (req: Request, res: Response) => {
     });
 
 
-  console.log(systests);
+  // console.log(systests);
     await Problem.findOneAndUpdate({ _id: problemId }, { testId: systests._id });
     res.status(200).json({
       success: true,

@@ -44,8 +44,6 @@ export const createSubmission = async (req: Request, res: Response) => {
     testId,
   } = req.body;
   if (!problemId || !userId || !code || !language || !testId) {
-    console.log("400 on createSubmission");
-    console.log(req.body);
     res.status(400).json({
       success: false,
       message: "Required fields not provied",
@@ -90,7 +88,6 @@ export const getSubmissionsByUserId = async (req: Request, res: Response) => {
     const { userId } = req.params;
     if (!userId) {
 
-      console.log("400 on getSubmissionsByUserId");
       res.status(400).json({
         success: false,
         message: "user Id is required",
@@ -128,7 +125,6 @@ export const getSubmissionById = async (req: Request, res: Response) => {
   try {
     const { submissionId } = req.params;
     if (!submissionId) {
-      console.log("400 on getSubmissionsById");
       res.status(400).json({
         success: false,
         message: "submission Id is required",
@@ -166,7 +162,6 @@ export const getSubmissionsByProblemId = async (req: Request, res: Response) => 
   try {
     const { problemId } = req.params;
     if (!problemId) {
-      console.log("400 at getSubmissionsByUserId")
       res.status(400).json({
         success: false,
         message: "problem Id is required",
@@ -203,7 +198,6 @@ export const getSubmissionByProblemIdAndUserId = async (req: Request, res: Respo
     const userId = req.query.userId as string;
     const problemId = req.query.problemId as string;
     if (!userId || !problemId) {
-      console.log("400 at getSubmissionByProblemIdAndUserId")
 
       res.status(400).json({
         success: false,
