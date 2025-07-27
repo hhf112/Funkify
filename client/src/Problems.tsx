@@ -33,7 +33,7 @@ function getColor(difficulty: string) {
   }
 }
 
-function ProblemCard({ prob, status }: { prob: ProblemCompact, status: string }) {
+function ProblemCard({ prob }: { prob: ProblemCompact }) {
   const [mount, setMount] = useState<boolean>(false);
   const navigate = useNavigate();
 
@@ -133,7 +133,7 @@ export function Problems() {
 ${mount[0] ? "opacity-100 translate-y-0 scale-100" : "scale-90 translate-y-2 opacity-0"} transition-all delay-100  duration-500`}>
             {
               sessionToken.length ?
-                hoverAddProblem ? "Contribute a problem!" : `Hi ${user.username}! Challenge yourself everyday!`
+                hoverAddProblem ? "Contribute a problem!" : `Hi ${user?.username}! Challenge yourself everyday!`
                 :
                 hoverAddProblem ? "Create an account to contribute problems!" : "Create an account today to start solving!"
             }

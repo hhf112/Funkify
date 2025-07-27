@@ -36,7 +36,7 @@ export function PageSubmittedLoginSignUp({
       {/*Top Text*/}
       <div className="prose prose-sm absolute  top-0 m-4">
         <h3 className="text-neutral-700">
-          {`Welcome back ${user.username}!`}
+          {`Welcome back ${user?.username}!`}
         </h3>
       </div>
 

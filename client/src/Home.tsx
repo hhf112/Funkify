@@ -118,7 +118,7 @@ export function Home() {
           hover:bg-cyan-500 hover:translate-y-1 hover:text-white hover:scale-105 hover:shadow-2xl  
           transition-all delay-200`}
             onClick={() => navigate("/user")}>
-            Hi {user.username}! 👋
+            Hi {user?.username}! 👋
           </h1>
           :
           <h1
