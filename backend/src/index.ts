@@ -11,6 +11,7 @@ import userAIRoutes from "./routes/userAIRoutes.js";
 // import UserRoutes from './routes/userRoutes.js';
 import cors from "cors";
 import { rateLimit } from "express-rate-limit"
+import { userInfo } from 'os';
 
 
 const PORT = process.env.PORT || 3000;
@@ -23,13 +24,6 @@ try {
 }
 
 
-const limiter = rateLimit({
-  windowMs: 24 * 60 * 60 * 1000, // 24H
-  limit: 5, 
-  standardHeaders: 'draft-8', 
-  legacyHeaders: false, 
-  ipv6Subnet: 56, 
-})
 const app: Application = express();
 
 app.use(cors({
@@ -58,9 +52,27 @@ app.use("/api/user/tests", TestRoutes)
 app.use('/api/user/submissions', SubmissionRoutes);
 
 
-app.use('/api/user/ai', limiter); // 5/24h
-app.use('/api/user/ai', userAIRoutes)
-// app.use("api/user/", UserRoutes);
+
+const limiter_hour = rateLimit({
+  windowMs: 24 * 60 * 60 * 1000, // 24H
+  limit: 5,
+  standardHeaders: 'draft-8',
+  legacyHeaders: false,
+  ipv6Subnet: 56,
+})
+
+const limiter_minute = rateLimit({
+  windowMs: 1000 * 60, // 1m
+  limit: 2,
+  standardHeaders: 'draft-8',
+  legacyHeaders: false,
+  ipv6Subnet: 56,
+})
+
+app.use('/api/user/ai',
+  limiter_hour,
+  limiter_minute,
+  userAIRoutes); // 5/24h
 
 
 
