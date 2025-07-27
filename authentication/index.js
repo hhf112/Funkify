@@ -15,11 +15,21 @@ try {
 }
 
 const app = express();
-app.use(cors({
+// app.use(cors({
+//   origin: process.env.FRONTEND,
+//   // methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'],
+//   credentials: true,
+// }));
+
+const corsOptions = {
   origin: process.env.FRONTEND,
-  // methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'],
   credentials: true,
-}));
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type"]
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); 
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
