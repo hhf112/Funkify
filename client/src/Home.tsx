@@ -28,6 +28,7 @@ export function Home() {
     //check if user logged in before.
     (async () => {
       if (sessionToken.length) return;
+      return; // returns 204. turned off till fixed.
       try {
         setErrMsg({ message: "Auto logging you in if any past logins are found :) ...", color: "amber" });
         const get = await fetch(`${authentication}/token`, {
@@ -39,7 +40,7 @@ export function Home() {
         })
         const getJSON = await get.json();
         if (!getJSON.accessToken) {
-          setErrMsg({message: "", color: ""});
+          setErrMsg({ message: "", color: "" });
           return;
         }
         setSessionToken(getJSON.accessToken);

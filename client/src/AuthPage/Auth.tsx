@@ -44,6 +44,7 @@ export function Auth() {
     //check if user logged in before.
     (async () => {
       if (sessionToken.length) return;
+      return;
 
       try {
         setErrMsg({ message: "Auto logging you in if any past logins are found :) ...", color: "amber" });
