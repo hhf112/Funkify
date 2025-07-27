@@ -1,5 +1,6 @@
 /* default */
 import { Request, Response } from 'express';
+import fs from "fs"
 
 /* models and types */
 import Submission from '../models/Submission.js';
@@ -33,7 +34,7 @@ export const runCode = async (req: Request, res: Response) => {
 
   if (!code || !language || !tests) {
     res.status(400).json({
-      success: true,
+      
       message: "Required fields not provided.",
     })
     return;
@@ -53,7 +54,7 @@ export const runCode = async (req: Request, res: Response) => {
     } catch (err) {
       console.log(err);
       res.status(500).json({
-        success: false,
+        
         message: "Internal server error."
       });
       return;
@@ -94,7 +95,7 @@ export const runCode = async (req: Request, res: Response) => {
   if (!finalVerdict) finalVerdict = "Accepted"
   res.status(200).json({
     finalVerdict: finalVerdict,
-    success: true,
+    
     message: "job finished.",
     results: results,
     passsed: (passed === tests.length),
@@ -105,7 +106,7 @@ export const submitCode = async (req: Request, res: Response) => {
   const submissionId = req.body.submissionId;
   if (!submissionId) {
     res.status(400).json({
-      success: true,
+      
       message: "submissionId required."
     })
     return;
@@ -119,7 +120,7 @@ export const submitCode = async (req: Request, res: Response) => {
   } catch (err) {
     console.log(err);
     res.status(500).json({
-      success: false,
+      
       message: "Database error.",
     })
     return;
@@ -127,7 +128,7 @@ export const submitCode = async (req: Request, res: Response) => {
 
   if (!submission || !tests) {
     res.status(404).json({
-      success: true,
+      
       message: "submission or tests not found",
     })
     return;
@@ -167,12 +168,14 @@ export const submitCode = async (req: Request, res: Response) => {
       } catch (err) {
         console.log(err);
         res.status(500).json({
-          success: false,
+          
           message: "Internal server error."
         });
         return;
       }
       const end: [number, number] = process.hrtime(start);
+
+      fs.unlinkSync(filePath);
 
       /* error handling */
       if (output.error === null) {
@@ -222,16 +225,10 @@ export const submitCode = async (req: Request, res: Response) => {
       console.log("final", finalVerdict);
       const { _id } = await Verdict.create(finalVerdict);
 
-      await Submission.findByIdAndUpdate(submissionId, {
-        status: "processed",
-        verdictId: _id,
-      });
+      await Submission.findByIdAndUpdate(submissionId, { status: "processed", verdictId: _id, });
 
 
-      res.status(200).json({
-        success: true,
-        message: "successfuly updated verdict."
-      })
+      res.status(200).json({ message: "successfuly updated verdict." })
     } catch (err) {
       console.log(err);
 
@@ -239,24 +236,16 @@ export const submitCode = async (req: Request, res: Response) => {
         status: "fail",
       });
 
-      res.status(500).json({
-        success: false,
-        message: "Database Error."
-      })
+      res.status(500).json({ message: "Database Error." })
       return;
     }
 
   } catch (err) {
     console.log(err);
 
-    await Submission.findByIdAndUpdate(submissionId, {
-      status: "fail",
-    });
+    await Submission.findByIdAndUpdate(submissionId, { status: "fail", });
 
-    res.status(500).json({
-      success: false,
-      message: "Internal server error.",
-    })
+    res.status(500).json({ message: "Internal server error.", })
   }
 }
 
