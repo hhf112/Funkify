@@ -22,7 +22,7 @@ export function PageLeftProblem({ problem }: { problem: problem }) {
 
 
   return (
-    <div className="p-3">
+    <div className="p-5">
       {/* Title */}
       <h1 className="text-3xl font-bold my-2"> {problem?.title} </h1>
 
@@ -36,7 +36,7 @@ export function PageLeftProblem({ problem }: { problem: problem }) {
           {problem?.difficulty == "Hard" && <DifficultyTag attr="Hard" color="red" />}
         </div>
 
-      {/* Tags */}
+        {/* Tags */}
         <div className="flex items-center overflow-x-auto">
           <div className="w-5 h-5 mr-1 " >
             <img src="/tag.png" className="block my-0 w-fit h-fit" />

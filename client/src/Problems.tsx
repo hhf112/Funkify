@@ -33,7 +33,7 @@ function getColor(difficulty: string) {
   }
 }
 
-function ProblemCard({ prob }: { prob: ProblemCompact }) {
+function ProblemCard({ prob, status }: { prob: ProblemCompact, status: string }) {
   const [mount, setMount] = useState<boolean>(false);
   const navigate = useNavigate();
 
@@ -46,9 +46,12 @@ function ProblemCard({ prob }: { prob: ProblemCompact }) {
               hover:scale-95 hover:shadow-cyan-200
               transition delay-100`}
       onClick={() => navigate(`/Problem/${prob._id}`)}>
-      <p className="my-2">
-        {prob.title}
-      </p>
+      <div className="flex">
+        <p className="my-2">
+          {prob.title}
+        </p>
+        <img src="/" />
+      </div>
 
       <div className="flex justify-between gap-5">
         <p className={`rounded-lg px-3 py-2 shadow text-sm
@@ -116,7 +119,7 @@ export function Problems() {
       <button
         className={`px-20 cursor-pointer py-3 mx-2 border-4 border-neutral-700 
           rounded-full  font-semibold text-xl font-Inter
-          hover:bg-yellow-400 hover:-translate-x-5 hover:text-white  hover:shadow-2xl  
+          hover:bg-yellow-400 hover:-translate-x-5 hover:text-black  hover:shadow-2xl  
           transition-all delay-200 flex justify-between gap-4 items-center`}
         onClick={() => navigate(previous)}>
         <p> Go back </p>

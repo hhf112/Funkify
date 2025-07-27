@@ -91,6 +91,7 @@ export function Problem() {
 
   async function runCode() {
     if (!sessionToken) {
+      sessionStorage.setItem("recent_code", getCodeFromEditor());
       navigate("/Login", {
         state: {
           previous: `/Problem/${Id}`
@@ -137,8 +138,10 @@ export function Problem() {
 
   }
   async function submitCode(): Promise<void> {
+    // console.log(sessionToken);
     setSubmittedCount(prev => prev + 1);
     if (!sessionToken) {
+      sessionStorage.setItem("recent_code", getCodeFromEditor());
       navigate("/Login", {
         state: {
           previous: `/Problem/${Id}`,
@@ -204,13 +207,14 @@ export function Problem() {
     <div className="flex flex-col items-center h-screen bg-gray-400">
 
       {/* HEADER */}
-      <div className="flex items-center mt-2 w-full h-1/25 py-2">
+      <div className="flex items-center my-1 w-full h-1/25 py-2">
 
         {/* BACK */}
         <div className="flex m-2 flex-1 justify-begin items-center w-1/2   h-1/20 p-1">
-          <button className="py-2 px-2 z-10 shadow-xl cursor-pointer
+          <button className="py-2 px-4  z-10 shadow-xl cursor-pointer
               border border-neutral-400 
-            rounded-xl bg-white m-0.5 hover:scale-90 hover:bg-neutral-400 transition delay-75"
+            rounded-full bg-white m-0.5 
+            hover:-translate-x-2  hover:bg-neutral-400 transition delay-75"
             onClick={() => navigate("/Problems")}>
             Back to Problems
           </button>
@@ -225,28 +229,35 @@ export function Problem() {
             }}
             title="Run code"
             className="h-10 w-10 p-1 
-          cursor-pointer rounded-lg hover:bg-neutral-300 hover:scale-90
+          cursor-pointer rounded-full hover:bg-neutral-300 hover:scale-90
           transition delay-75 m-0.5 border border-neutral-400 z-10 shadow-xl bg-white">
             <img src="/play.png" className="object-cover" />
           </button>
 
 
           {/* SUBMIT */}
-          <button className="m-1 p-2 rounded-lg hover:bg-neutral-300 transition delay-75 hover:scale-90 
-cursor-pointer min-w-0 h-10 flex justify-between gap-1 border border-neutral-400 shadow-xl z-10 bg-white"
+          <button className="m-1 p-3 rounded-full hover:bg-neutral-300 transition delay-75  
+cursor-pointer min-w-0 h-10 flex justify-between items-center gap-1 hover:-translate-y-1 
+            border border-neutral-400 shadow-xl z-10 bg-white transform duration-100"
             onClick={async () => { await submitCode(); }} >
-            <img src="/submit.png" className="shrink-0 object-cover " />
-            Submit
+            <div className="h-5 w-5">
+              <img src="/submit.png" className="h-full w-full  object-cover" />
+            </div>
+            <p>Submit</p>
           </button>
 
         </div>
 
         {/* USER */}
-        <div className="flex-1 flex justify-end items-center">
-          <div>
-            <button> Profile</button>
-          </div>
-
+        {/* BACK */}
+        <div className="flex m-2 flex-1 justify-end items-center w-1/2   h-1/20 p-1">
+          <button className="py-2 px-4  z-10 shadow-xl cursor-pointer
+              border border-neutral-400 
+            rounded-full bg-white m-0.5 
+            hover:scale-110 hover:bg-neutral-400 transition delay-75"
+            onClick={() => navigate("/User")}>
+            {sessionToken.length ? `${user.username}` : "Login" }
+          </button>
         </div>
       </div>
 
@@ -254,7 +265,7 @@ cursor-pointer min-w-0 h-10 flex justify-between gap-1 border border-neutral-400
       {/* CONTENT */}
       <div className="flex-1 w-full flex  justify-between gap-1 my-0.5 ">
         {/* CONTENT-LEFT */}
-        <div className="flex-3  flex flex-col mx-1 justify-between gap-2">
+        <div className="flex-1  flex flex-col mx-1 justify-between gap-2">
 
           {/* ACTION WINDOW */}
           <div className={`relative rounded-lg bg-white  h-full  flex-5 basis-0  p-3 w-full  text-neutral-900 
@@ -292,6 +303,8 @@ cursor-pointer min-w-0 h-10 flex justify-between gap-1 border border-neutral-400
 
           {/* AI WINDOW */}
           <AIWindow
+            editorRef={editorRef}
+            Id={Id}
             errMsg={errMsg}
             submittedCount={submittedCount}
             problemId={Id}
@@ -301,12 +314,14 @@ cursor-pointer min-w-0 h-10 flex justify-between gap-1 border border-neutral-400
         </div>
 
 
-        <PageRight
-          editorRef={editorRef}
-          prob={prob}
-          setSampleTests={setSampleTests}
-          sampleTests={sampleTests}
-        />
+        <div className="flex-1 ">
+          <PageRight
+            editorRef={editorRef}
+            prob={prob}
+            setSampleTests={setSampleTests}
+            sampleTests={sampleTests}
+          />
+        </div>
       </div>
 
       {errMsg.message.length != 0 && <Disclaimer display={errMsg.message} colorClass={errMsg.color} />}

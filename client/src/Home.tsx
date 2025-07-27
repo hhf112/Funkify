@@ -28,7 +28,6 @@ export function Home() {
     //check if user logged in before.
     (async () => {
       if (sessionToken.length) return;
-
       try {
         setErrMsg({ message: "Auto logging you in if any past logins are found :) ...", color: "amber" });
         const get = await fetch(`${authentication}/token`, {
@@ -39,21 +38,17 @@ export function Home() {
           credentials: "include"
         })
         const getJSON = await get.json();
-        // console.log(getJSON);
-        if (!getJSON.accessToken) return;
+        if (!getJSON.accessToken) {
+          setErrMsg({message: "", color: ""});
+          return;
+        }
         setSessionToken(getJSON.accessToken);
-        setUser({
-          isValid: true,
-          username: getJSON.user.username,
-          email: getJSON.user.username,
-          userId: getJSON.user._id,
-          password: getJSON.user.password,
-        });
+        setUser(getJSON.user);
         setErrMsg({
           message: "Youre Logged in! :D",
           color: "green",
         })
-        setTimeout(() => setErrMsg({ message: "", color: "" }), 2000)
+        setTimeout(() => setErrMsg({ message: "", color: "" }), 1000)
       } catch (err) {
         setErrMsg({ message: "", color: "amber" });
       }
