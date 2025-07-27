@@ -50,7 +50,6 @@ function ProblemCard({ prob }: { prob: ProblemCompact }) {
         <p className="my-2">
           {prob.title}
         </p>
-        <img src="/" />
       </div>
 
       <div className="flex justify-between gap-5">
