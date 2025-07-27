@@ -40,12 +40,3 @@ transform duration-300 transition-all delay-75 ${color[colorClass]} py-2 px-3 ro
   )
 }
 
-export function Loader({ display }: { display: string }) {
-
-  return (
-    <div className="flex">
-      <p className="text-neutral-800 font-mono animate-pulse"> {display} </p>
-    </div>
-  )
-
-}
