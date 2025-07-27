@@ -9,11 +9,15 @@ if (!authentication) {
 
 // interfaces
 export interface User {
-  isValid: Boolean,
+  // isValid: Boolean,
   username: string | null,
   password: string | null,
   email: string | null,
   userId: string,
+  attempted: {
+    id: string,
+    status: string,
+  }[],
 }
 
 export interface problem {
@@ -38,9 +42,9 @@ export interface problem {
 }
 export interface sessionContextType {
   sessionToken: string,
-  user: User,
+  user: User | null,
   setSessionToken: Dispatch<SetStateAction<string>>,
-  setUser: Dispatch<SetStateAction<User>>,
+  setUser: Dispatch<SetStateAction<User | null>>,
   getSessionToken: () => Promise<void>,
   doRefreshToken: () => Promise<void>,
   Fetch: (ur: string, opts: any) => Promise<Response | null>,
@@ -49,11 +53,11 @@ export interface sessionContextType {
 
 export const sessionContext = createContext<sessionContextType>({
   user: {
-    isValid: false,
     username: "",
     password: "",
     email: "",
     userId: "",
+    attempted: [],
   },
   sessionToken: "",
   setUser: () => { },
@@ -61,7 +65,7 @@ export const sessionContext = createContext<sessionContextType>({
   getSessionToken: async () => { },
   doRefreshToken: async () => { },
   Fetch: async (url: string, opts: any) => null,
-  Logout: async () => {},
+  Logout: async () => { },
 });
 
 export function SessionContextProvider(
@@ -71,14 +75,7 @@ export function SessionContextProvider(
   const navigate = useNavigate();
   // states
   const [sessionToken, setSessionToken] = useState<string>("");
-  const [user, setUser] = useState<User>({
-    isValid: false,
-    username: "",
-    password: "",
-    email: "",
-    userId: "",
-
-  })
+  const [user, setUser] = useState<User | null>(null);
 
   /* state functions */
 
