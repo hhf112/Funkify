@@ -112,7 +112,7 @@ export function Problem() {
     setLoadMsg("Running your code")
     setErrMsg({ message: "", color: " " });
     try {
-      const get = await Fetch(`${compiler}/run`, {
+      const get = await fetch(`${compiler}/run`, {
         method: "POST",
         headers: {
           "Content-type": "application/json",
