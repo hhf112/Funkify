@@ -79,7 +79,7 @@ export function AIWindow({
       }
 
       const adviceJSON = await advice.json();
-      console.log(adviceJSON.summary);
+      // console.log(adviceJSON.summary);
       if (what === 2) {
         // editorRef.current?.setValue(adviceJSON.summary.slice(7, -4));
         const raw = adviceJSON.summary.slice(7, -4);

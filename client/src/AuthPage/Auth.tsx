@@ -119,7 +119,7 @@ export function Auth() {
     if (login) {
       const user = postJSON.user;
       setSessionToken(postJSON.accessToken);
-      console.log("user: ", postJSON.user);
+      // console.log("user: ", postJSON.user);
       setUser(postJSON.user);
       setSubmitted(true);
     } if (signUp) {

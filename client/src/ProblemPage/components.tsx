@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 export function VerdictCard({ message }: { message: string }) {
   const [mount, setMount] = useState<boolean>(false);
-  console.log(mount);
+  // console.log(mount);
 
   useEffect(() => setMount(true), []);
 

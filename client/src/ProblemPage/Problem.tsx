@@ -110,6 +110,7 @@ export function Problem() {
 
     setContent(2);
     setLoadMsg("Running your code")
+    setErrMsg({ message: "", color: " " });
     try {
       const get = await Fetch(`${compiler}/run`, {
         method: "POST",
@@ -256,7 +257,7 @@ cursor-pointer min-w-0 h-10 flex justify-between items-center gap-1 hover:-trans
             rounded-full bg-white m-0.5 
             hover:scale-110 hover:bg-neutral-400 transition delay-75"
             onClick={() => navigate("/user")}>
-            {sessionToken.length ? `${user?.username}` : "Login" }
+            {sessionToken.length ? `${user?.username}` : "Login"}
           </button>
         </div>
       </div>
