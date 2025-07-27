@@ -23,11 +23,6 @@ export function PageRight({
 }) {
   const [sampleTestView, setSampleTestView] = useState<number>(0);
 
-  useEffect(() => {
-    // setSampleTestView(sampleTests.length - 1);
-  }, [sampleTests.length]);
-
-
   /* Component */
   return (
     <div className="flex-4 flex flex-col justify-between gap-2 h-full">
@@ -48,7 +43,7 @@ export function PageRight({
             }}
             height="100%" width="100%"
             defaultLanguage="cpp"
-            defaultValue={defaultEditorCpp}
+            defaultValue={sessionStorage.getItem("recent_code") || defaultEditorCpp}
             theme="vs-dark"
           />
         </div>
