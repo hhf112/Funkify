@@ -10,9 +10,10 @@ if (!authentication) {
 // interfaces
 export interface User {
   // isValid: Boolean,
-  username: string | null,
-  password: string | null,
-  email: string | null,
+  _id: string,
+  username: string,
+  password: string,
+  email: string,
   userId: string,
   attempted: {
     id: string,
@@ -52,13 +53,7 @@ export interface sessionContextType {
 }
 
 export const sessionContext = createContext<sessionContextType>({
-  user: {
-    username: "",
-    password: "",
-    email: "",
-    userId: "",
-    attempted: [],
-  },
+  user: null,
   sessionToken: "",
   setUser: () => { },
   setSessionToken: () => { },
