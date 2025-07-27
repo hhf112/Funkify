@@ -4,7 +4,10 @@ import mongoose from 'mongoose';
 export interface UserType {
   username: string,
   password: string,
-  problemsSovled: string[],
+  attempted: {
+    id: string,
+    status: string,
+  }[],
   email: string,
 }
 const userSchema = new mongoose.Schema({
@@ -17,8 +20,17 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: [],
   },
-  problemsSolved: {
-    type: [String],
+  attempted: {
+    type: [{
+      id: {
+        type: String,
+        required: true,
+      },
+      status: {
+        type: String,
+        required: true,
+      }
+    }],
     default: [],
   },
   email: {
