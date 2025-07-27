@@ -74,7 +74,7 @@ export function Home() {
           setTimeout(() => {
             setHoverCreateAccount(false);
           }, 2000)
-        }, 3000);
+        }, 2000);
         return;
       }
 
@@ -93,8 +93,8 @@ export function Home() {
           cp[idx] = false;
           return cp;
         });
-      }, 500);
-    }, 600)
+      }, 400);
+    }, 500)
 
     return () => clearInterval(interval);
   }, [])
