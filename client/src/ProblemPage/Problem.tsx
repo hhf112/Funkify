@@ -170,7 +170,7 @@ export function Problem() {
         },
         body: JSON.stringify({
           code: getCodeFromEditor(),
-          userId: user.userId,
+          userId: user?.userId,
           problemId: Id,
           language: "cpp",
           verdictId: null,
@@ -255,8 +255,8 @@ cursor-pointer min-w-0 h-10 flex justify-between items-center gap-1 hover:-trans
               border border-neutral-400 
             rounded-full bg-white m-0.5 
             hover:scale-110 hover:bg-neutral-400 transition delay-75"
-            onClick={() => navigate("/User")}>
-            {sessionToken.length ? `${user.username}` : "Login" }
+            onClick={() => navigate("/user")}>
+            {sessionToken.length ? `${user?.username}` : "Login" }
           </button>
         </div>
       </div>
