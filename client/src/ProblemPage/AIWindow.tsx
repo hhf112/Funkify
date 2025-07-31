@@ -1,5 +1,6 @@
 import { Dispatch, RefObject, SetStateAction, useContext, useEffect, useState } from "react";
 import { sessionContext } from "../contexts/SessionContextProvider";
+import { useNavigate } from "react-router-dom";
 
 const backend = import.meta.env.VITE_BACKEND || "";
 if (!backend) {
@@ -34,7 +35,8 @@ export function AIWindow({
   problemId: string
   submittedCount: number
 }) {
-  const { sessionToken } = useContext(sessionContext);
+  const navigate = useNavigate();
+  const { sessionToken, Fetch } = useContext(sessionContext);
   const [mount, setMount] = useState<boolean>(false);
   const [hoverAI, setHoverAI] = useState<boolean>(false);
   const [AIAdvice, setAIAdvice] = useState<string>("Nothing to see here! try your best at the problem statement!");
@@ -61,12 +63,13 @@ export function AIWindow({
     setAIAdvice("You only get 5 requests per day! use them carefully! 🙆‍♀️");
 
     try {
-      const advice = await fetch(`${backend}/api/user/ai/sum/${Id}?what=${what}`, {
+      const advice = await Fetch(`${backend}/api/user/ai/sum/${Id}?what=${what}`, {
         method: "GET",
         headers: {
           "authorization": `Bearer ${sessionToken}`,
         },
       });
+      if (!advice) {navigate("/Login"); return;}
 
       if (advice.status === 429) {
         setErrMsg({

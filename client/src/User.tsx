@@ -13,7 +13,6 @@ export function User() {
   useEffect(() => setMount(true), [])
 
 
-  console.log(user);
   /* component */
   return (
     <div className="flex  h-screen flex-col justify-begin py-20 px-40 items-center">

@@ -2,6 +2,7 @@ import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import { useContext } from "react";
 import { sessionContext } from "../contexts/SessionContextProvider";
 import { on } from "events";
+import { useNavigate } from "react-router-dom";
 
 const backend = import.meta.env.VITE_BACKEND;
 if (!backend) {
@@ -83,6 +84,7 @@ export function PageLeftSubmit({
   setContent: Dispatch<SetStateAction<number>>,
 }) {
   /* states */
+  const navigate = useNavigate();
   const { Fetch, sessionToken } = useContext(sessionContext)
 
   useEffect(() => {
@@ -95,7 +97,8 @@ export function PageLeftSubmit({
             authorization: `Bearer ${sessionToken}`,
           },
         });
-        const getJSON = await get?.json();
+        if (!get) { navigate("/Login"); return; }
+        const getJSON = await get.json();
 
         if (getJSON.submission.status == "fail") {
           setDone(true);
@@ -113,7 +116,8 @@ export function PageLeftSubmit({
                 authorization: `Bearer ${sessionToken}`,
               }
             });
-            const getJSON = await get?.json();
+            if (!get) {navigate("/Login"); return;}
+            const getJSON = await get.json();
             // console.log(getJSON);
             setVerdict(getJSON.verdict);
             setErrMsg({

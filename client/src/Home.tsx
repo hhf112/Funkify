@@ -22,41 +22,33 @@ export function Home() {
   const [doneMount, setDoneMount] = useState<boolean>(false);
   const [errMsg, setErrMsg] = useState<{ message: string, color: string }>({ message: "", color: "" });
 
-  /* effect */
-
   useEffect(() => {
-    //check if user logged in before.
     (async () => {
-      if (sessionToken.length) return;
-      return; // returns 204. turned off till fixed.
       try {
-        setErrMsg({ message: "Auto logging you in if any past logins are found :) ...", color: "amber" });
-        const get = await fetch(`${authentication}/token`, {
+        setErrMsg({ message: "detecting past logins", color: "amber" });
+        const tryLogin = await fetch(`${authentication}/token`, {
           method: "POST",
           headers: {
             "Content-type": "application/json",
           },
-          credentials: "include"
-        })
-        const getJSON = await get.json();
-        if (!getJSON.accessToken) {
-          setErrMsg({ message: "", color: "" });
+          credentials: "include",
+        });
+        if (tryLogin.ok) {
+          setErrMsg({ message: "Login found!", color: "green" });
+          const tryLoginJSON = await tryLogin.json();
+          const { user, accessToken } = tryLoginJSON;
+          setSessionToken(accessToken);
+          setUser(user);
           return;
         }
-        setSessionToken(getJSON.accessToken);
-        setUser(getJSON.user);
-        setErrMsg({
-          message: "Youre Logged in! :D",
-          color: "green",
-        })
-        setTimeout(() => setErrMsg({ message: "", color: "" }), 1000)
+
+        setErrMsg({ message: "", color: "green" });
       } catch (err) {
-        setErrMsg({ message: "", color: "amber" });
+        setErrMsg({ message: "unexpected error occured", color: "red" });
+        console.error(err);
       }
     })();
   }, [])
-
-  // useEffect(() => console.log(user), [user.isValid]);
 
   let flag = 0;
   useEffect(() => {
@@ -222,8 +214,6 @@ hover:text-white  hover:bg-black   hover:translate-y-2  hover:italic transition`
           />
         </div>
       </div>
-      <p className="relative top-50"> TM </p>
-
       {errMsg.message.length !== 0 && <Disclaimer display={errMsg.message} colorClass={errMsg.color} />}
     </div>
   )

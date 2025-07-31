@@ -13,10 +13,18 @@ import { Disclaimer } from "../AuthPage/components";
 import { PageRight } from "./PageRight";
 import { PageLeftRun } from "./PageLeftRun";
 import { AIWindow } from "./AIWindow";
+import { compileFunction } from "vm";
 
 
 const backend: string = import.meta.env.VITE_BACKEND || "";
-const compiler: string = import.meta.env.VITE_COMPILER || "";;
+if (!backend) {
+  console.error("backend url not provided");
+}
+const compiler: string = import.meta.env.VITE_COMPILER || "";
+// console.log(compiler);
+if (!compiler) {
+  console.error("compiler url not provided");
+}
 
 export function Problem() {
 
@@ -91,7 +99,6 @@ export function Problem() {
 
   async function runCode() {
     if (!sessionToken) {
-      sessionStorage.setItem("recent_code", getCodeFromEditor());
       navigate("/Login", {
         state: {
           previous: `/Problem/${Id}`
@@ -100,7 +107,7 @@ export function Problem() {
       return;
     }
     setRunVerdict(null);
-    if (prob == null) {
+    if (prob === null) {
       setErrMsg({
         color: "red",
         message: "Invalid problem. cannot run",
@@ -112,7 +119,7 @@ export function Problem() {
     setLoadMsg("Running your code")
     setErrMsg({ message: "", color: " " });
     try {
-      const get = await fetch(`${compiler}/run`, {
+      const get = await Fetch(`${compiler}/run`, {
         method: "POST",
         headers: {
           "Content-type": "application/json",
@@ -126,7 +133,13 @@ export function Problem() {
           linesPerTestCase: prob.linesPerTestCase,
         })
       });
-      const getJSON = await get?.json();
+
+      if (!get) {
+        navigate("/Login");
+        return;
+      }
+
+      const getJSON = await get.json();
       // console.log(getJSON);
       setRunVerdict({ finalVerdict: getJSON.finalVerdict, results: getJSON.results });
     } catch (err: any) {
@@ -178,7 +191,10 @@ export function Problem() {
           testId: prob?.testId,
         }),
       });
-      const postJSON = await post?.json();
+
+      if (!post) {navigate("/Login"); return;}
+
+      const postJSON = await post.json();
       setSubmissionId(postJSON.submissionId);
       if (!post?.ok) {
         setErrMsg({
@@ -257,7 +273,7 @@ cursor-pointer min-w-0 h-10 flex justify-between items-center gap-1 hover:-trans
             rounded-full bg-white m-0.5 
             hover:scale-110 hover:bg-neutral-400 transition delay-75"
             onClick={() => navigate("/user")}>
-            {sessionToken.length ? `${user?.username}` : "Login"}
+            {sessionToken ? `${user?.username}` : "Login"}
           </button>
         </div>
       </div>

@@ -131,7 +131,7 @@ export function Problems() {
           <h1 className={`font-Inter font-semibold text-3xl text-neutral-600 transform
 ${mount[0] ? "opacity-100 translate-y-0 scale-100" : "scale-90 translate-y-2 opacity-0"} transition-all delay-100  duration-500`}>
             {
-              sessionToken.length ?
+              sessionToken ?
                 hoverAddProblem ? "Contribute a problem!" : `Hi ${user?.username}! Challenge yourself everyday!`
                 :
                 hoverAddProblem ? "Create an account to contribute problems!" : "Create an account today to start solving!"

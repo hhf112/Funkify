@@ -42,12 +42,10 @@ export interface problem {
   linesPerTestCase: number,
 }
 export interface sessionContextType {
-  sessionToken: string,
+  sessionToken: string | null,
   user: User | null,
-  setSessionToken: Dispatch<SetStateAction<string>>,
+  setSessionToken: Dispatch<SetStateAction<string | null>>,
   setUser: Dispatch<SetStateAction<User | null>>,
-  getSessionToken: () => Promise<void>,
-  doRefreshToken: () => Promise<void>,
   Fetch: (ur: string, opts: any) => Promise<Response | null>,
   Logout: () => Promise<void>,
 }
@@ -57,8 +55,6 @@ export const sessionContext = createContext<sessionContextType>({
   sessionToken: "",
   setUser: () => { },
   setSessionToken: () => { },
-  getSessionToken: async () => { },
-  doRefreshToken: async () => { },
   Fetch: async (url: string, opts: any) => null,
   Logout: async () => { },
 });
@@ -69,25 +65,11 @@ export function SessionContextProvider(
   //
   const navigate = useNavigate();
   // states
-  const [sessionToken, setSessionToken] = useState<string>("");
+  const [sessionToken, setSessionToken] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
+  // console.log(sessionToken);
 
   /* state functions */
-
-  async function Fetch(url: string, opts: any): Promise<Response> {
-    const { headers = {}, ...rest } = opts;
-    const authHeaders = {
-      ...headers,
-      authorization: `Bearer ${sessionToken}`,
-    }
-    const authOpts = { ...rest, headers: authHeaders }
-    let opt = await fetch(url, authOpts);
-    if (opt.status === 401) {
-      await doRefreshToken();
-      opt = await fetch(url, authOpts);
-    }
-    return opt;
-  }
 
 
   async function Logout() {
@@ -101,45 +83,34 @@ export function SessionContextProvider(
       })
       const postJSON = await post.json();
       // console.log(postJSON);
-      setSessionToken("");
+      setSessionToken(null);
     } catch (err) {
       console.log(err);
     }
   }
 
 
-  async function getSessionToken(): Promise<void> {
-    if (!user) {
-      console.log("user is not valid. cannot fetch session token");
-      return;
-    }
-    if (user.email == "" || user.password == "") return;
-    try {
-      const post: Response = await fetch(`${authentication}/login`, {
+  async function Fetch(url: string, opts: any): Promise<Response | null> {
+    if (!sessionToken) return null;
+    let opt = await fetch(url, opts);
+    if (opt.status === 401) {
+      const post: Response = await fetch(`${authentication}/token`, {
         method: "POST",
         headers: {
           "Content-type": "application/json",
         },
-        body: JSON.stringify({
-          email: user.email || "",
-          password: user.password || "",
-        }),
+        credentials: "include"
       });
+      if (!post.ok) return null;
       const postJSON = await post.json();
       const token = postJSON.accessToken;
       setSessionToken(token);
-    } catch (err) {
-      console.error(err);
+      opts.headers = { ...opts.headers, authorization: `Bearer ${token}` };
+      opt = await fetch(url, opts);
     }
-    return;
+    return opt;
   }
 
-  async function doRefreshToken(): Promise<void> {
-    const get: Response = await fetch(`${authentication}/token`);
-    const getJSON = await get.json();
-    const token = getJSON.accessToken;
-    setSessionToken(token);
-  }
 
   return (
     <sessionContext.Provider value={{
@@ -147,8 +118,6 @@ export function SessionContextProvider(
       user,
       setUser,
       setSessionToken,
-      getSessionToken,
-      doRefreshToken,
       Fetch,
       Logout,
     }}>
