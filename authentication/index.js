@@ -17,7 +17,6 @@ try {
 const app = express();
 app.use(cors({
   origin: process.env.FRONTEND,
-  domain: process.env.FRONTEND_DOMAIN_NAME,
   credentials: true,
 }));
 
