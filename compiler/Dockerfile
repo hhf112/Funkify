@@ -2,11 +2,17 @@ FROM node:22
 
 WORKDIR /app
 
+USER root
 RUN apt-get update && apt-get install g++
 
-COPY . .
 
-RUN npm install
+RUN useradd -m sandbox
+
+COPY --chown=sandbox:sandbox . .
+
+
+USER sandbox
+RUN npm ci --only=production
 
 EXPOSE 4000
 
