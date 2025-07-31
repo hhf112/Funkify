@@ -13,7 +13,7 @@ const authentication: string = import.meta.env.VITE_AUTH || "";
 export function Auth() {
 
   /* use */
-  const { Logout, setUser, setSessionToken, sessionToken, user } = useContext<sessionContextType>(sessionContext);
+  const { Logout, setUser, setSessionToken, Fetch, sessionToken, user } = useContext<sessionContextType>(sessionContext);
 
   const location = useLocation();
   const { previous }: { previous: string } = location.state || {};
@@ -37,45 +37,8 @@ export function Auth() {
   const [loader, setLoader] = useState<boolean>(false);
 
   useEffect(() => {
-    if (sessionToken.length) navigate(previous || '/');
+    if (sessionToken) navigate(previous || '/');
   }, [sessionToken]);
-
-  useEffect(() => {
-    //check if user logged in before.
-    (async () => {
-      if (sessionToken.length) return;
-      return;
-
-      try {
-        setErrMsg({ message: "Auto logging you in if any past logins are found :) ...", color: "amber" });
-        const get = await fetch(`${authentication}/token`, {
-          method: "POST",
-          headers: {
-            "Content-type": "application/json",
-          },
-          credentials: "include"
-        })
-        const getJSON = await get.json();
-        // console.log(getJSON);
-        if (!getJSON.accessToken) {
-          setErrMsg({ message: "", color: "" });
-          return;
-        }
-        setSessionToken(getJSON.accessToken);
-        setUser(getJSON.user);
-        setErrMsg({
-          message: "Youre Logged in! :D",
-          color: "green",
-        })
-        setTimeout(() => setErrMsg({ message: "", color: "" }), 1000)
-      } catch (err) {
-        setErrMsg({ message: "", color: "amber" });
-      }
-    })();
-  }, [])
-
-
-
 
   /*functions*/
   async function Submit() {
@@ -93,6 +56,7 @@ export function Auth() {
       method: "POST",
       headers: {
         "Content-type": "application/json",
+        "authorization": `Bearer ${sessionToken}`,
       },
       body: JSON.stringify({
         username: username,
@@ -143,7 +107,7 @@ export function Auth() {
       </div>
 
       <div className="flex w-full h-screen justify-center items-center">
-        {submitted || sessionToken.length ? <PageSubmittedLoginSignUp
+        {submitted || sessionToken ? <PageSubmittedLoginSignUp
           login={login}
           previous={previous}
           signUp={signUp}
