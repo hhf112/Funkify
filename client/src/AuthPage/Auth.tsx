@@ -47,7 +47,8 @@ export function Auth() {
     const password = passwordInputRef.current?.value;
 
     const req = authentication + (login ? "/login" : "/register");
-    setTimeout(() => setErrMsg({ message: "It is taking longer than usual please wait!", color: "amber" }), 2000)
+    setTimeout(() => setErrMsg({ message: "It is taking longer than usual please wait!", color: "amber" }),
+      5000)
     setErrMsg({
       message: "Loading ...",
       color: "amber",

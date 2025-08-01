@@ -9,7 +9,7 @@ import { sessionContext } from "./contexts/SessionContextProvider";
 
 
 const authentication = import.meta.env.VITE_AUTH;
-if (!authentication ) {
+if (!authentication) {
   console.error("authentication url not found");
 }
 
@@ -42,16 +42,13 @@ function App() {
 
 
   return (
-    <>
-      <Routes>
-        <Route path="/Login" element={<Auth />} />
-        <Route path="/Problem/:Id" element={<Problem />} />
-        <Route path="/" element={<Home />} />
-        <Route path="/User" element={<User />} />
-        <Route path="/Problems" element={<Problems />} />
-      </Routes>
-
-    </>
+    <Routes>
+      <Route path="/Login" element={<Auth />} />
+      <Route path="/Problem/:Id" element={<Problem />} />
+      <Route path="/" element={<Home />} />
+      <Route path="/User" element={<User />} />
+      <Route path="/Problems" element={<Problems />} />
+    </Routes>
   )
 }
 

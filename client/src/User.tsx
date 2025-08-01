@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react"
 import { sessionContext } from "./contexts/SessionContextProvider"
 import { useNavigate, useNavigation } from "react-router-dom";
+import { Disclaimer } from "./AuthPage/components";
 
 export function User() {
 
@@ -8,6 +9,11 @@ export function User() {
   const { Logout, user } = useContext(sessionContext);
   const navigate = useNavigate();
   const [mount, setMount] = useState(false);
+  const [errMsg, setErrMsg] = useState({
+    message: "",
+    color: "amber",
+  });
+  // navigate("/Login");
 
 
   useEffect(() => setMount(true), [])
@@ -16,6 +22,16 @@ export function User() {
   /* component */
   return (
     <div className="flex  h-screen flex-col justify-begin py-20 px-40 items-center">
+      <button
+        className="fixed top-0 p-4 border rounded-xl border-neutral-400 cursor-pointer"
+      onClick={async ()=> {
+          setErrMsg({message: "Logging you out..." , color: "amber"});
+          await Logout();
+          setErrMsg({message: "" , color: "amber"});
+          navigate("/");
+        }}> 
+        Logout
+      </button>
 
       {/* profile card and  problem stats*/}
       <div className={`h-1/3  w-full flex justify-between gap-1`}>
@@ -62,6 +78,7 @@ export function User() {
       </div>
 
 
+      {errMsg.message.length != 0 && <Disclaimer display={errMsg.message} colorClass={errMsg.color}/>}
     </div>
 
   )

@@ -166,7 +166,7 @@ ${mount[0] ? "opacity-100 translate-y-0 scale-100" : "scale-90 translate-y-2 opa
         {
           problems.map((prob, index) => <ProblemCard key={index} prob={prob} />)
         }
-        {errMsg.message.length && <Disclaimer display={errMsg.message} colorClass={errMsg.color} />}
+        {errMsg.message.length != 0 && <Disclaimer display={errMsg.message} colorClass={errMsg.color} />}
 
         {addProblemWindow && <AddProblem setAddProblemWindow={setAddProblemWindow} />}
 
