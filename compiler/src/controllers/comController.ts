@@ -1,5 +1,6 @@
 /* default */
 import { Request, Response } from 'express';
+import path, { basename, dirname, format } from 'path';
 import fs from "fs"
 
 /* models and types */
@@ -13,13 +14,16 @@ import type { SystemTestsType } from '../models/SystemTests.js';
 
 /* impl */
 import { generateFile } from './generateFile.js';
-import { execCpp, OutputType } from "./runCpp.js"
 import { ResultType } from '../models/Verdict.js';
+import { timeLog, warn } from 'console';
+import { CompileStatusType, cppCompile, cppExec, ExecStatusType } from './runCpp.js';
+import { memoryUsage } from 'process';
+import { CompletionInfoFlags } from 'typescript';
 
 
 /* Languages supported */
 const runFor: Record<string, any> = {
-  "cpp": execCpp,
+  "cpp": cppExec,
 }
 
 
@@ -34,33 +38,61 @@ export const runCode = async (req: Request, res: Response) => {
 
   if (!code || !language || !tests) {
     res.status(400).json({
-      
-      message: "Required fields not provided.",
+      success: false,
+      message: "Required fields not provided or empty.",
     })
     return;
   }
 
-  const codeFile = generateFile("../../codes", language, code);
 
+  // if (language == "cpp")
+  let binaryPath;
+  try {
+    const compileStatus: CompileStatusType = await cppCompile(code, language);
+    if (!compileStatus.success || ! compileStatus.binaryPath) {
+      res.status(200).json({
+        success: false,
+        finalVerdict: "Compilation Error",
+        verdict: compileStatus,
+        results: [{
+          verdict: "Compilation Error.",
+          error :{
+            stderr: compileStatus.stderr,
+            error: compileStatus.errorMessage,
+          }
+        }],
+      });
+      return;
+    }
+    binaryPath = compileStatus.binaryPath;
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error.",
+    });
+    return;
+  }
+
+  let verdict: ResultType;
+  let output: ExecStatusType;
+  let results: { test: string, output: string, verdict: ResultType }[] = [];
   let passed = 0;
-  const results: { test: string, output: string, verdict: ResultType }[] = new Array(tests.length);
-  let verdict: ResultType, output: OutputType;
-  let testno = 0;
-  let finalVerdict: string | null = null;
+  let finalVerdict: string | null = "Accepted";
+
   for (const test of tests) {
-    const start: [number, number] = process.hrtime();
     try {
-      output = await runFor[language](codeFile, test.input, timeLimit);
+      output = await runFor[language](binaryPath, timeLimit);
     } catch (err) {
       console.log(err);
       res.status(500).json({
-        
+        success: false,
         message: "Internal server error."
       });
       return;
     }
-    const end: [number, number] = process.hrtime(start);
-    if (output.error === null) {
+
+    if (output.errorMessage === null) {
       if (output.stdout.trim() == test.output.trim()) {
         passed++;
         verdict = {
@@ -75,30 +107,32 @@ export const runCode = async (req: Request, res: Response) => {
           passed: false,
           error: null,
         }
-        if (!finalVerdict) finalVerdict = "Wrong Answer";
+        finalVerdict = "Wrong Answer";
       }
     } else {
       verdict = {
-        verdict: (output.compilation ?
-          (output.error === "timed out." ? "Time Limit Exceeded" : "Runtime Error")
-          : "Compilation Error"),
+        verdict: output.errorMessage === "timed out." ? "Time Limit Exceeded" : "Runtime Error",
         passed: false,
         error: {
           stderr: output.stderr,
-          error: output.error,
+          error: output.errorMessage,
         }
       }
       finalVerdict = verdict.verdict;
+      results = [...results, { test, output: output.stdout.trim(), verdict }]
+      break;
     }
-    results[testno++] = { test, output: output.stdout.trim(), verdict }
+
+    results = [...results, { test, output: output.stdout.trim(), verdict }]
   }
-  if (!finalVerdict) finalVerdict = "Accepted"
+  fs.unlinkSync(binaryPath);
+
   res.status(200).json({
+    success: true,
     finalVerdict: finalVerdict,
-    
-    message: "job finished.",
+    message: "Job finished.",
     results: results,
-    passsed: (passed === tests.length),
+    passed: (passed === tests.length),
   })
 }
 
@@ -106,7 +140,7 @@ export const submitCode = async (req: Request, res: Response) => {
   const submissionId = req.body.submissionId;
   if (!submissionId) {
     res.status(400).json({
-      
+      success: false,
       message: "submissionId required."
     })
     return;
@@ -117,37 +151,90 @@ export const submitCode = async (req: Request, res: Response) => {
   try {
     submission = await Submission.findById(submissionId);
     tests = await SystemTests.findById(submission?.testId);
+    if (!submission || !tests) {
+      res.status(404).json({
+        success: false,
+        message: "Submission or tests not found",
+      })
+      return;
+    }
   } catch (err) {
     console.log(err);
     res.status(500).json({
-      
+      success: true,
       message: "Database error.",
     })
     return;
   }
 
-  if (!submission || !tests) {
-    res.status(404).json({
-      
-      message: "submission or tests not found",
+
+  let binaryPath;
+  try {
+    const compileStatus: CompileStatusType = await cppCompile(submission.code, submission.language);
+    if (!compileStatus.success || !compileStatus.binaryPath) {
+      try {
+        const { _id } = await Verdict.create({
+          verdict: "Compilation Error",
+          error: {
+            stderr: compileStatus.stderr,
+            error: compileStatus.errorMessage,
+          },
+          results: [{
+            verdict: "Compilation Error",
+            passed: false,
+            error: {
+              stderr: compileStatus.stderr,
+              error: compileStatus.errorMessage,
+            }
+          }],
+          submissionId: submissionId,
+          userId: submission.userId,
+          memory_mb: 0,
+          runtime_s: -1,
+          testsPassed: 0,
+          totalTests: 0,
+        });
+
+        await Submission.findByIdAndUpdate(submissionId, { status: "processed", verdictId: _id });
+
+
+        res.status(200).json({
+          success: true,
+          message: "job processed.",
+        })
+      } catch (err) {
+        console.log(err);
+        res.status(500).json({
+          success: false,
+          message: "Database error.",
+        })
+      }
+      return;
+    }
+    binaryPath = compileStatus.binaryPath;
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error.",
+    });
+    return;
+  }
+
+  try {
+    await Submission.findByIdAndUpdate(submissionId, { status: "processing", });
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({
+      success: false,
+      message: "Database error.",
     })
     return;
   }
 
-  const filePath: string = generateFile("../../codes/", submission.language, submission.code);
-
-  await Submission.findByIdAndUpdate(submissionId, {
-    status: "processing",
-  });
-
-  const results: ResultType[] = new Array(tests.tests.length).fill({
-    verdict: "Compilation Error",
-    error: null,
-    passed: false,
-  });
-
   const finalVerdict: VerdictType = {
-    verdict: "",
+    error: null,
+    verdict: "Accepted",
     results: [],
     submissionId: submissionId,
     userId: submission.userId,
@@ -158,29 +245,23 @@ export const submitCode = async (req: Request, res: Response) => {
   }
 
   try {
-    let testno = 0, passed = 0;
-    let output: OutputType, verdict: ResultType;
+    let output: ExecStatusType, verdict: ResultType;
     for (const test of tests.tests) {
-      const start: [number, number] = process.hrtime();
       try {
-        output = await runFor[submission.language](filePath, test.input,
-          tests.runtime_s);
+        output = await runFor[submission.language](binaryPath, tests.runtime_s);
       } catch (err) {
         console.log(err);
         res.status(500).json({
-          
+          success: false,
           message: "Internal server error."
         });
         return;
       }
-      const end: [number, number] = process.hrtime(start);
 
-      fs.unlinkSync(filePath);
-
-      /* error handling */
-      if (output.error === null) {
+      finalVerdict.runtime_ms = output.runtime_ms;
+      if (output.errorMessage === null) {
         if (output.stdout.trim() === test.output.trim()) {
-          passed++;
+          finalVerdict.testsPassed++;
           verdict = {
             verdict: "Accepted",
             passed: true,
@@ -193,59 +274,51 @@ export const submitCode = async (req: Request, res: Response) => {
             passed: false,
             error: null,
           }
-          if (!finalVerdict.verdict) finalVerdict.verdict = verdict.verdict;
+          finalVerdict.verdict = verdict.verdict;
         }
       } else {
         verdict = {
-          verdict: (output.compilation ? "Runtime Error" : "Compilation Error"),
+          verdict: output.errorMessage === "timed out." ? "Time Limit Exceeded" : "Runtime Error",
           passed: false,
           error: {
             stderr: output.stderr,
-            error: output.error,
+            error: output.errorMessage,
           }
         }
-        const err = verdict.error?.error;
-        if (err && err == "timed out.") {
-          finalVerdict.verdict = "Time Limit Exceeded";
-          finalVerdict.error = verdict.error;
-          break;
-        } else finalVerdict.verdict = verdict.verdict;
+        finalVerdict.verdict = verdict.verdict;
         finalVerdict.error = verdict.error;
-        if (!output.compilation) break;
+        finalVerdict.results = [...finalVerdict.results, verdict];
+        break;
       }
-      results[testno++] = verdict;
+      finalVerdict.results = [...finalVerdict.results, verdict];
     }
-
-
-    if (!finalVerdict.verdict) finalVerdict.verdict = "Accepted";
-    finalVerdict.testsPassed = passed;
-    finalVerdict.results = results;
+    fs.unlinkSync(binaryPath);
+    finalVerdict.error = null;
 
     try {
-      console.log("final", finalVerdict);
       const { _id } = await Verdict.create(finalVerdict);
-
       await Submission.findByIdAndUpdate(submissionId, { status: "processed", verdictId: _id, });
-
-
-      res.status(200).json({ message: "successfuly updated verdict." })
+      res.status(200).json({
+        success: true,
+        message: "Successfuly updated verdict."
+      })
     } catch (err) {
       console.log(err);
+      await Submission.findByIdAndUpdate(submissionId, { status: "fail" });
 
-      await Submission.findByIdAndUpdate(submissionId, {
-        status: "fail",
-      });
-
-      res.status(500).json({ message: "Database Error." })
+      res.status(500).json({
+        success: false,
+        message: "Database Error."
+      })
       return;
     }
-
   } catch (err) {
     console.log(err);
-
     await Submission.findByIdAndUpdate(submissionId, { status: "fail", });
-
-    res.status(500).json({ message: "Internal server error.", })
+    res.status(500).json({
+      success: false,
+      message: "Internal server error.",
+    })
   }
 }
 

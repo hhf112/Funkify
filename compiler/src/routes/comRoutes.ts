@@ -1,6 +1,6 @@
 import { Router } from "express";
 import {
-    runCode,
+  runCode,
   submitCode,
 
 } from "../controllers/comController.js";
@@ -8,7 +8,7 @@ import {
 const router = Router();
 
 router.post('/', submitCode);
-router.post('/run', runCode );
+router.post('/run', runCode);
 
 
 

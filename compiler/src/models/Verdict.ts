@@ -12,7 +12,7 @@ export interface ResultType {
 
 export interface VerdictType {
   verdict: string,
-  error?: {
+  error: {
     stderr: string,
     error: string,
   } | null
@@ -53,11 +53,11 @@ const verdictSchema = new mongoose.Schema({
         type: {
           stderr: {
             type: String,
-            required: true,
+            default: null
           },
           error: {
             type: String,
-            required: true
+            default: null
           }
         },
         default: null

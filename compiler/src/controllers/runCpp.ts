@@ -1,9 +1,10 @@
 import { exec, ExecFileException } from "child_process";
-import { warn } from "console";
 import fs from "fs";
 import path, { resolve } from "path";
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { v4 as uuid } from "uuid";
+import { generateFile } from "./generateFile.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -13,65 +14,82 @@ if (!fs.existsSync(outputPath)) {
   fs.mkdirSync(outputPath, { recursive: true });
 }
 
-
-export interface OutputType {
-  compilation: boolean,
-  runtime: boolean,
+export interface ExecStatusType {
+  success: boolean,
+  runtime_ms: number,
   stdout: string,
   stderr: string,
-  error: string | null,
+  errorMessage: string | null,
 }
-export const execCpp = async (filepath: string, input: string, timelimit: number): Promise<OutputType> => {
 
-  const jobId = path.basename(filepath).split(".")[0];
-  const outPath = path.join(outputPath, `${jobId}.out`);
+export interface CompileStatusType {
+  success: boolean,
+  binaryPath: string | null,
+  stdout: string | null,
+  stderr: string | null,
+  errorMessage: string | null,
+}
 
-  // check for compilation error
+export const cppCompile = async (input: string, format: string): Promise<CompileStatusType> => {
+  const filePath = generateFile("../../codes", format, input);
+  const binaryPath = `${path.join(outputPath, path.basename(filePath, path.extname(filePath)))}.out`;
+
+  // console.log(`g++ ${ filePath } -o ${ binaryPath }`);
   try {
     await new Promise((resolve, reject) => {
-      exec(`g++ ${filepath} -o ${outPath}`,
+      exec(`g++ ${filePath} -o ${binaryPath}`,
         (error: ExecFileException | null, stdout: string, stderr: string) => {
           if (error) {
-            reject({ error, stderr, stdout });
+            return reject({ error, stderr, stdout });
           }
           resolve({ stderr, stdout });
         }
       );
     });
+    return {
+      success: true,
+      binaryPath: binaryPath,
+      stdout: null,
+      stderr: null,
+      errorMessage: null,
+    }
   } catch (err: any) {
     return {
-      compilation: false,
-      runtime: false,
+      success: false,
+      binaryPath: null,
       stdout: err.stdout || "null",
       stderr: err.stderr || "null",
-      error: `g++ exited with code ${err.error.code}`,
+      errorMessage: `g++ exited with code ${err.error.code}`,
     }
   }
+}
 
+export const cppExec = async (binaryPath: string, timeLimit: number): Promise<ExecStatusType> => {
+  const start = process.hrtime();
   try {
     const { stderr, stdout } = await new Promise<{
       stderr: string,
       stdout: string,
     }>((resolve, reject) => {
-      exec(`cd ${outputPath} && echo "${input}" | ./${jobId}.out`,
-           {timeout: timelimit * 1000},
-        (error: ExecFileException | null, stdout: string, stderr: string) => {
+      exec(`${binaryPath}`, { timeout: timeLimit * 1000 },
+        (error: any, stdout: string, stderr: string) => {
           if (error) {
-            reject({ error, stdout, stderr });
+            return reject({ error, stdout, stderr });
           }
           resolve({ stderr, stdout });
         }
       );
     });
+
+    const end = process.hrtime(start);
     return {
-      compilation: true,
-      runtime: true,
-      stdout: stdout || "null" ,
+      runtime_ms: end[1] * 1000000,
+      success: true,
+      stdout: stdout || "null",
       stderr: stderr || "null",
-      error: null,
+      errorMessage: null,
     }
   } catch (err: any) {
-    // console.log(err);
     let errorMsg = "";
     if (err.error?.signal) {
       switch (err.error.signal) {
@@ -96,12 +114,12 @@ export const execCpp = async (filepath: string, input: string, timelimit: number
     }
     else if (err.error?.code) errorMsg = `Exited with code ${err.error.code}`;
     return {
-      compilation: true,
-      runtime: false,
-      stdout: err.stdout ||"null",
+      runtime_ms: -1,
+      success: true,
+      stdout: err.stdout || "null",
       stderr: err.stderr || "null",
-      error: errorMsg,
+      errorMessage: errorMsg,
     }
   }
-};
+}
 
