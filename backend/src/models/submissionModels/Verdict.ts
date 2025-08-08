@@ -29,11 +29,6 @@ const verdictSchema = new mongoose.Schema({
     default: null,
     required: true
   },
-
-  errorMessage: {
-    type: String,
-    default: null,
-  },
   submissionId: {
     type: String,
     required: true,

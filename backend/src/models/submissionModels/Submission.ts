@@ -33,8 +33,8 @@ const submissionsSchema = new mongoose.Schema({
     required: true
   },
   submissionTime: {
-    type: Date,
-    default: Date.now
+    type: String,
+    default: () => new Date().toLocaleString()
   },
   language: {
     type: String,
