@@ -1,12 +1,9 @@
 import React from "react";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom"
-import { sessionContext } from "./contexts/SessionContextProvider";
+import { sessionContext } from "./contexts/SessionContextProvider.tsx";
 import { setUncaughtExceptionCaptureCallback } from "process";
-import { Disclaimer } from "./AuthPage/components";
-
-
-
+import { Disclaimer } from "./AuthPage/components.tsx";
 
 const authentication = import.meta.env.VITE_AUTH;
 const backend = import.meta.env.VITE_BACKEND;
