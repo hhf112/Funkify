@@ -70,7 +70,7 @@ export function User() {
           className="m-0.5 py-10 flex flex-col items-center 
           rounded-xl flex-1 border border-neutral-300 shadow">
 
-          <div className="flex w-full justify-center border h-full font-bold text-neutral-500 text-lg">
+          <div className="flex w-full justify-center  h-full font-bold text-neutral-500 text-lg">
             <h1> Problems solved: {3123} </h1>
           </div>
         </div>

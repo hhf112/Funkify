@@ -4,17 +4,16 @@ import { Home } from "./Home";
 import { Problem } from "./ProblemPage/Problem";
 import { User } from "./User";
 import { Problems } from "./Problems";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { sessionContext } from "./contexts/SessionContextProvider";
 
 
+
 const authentication = import.meta.env.VITE_AUTH;
-if (!authentication) {
-  console.error("authentication url not found");
-}
 
 function App() {
-  const { setSessionToken, setUser } = useContext(sessionContext)
+  const { setUser, sessionToken, setSessionToken } = useContext(sessionContext);
+
   useEffect(() => {
     (async () => {
       try {
@@ -38,6 +37,8 @@ function App() {
 
     })();
   }, [])
+
+  // useEffect(() => console.log(sessionToken), [sessionToken]);
 
 
 

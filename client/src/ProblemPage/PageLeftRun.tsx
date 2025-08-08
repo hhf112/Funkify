@@ -15,6 +15,7 @@ export function PageLeftRun({
   } | null>>
 
 }) {
+  // console.log(runVerdict?.results);
 
   return (
     <div className="h-full w-full  flex flex-col items-center p-5 overflow-y-auto">
@@ -41,7 +42,7 @@ export function PageLeftRun({
               text-white p-1`}>
             TEST {index}
           </span>
-          <div className="flex flex-col">
+          { test.test  ? <div className="flex flex-col">
             INPUT
             <textarea readOnly={true}
               className="  border-neutral-400 resize-y border grow overflow-y-auto p-1"
@@ -54,7 +55,16 @@ export function PageLeftRun({
             <textarea readOnly={true}
               className="   border-neutral-400 resize-y grow border overflow-y-auto p-1"
               defaultValue={test.test.output} />
-          </div>
+          </div> : <div className="flex flex-col">
+            STDERR
+            <textarea readOnly={true}
+              className="  border-neutral-400  text-red-400 resize-y border grow overflow-y-auto p-1"
+              defaultValue={test.error?.stderr} />
+              ERROR
+            <textarea readOnly={true}
+              className="  border-neutral-400 text-red-400 resize-y border grow overflow-y-auto p-1"
+              defaultValue={test.error?.error} />
+          </div>}
         </div>
       ))}
     </div>

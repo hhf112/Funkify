@@ -7,10 +7,10 @@ import { Disclaimer } from "./AuthPage/components";
 
 
 
-
 const authentication = import.meta.env.VITE_AUTH;
-const backend = import.meta.env.VITE_BACKEND;
-const compiler = import.meta.env.VITE_COMPILER;
+if (!authentication) {
+  console.error("authentication not provided");
+}
 
 export function Home() {
   /* states */
@@ -21,26 +21,6 @@ export function Home() {
   const [mount, setMount] = useState<boolean[]>([false, false, false]);
   const [doneMount, setDoneMount] = useState<boolean>(false);
   const [errMsg, setErrMsg] = useState<{ message: string, color: string }>({ message: "", color: "" });
-
-  const [app, setApp] = useState<boolean>(true);
-
-
-  useEffect(() => {
-
-  if (!authentication || !backend || !compiler) setApp(false);
-    (async () => {
-      try{ 
-      const ping1 = await fetch(backend);
-      const ping2 = await fetch(authentication);
-      const ping3 = await fetch(compiler);
-      if (!ping1.ok || !ping2.ok || !ping3.ok) setApp(false);
-
-      } catch (err) {
-        setApp(false);
-      }
-    }) ();
-  }, [])
-
 
   useEffect(() => {
     (async () => {

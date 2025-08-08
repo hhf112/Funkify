@@ -11,7 +11,6 @@ const authentication: string = import.meta.env.VITE_AUTH || "";
 
 
 export function Auth() {
-
   /* use */
   const { Logout, setUser, setSessionToken, Fetch, sessionToken, user } = useContext<sessionContextType>(sessionContext);
 

@@ -3,6 +3,10 @@ export interface testResult {
   test: { input: string, output: string },
   output: string,
   verdict: VerdictResultType,
+  error?: {
+    stderr: string,
+    error: string,
+  }
 }
 export interface Submission {
   problemId: string,

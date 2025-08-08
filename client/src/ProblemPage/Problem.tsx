@@ -123,6 +123,7 @@ export function Problem() {
         method: "POST",
         headers: {
           "Content-type": "application/json",
+          "authorization": `Bearer ${sessionToken}`
         },
         body: JSON.stringify({
           language: "cpp",
@@ -181,6 +182,7 @@ export function Problem() {
         method: "POST",
         headers: {
           "Content-type": "application/json",
+          "authorization": `Bearer ${sessionToken}`
         },
         body: JSON.stringify({
           code: getCodeFromEditor(),

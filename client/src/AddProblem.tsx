@@ -13,6 +13,7 @@ export function AddProblem({ setAddProblemWindow }: {
 }) {
 
   const [mount, setMount] = useState<boolean>(false);
+  const [tags, setTags] = useState<string[]>([]);
   useEffect(() => setMount(true));
   
 
@@ -58,7 +59,15 @@ export function AddProblem({ setAddProblemWindow }: {
 
 
           <div className="m-1 border border-neutral-200 rounded-xl p-1">
-            {[0, 0, 0].map(el => <h1 className="p-2 rounded-full border border-neutral-200 inline-block m-1 "> Tag </h1>)}
+            <p className="w-full bg-neutral-700 text-neutral-50 px-2 rounded-lg">  Tags </p>
+            <div className="w-full overflow-x-auto flex items-center">
+            {[0, 0, 0].map(el => 
+              <input type="text" className="p-2 rounded-full border border-neutral-200 inline-block m-1"/>
+            )}
+              <button className="rounded-lg border-neutral-200 border p-3">
+                +
+              </button>
+            </div>
           </div>
 
         </div>
