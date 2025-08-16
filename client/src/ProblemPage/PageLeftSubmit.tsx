@@ -19,26 +19,22 @@ export interface ResultType {
 }
 
 export interface VerdictType {
+  processed: boolean,
+  fail: boolean,
   verdict: string,
   error?: {
     stderr: string,
     error: string,
-  } | null
-  results: ResultType[],
-  submissionId: string,
-  userId: string,
-  memory_mb: number,
-  runtime_ms: number,
-  testsPassed: number,
-  totalTests: number,
+  },
+  results: boolean[],
+  passed: number,
+  total: number,
 }
 
 function VerdictCard({ message }: { message: string }) {
   /*states */
 
   const [mount, setMount] = useState<boolean>(false);
-
-
 
   useEffect(() => {
     setMount(true);
@@ -88,7 +84,7 @@ export function PageLeftSubmit({
   const { Fetch, sessionToken } = useContext(sessionContext)
 
   useEffect(() => {
-    const interval = setInterval(async () => {
+      const interval = setInterval(async () => {
       if (done) return;
       try {
         const get = await Fetch(`${backend}/submissions/${submissionId}`, {
@@ -100,47 +96,29 @@ export function PageLeftSubmit({
         if (!get) { navigate("/Login"); return; }
         const getJSON = await get.json();
 
-        if (getJSON.submission.status == "fail") {
+
+        console.log(getJSON);
+        if (getJSON.submission.status.fail) {
           setDone(true);
           clearInterval(interval);
           return;
         }
 
-        if (getJSON.submission.status == "processed") {
-          const verdictId = getJSON.submission.verdictId;
-
-          try {
-            const get = await Fetch(`${backend}/submissions/verdict/${verdictId}`, {
-              method: "GET",
-              headers: {
-                authorization: `Bearer ${sessionToken}`,
-              }
-            });
-            if (!get) {navigate("/Login"); return;}
-            const getJSON = await get.json();
-            // console.log(getJSON);
-            setVerdict(getJSON.verdict);
-            setErrMsg({
-              color: "",
-              message: "",
-            })
-            setDone(true);
-            clearInterval(interval);
-          } catch (err) {
-            console.error("cannot get verdict");
-            clearInterval(interval);
-            setDone(true);
-          }
-          clearInterval(interval);
+        if (getJSON.submission.status.processed) {
+          setVerdict(getJSON.submission.status);
+          setErrMsg({
+            color: "",
+            message: "",
+          })
           setDone(true);
+          clearInterval(interval);
         }
       } catch (err) {
-        console.error("unbale to fetch result");
+        console.log(err);
+        console.log("unable to fetch result.");
         return;
       }
     }, 2000);
-
-
     return () => clearInterval(interval);
   }, [done])
 
@@ -166,15 +144,13 @@ export function PageLeftSubmit({
                   return <p
                     key={index}
                     className={`mx-0.5 px-3 py-1 border 
-                      ${result.passed ? "bg-green-400" :
-                        result.error ? "bg-neutral-600" :
-                          "bg-red-400"} text-white border-neutral-900 font-semibold font-mono`}>
+                      ${result ? "bg-green-400" : "bg-red-400"} text-white border-neutral-900 font-semibold font-mono`}>
                     TEST {index}
                   </p>
                 })}
               </div>
               <h4> Tests Passed: </h4>
-              <p className="text-sm m-0 overflow-auto w-full h-10"> {verdict.testsPassed} / {verdict.totalTests} </p>
+              <p className="text-sm m-0 overflow-auto w-full h-10"> {verdict.passed} / {verdict.total} </p>
               <h4 className="font-mono text-red-800"> STDERROR: </h4>
               <p className="font-mono text-red-800 overflow-y-scroll"> {verdict.error?.stderr} </p>
               <h4 className="font-mono text-red-800"> ERROR: </h4>

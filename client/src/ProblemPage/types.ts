@@ -28,17 +28,15 @@ export interface VerdictResultType {
 }
 
 export interface VerdictType {
-  verdict: string,
-  error?: {
-    stderr: string,
-    error: string,
-  } | null
-  results: VerdictResultType[],
-  submissionId: string,
-  userId: string,
-  memory_mb: number,
-  runtime_ms: number,
-  testsPassed: number,
-  totalTests: number,
-}
+    processed: boolean,
+    fail: boolean,
+    verdict: string,
+    error?: {
+      stderr: string,
+      error: string,
+    },
+    results: boolean[],
+    passed: number,
+    total: number,
+  }
 

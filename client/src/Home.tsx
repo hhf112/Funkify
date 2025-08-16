@@ -20,9 +20,7 @@ export function Home() {
   const [errMsg, setErrMsg] = useState<{ message: string, color: string }>({ message: "", color: "" });
 
 
-
   // useEffect(() => {
-
   // if (!authentication || !backend || !compiler) {
   //     navigate("/Down");
   //     return;

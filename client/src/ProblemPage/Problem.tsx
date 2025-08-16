@@ -178,7 +178,7 @@ export function Problem() {
     }
 
     try {
-      const post = await Fetch(`${backend}/submissions/`, {
+      const post = await Fetch(`${compiler}/submit`, {
         method: "POST",
         headers: {
           "Content-type": "application/json",
@@ -189,15 +189,12 @@ export function Problem() {
           userId: user?._id,
           problemId: Id,
           language: "cpp",
-          verdictId: null,
           testId: prob?.testId,
         }),
       });
 
-      if (!post) {navigate("/Login"); return;}
+      if (!post) { navigate("/Login"); return; }
 
-      const postJSON = await post.json();
-      setSubmissionId(postJSON.submissionId);
       if (!post?.ok) {
         setErrMsg({
           color: "red",
@@ -205,12 +202,23 @@ export function Problem() {
         });
         return;
       }
+
+      const postJSON = await post.json();
+      console.log(postJSON);
+      if (!postJSON.success) {
+        setVerdict(postJSON.compileStatus);
+        setDone(true);
+        setErrMsg({color: "", message: ""});
+      }
+      else {
+        setSubmissionId(postJSON.submissionId);
+        setDone(false);
+        setErrMsg({
+          color: "amber",
+          message: "Fetching verdict"
+        });
+      }
       setContent(1);
-      setDone(false);
-      setErrMsg({
-        color: "amber",
-        message: "Fetching verdict"
-      });
     } catch (err: string | any) {
       console.error(err);
       setErrMsg({
