@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-export interface SystemTestsType {
+export interface TestsType {
   problemId: string,
   tested: boolean,
   tests: {
@@ -56,5 +56,4 @@ const systemTestsSchema = new mongoose.Schema({
   },
 })
 
-const SystemTests = mongoose.model('systests', systemTestsSchema);
-export default SystemTests;
+export const Tests = mongoose.model('systests', systemTestsSchema);
