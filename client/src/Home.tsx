@@ -19,29 +19,28 @@ export function Home() {
   const [doneMount, setDoneMount] = useState<boolean>(false);
   const [errMsg, setErrMsg] = useState<{ message: string, color: string }>({ message: "", color: "" });
 
-  const [app, setApp] = useState<boolean>(true);
 
 
-  useEffect(() => {
+  // useEffect(() => {
 
-  if (!authentication || !backend || !compiler) {
-      navigate("/Down");
-      return;
-    }
-
-    (async () => {
-      try{ 
-      const ping1 = await fetch(backend);
-      const ping2 = await fetch(authentication);
-      const ping3 = await fetch(compiler);
-      if (!ping1.ok || !ping2.ok || !ping3.ok) {
-          navigate("/Down");
-        }
-      } catch (err) {
-        navigate("/Down");
-      }
-    }) ();
-  }, [])
+  // if (!authentication || !backend || !compiler) {
+  //     navigate("/Down");
+  //     return;
+  //   }
+  //
+  //   (async () => {
+  //     try{ 
+  //     const ping1 = await fetch(backend);
+  //     const ping2 = await fetch(authentication);
+  //     const ping3 = await fetch(compiler);
+  //     if (!ping1.ok || !ping2.ok || !ping3.ok) {
+  //         navigate("/Down");
+  //       }
+  //     } catch (err) {
+  //       navigate("/Down");
+  //     }
+  //   }) ();
+  // }, [])
 
 
   useEffect(() => {
