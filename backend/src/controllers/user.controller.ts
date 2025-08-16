@@ -46,7 +46,7 @@ export const updateAttempted = async (req: Request, res: Response) => {
       return;
     }
 
-    user.attempted.push({ id: problemId, status: status });
+    // user.attempted.push({ id: problemId, status: status });
     await user.save();
 
   } catch (err) {
@@ -94,7 +94,7 @@ export const getProblemsSovled = async (req: Request, res: Response) => {
       return;
     }
 
-    res.status(200).json({ message: "User found", attempted: user.attempted, });
+    // res.status(200).json({ message: "User found", attempted: user.attempted, });
 
   } catch (err) {
     console.log(err);

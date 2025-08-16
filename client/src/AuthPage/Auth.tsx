@@ -8,8 +8,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 const authentication: string = import.meta.env.VITE_AUTH || "";
 
-
-
 export function Auth() {
   /* use */
   const { Logout, setUser, setSessionToken, Fetch, sessionToken, user } = useContext<sessionContextType>(sessionContext);

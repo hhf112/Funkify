@@ -18,9 +18,11 @@ export const DBConnection = async () => {
     const Problem = (await import("../models/problem.model.js")).Problem;
     const Submission = (await import("../models/submission.model.js")).Submission;
     const Tests = (await import("../models/tests.model.js")).Tests;
+    const User = (await import("../models/user.model.js")).User;
     await Submission.syncIndexes();
     await Problem.syncIndexes();
     await Tests.syncIndexes();
+    await User.syncIndexes();
 
     console.log("Database connected successfully");
   } catch (err) {
