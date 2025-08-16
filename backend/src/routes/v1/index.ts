@@ -1,8 +1,8 @@
-import SubmissionRoutes from './submission.routes.js';
+import submissionRoutes from './submission.routes.js';
 import problemRoutes from "./problem.routes.js";
-import TestRoutes from "./tests.routes.js";
-import AIRoutes from "./ai.routes.js";
-import { limiter_hour, limiter_minute } from '../../middleware/rateLimit.js';
+import testRoutes from "./tests.routes.js";
+import aiRoutes from "./ai.routes.js";
+import { limitHour, limitMinute } from '../../middleware/rateLimit.js';
 import { Request, Response, Router } from 'express';
 
 const router = Router();
@@ -16,14 +16,11 @@ router.get("/", (req: Request, res: Response) => {
 })
 
 router.use('/problem', problemRoutes)
-router.use('/tests', TestRoutes)
-router.use('/submissions', SubmissionRoutes);
+router.use('/tests', testRoutes)
+router.use('/submissions', submissionRoutes);
 
 // rate limited 
-router.use('/ai',
-  limiter_hour,
-  limiter_minute,
-  AIRoutes); // 5/24h 
+router.use('/ai', limitHour, limitMinute, aiRoutes);
 
 router.use((req: Request, res: Response) => {
   res.status(404).json({ error: "v1: Route not found" });

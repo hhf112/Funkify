@@ -1,105 +1,200 @@
 import { Request, Response } from 'express';
-import {Problem, type ProblemType} from '../models/problem.model.js';
+import { Problem, type ProblemType } from '../models/problem.model.js';
 import { GoogleGenAI, Type } from '@google/genai';
+import { warn } from 'console';
+import mongoose, { Mongoose } from 'mongoose';
 
-const ai = new GoogleGenAI({});
-
-const SUMMARIZE = `instructions:
- - provide a less technical translation of the problem statement.
- - exclude any hints on solving the problem
- - exlcude any ideas on solving the problem 
- - exlcude the solution to the problem.
- - output format: 100 words. `;
-
-
-const HINT = `
- instructions:
- - provide a technical hint to solve the problem.
- - exlcude the solution to the problem.
- - exlcude any hints that completly solve the problem.
- - exclude  sharing any code.
- - output format: 40 words.
-`;
-
-// const SOLUTION = `
-//  instructions: 
-// - write a code solution in C++ for a solution to the problem statement.
-// - write the solution formatted in a raw string.
-// - format the code in plain text.
-// - add very comprehensive and descriptive comments to explain the code.
-//  - add an additional comment as a final summary of your approach where you also explain why this is correct.
-// - output limit: 300 words. try to make it as simplistic and concise as possible.
- // `
-
+const gemini = new GoogleGenAI({});
 
 export const getSummary = async (req: Request, res: Response) => {
-  const what = parseInt(req.query.what as string);
-
   const problemId = req.params.problemId;
   if (!problemId) {
-    res.status(400).json({ message: "problemId required.", })
+    res.status(400).json({
+      success: false,
+      message: "problemId is required.",
+    })
     return;
   }
 
   try {
-    const problem = await Problem.findById(problemId).exec();
-    if (!problem) {
-      res.status(404).json({ message: "problem not found.", })
+    const problem_desc = await Problem.findById(problemId, "description").exec();
+    if (!problem_desc) {
+      res.status(404).json({
+        success: false,
+        message: "problem not found.",
+      })
       return;
     }
 
-    try {
-      let instructions: string;
-      switch (what) {
-        case 0:
-          instructions = SUMMARIZE
-          break;
-        case 1:
-          instructions = HINT
-          break;
-        // case 2:
-        //   instructions = SOLUTION
-        //   break;
-        default:
-          instructions = `
-        - DO NOT perform any task
-        - REPORT that you have not been provided any instructions
-        `;
-      }
-
-      const summary = await ai.models.generateContent({
-        model: "gemini-2.5-flash-lite-preview-06-17",
-        contents: `CONTEXT:
+    const get = await gemini.models.generateContent({
+      model: "gemini-2.5-flash-lite-preview-06-17",
+      contents: `CONTEXT:
         - Problem statement in markdown format:
-          ${problem.description}
+        ${problem_desc}
         INSTRUCTIONS:
-        ${instructions}`,
-
-        config: {
-          thinkingConfig: {
-            thinkingBudget: 0, // Disables thinking
-          },
-          responseMimeType: "application/json",
-          responseSchema: {
-            type: Type.STRING,
-          },
+       - provide a less technical translation of the problem statement.
+       - exclude any hints on solving the problem
+       - exlcude any ideas on solving the problem 
+       - exlcude the solution to the problem.
+       - output format: 100 words. `,
+      config: {
+        thinkingConfig: {
+          thinkingBudget: 0, // Disables thinking
         },
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.STRING,
+        },
+      },
+    });
 
-      });
-
-      res.status(200).json({
-        message: "summarized probelm success fully.",
-        summary: summary?.candidates?.[0]?.content?.parts?.[0]?.text ?? "{}",
-      })
-
-    } catch (err) {
-      console.log(err);
-      res.status(500).json({ message: "Internal server error", })
-    }
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({
-      message: "Database error.",
+    res.status(200).json({
+      success: true,
+      summary: get?.candidates?.[0]?.content?.parts?.[0]?.text ?? "{}",
     })
+
+  } catch (err: any) {
+    console.log(err);
+    if (err instanceof mongoose.Error.CastError) {
+      res.status(400).json({
+        success: false,
+        message: "Invalid problemId provided.",
+      });
+      return;
+    }
+    res.status(500).json({ message: "Internal server error", })
+  }
+}
+
+export const getHint = async (req: Request, res: Response) => {
+  const problemId = req.params.problemId;
+  if (!problemId) {
+    res.status(400).json({
+      success: false,
+      message: "problemId is required.",
+    })
+    return;
+  }
+
+  try {
+    const problem = await Problem.findById(problemId, "description tags constraints").exec();
+    if (!problem) {
+      res.status(404).json({
+        success: false,
+        message: "problem not found.",
+      })
+      return;
+    }
+
+    const get = await gemini.models.generateContent({
+      model: "gemini-2.5-flash-lite-preview-06-17",
+      contents: `CONTEXT:
+      - Problem statement in markdown format:
+        ${problem.description}
+      - Problem constraints:
+         - maximum runtime in seconds: ${problem.constraints.runtime_s}
+         - maximum memory in megabytes: ${problem.constraints.memory_mb}
+      - Solution hints:
+          - ${problem.tags.join(',')}
+
+        INSTRUCTIONS:
+       - provide a technical hint to solve the problem.
+       - exclude the solution to the problem.
+       - exclude any hints that completly solve the problem.
+       - exclude any code.
+       - output format: not more than 80 words.`,
+      config: {
+        thinkingConfig: {
+          thinkingBudget: 0, // Disables thinking
+        },
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.STRING,
+        },
+      },
+    });
+
+    res.status(200).json({
+      success: true,
+      hint: get?.candidates?.[0]?.content?.parts?.[0]?.text ?? "{}",
+    })
+
+  } catch (err: any) {
+    console.log(err);
+    if (err instanceof mongoose.Error.CastError) {
+      res.status(400).json({
+        success: false,
+        message: "Invalid problemId provided.",
+      });
+      return;
+    }
+
+    res.status(500).json({ message: "Internal server error", })
+  }
+}
+
+export const getSolution = async (req: Request, res: Response) =>{
+  const problemId = req.params.problemId;
+  if (!problemId) {
+    res.status(400).json({
+      success: false,
+      message: "problemId is required.",
+    })
+    return;
+  }
+
+  try {
+    const problem = await Problem.findById(problemId, "description tags constraints").exec();
+    if (!problem) {
+      res.status(404).json({
+        success: false,
+        message: "problem not found.",
+      })
+      return;
+    }
+
+    const get = await gemini.models.generateContent({
+      model: "gemini-2.5-flash-lite-preview-06-17",
+      contents: `CONTEXT:
+      - Problem statement in markdown format:
+        ${problem.description}
+      - Problem constraints:
+         - maximum runtime in seconds: ${problem.constraints.runtime_s}
+         - maximum memory in megabytes: ${problem.constraints.memory_mb}
+      - Solution hints:
+          - ${problem.tags.join(',')}
+
+        INSTRUCTIONS:
+       - write an optimized C++ snipped to solve the given problem.
+       - include helpful ocmments to explain your working.
+       - try to be as concise as possible.
+       - output format: not more than 400 words.`,
+      config: {
+        thinkingConfig: {
+          thinkingBudget: 0, // Disables thinking
+        },
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.STRING,
+        },
+      },
+    });
+
+    res.status(200).json({
+      success: true,
+      code: get?.candidates?.[0]?.content?.parts?.[0]?.text ?? "{}",
+    })
+
+  } catch (err: any) {
+    console.log(err);
+    if (err instanceof mongoose.Error.CastError) {
+      res.status(400).json({
+        success: false,
+        message: "Invalid problemId provided.",
+      });
+      return;
+    }
+
+    res.status(500).json({ message: "Internal server error", })
   }
 }

@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
 import mongoose, { Model } from 'mongoose';
+import "dotenv/config.js";
 import { Submission, SubmissionType } from '../models/submission.model.js'
 import { Problem, type ProblemType } from '../models/problem.model.js';
 import { Verdict, type VerdictType } from '../models/verdict.model.js';
-import "dotenv/config";
 
 const compiler = process.env.COMPILER;
 

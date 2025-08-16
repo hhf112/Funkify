@@ -1,6 +1,6 @@
 import { rateLimit } from "express-rate-limit"
 
-export const limiter_hour = rateLimit({
+export const limitHour = rateLimit({
   windowMs: 24 * 60 * 60 * 1000, // 24H
   limit: 5,
   standardHeaders: 'draft-8',
@@ -8,7 +8,7 @@ export const limiter_hour = rateLimit({
   ipv6Subnet: 56,
 })
 
-export const limiter_minute = rateLimit({
+export const limitMinute = rateLimit({
   windowMs: 1000 * 60, // 1m
   limit: 2,
   standardHeaders: 'draft-8',

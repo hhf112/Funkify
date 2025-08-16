@@ -7,7 +7,7 @@ export interface ProblemType {
   description: string,
   difficulty: string,
   tags: string[],
-  sampleTests:  {
+  sampleTests: {
     input: string,
     output: string,
   }[],
@@ -16,8 +16,8 @@ export interface ProblemType {
     output: string,
   }
   constraints: {
-    runtime_s: string,
-    memory_mb: string,
+    runtime_s: number,
+    memory_mb: number,
   },
   testSolution: string,
   testLines: number
@@ -79,6 +79,8 @@ const problemSchema = new mongoose.Schema({
     default: []
   },
   constraints: {
+    type: Object,
+    required: true,
     runtime_s: {
       type: Number,
       default: 2
@@ -86,7 +88,7 @@ const problemSchema = new mongoose.Schema({
     memory_mb: {
       type: Number,
       default: 256
-    }
+    },
   },
   testId: {
     type: String,
