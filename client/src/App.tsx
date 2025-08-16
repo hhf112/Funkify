@@ -6,6 +6,7 @@ import { Problem } from "./ProblemPage/Problem";
 import { Problems } from "./Problems";
 import { useContext, useEffect, useState } from "react";
 import { sessionContext } from "./contexts/SessionContextProvider";
+import { Down } from "./Down";
 
 
 
@@ -48,6 +49,7 @@ function App() {
       <Route path="/Problem/:Id" element={<Problem />} />
       <Route path="/" element={<Home />} />
       <Route path="/Problems" element={<Problems />} />
+      <Route path="/Down" element={<Down/>} />
     </Routes>
   )
 }
