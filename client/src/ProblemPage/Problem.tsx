@@ -71,7 +71,7 @@ export function Problem() {
     const fetchProblem = async () => {
       setLoadMsg("Fetching problem");
       try {
-        const get = await fetch(`${backend}/api/problems/${Id}`);
+        const get = await fetch(`${backend}/problem/id/${Id}`);
         const getJSON = await get.json();
         const prob: problem = getJSON.problem;
         if (!prob) throw new Error("Problem not found!")
@@ -178,7 +178,7 @@ export function Problem() {
     }
 
     try {
-      const post = await Fetch(`${backend}/api/user/submissions/`, {
+      const post = await Fetch(`${backend}/submissions/`, {
         method: "POST",
         headers: {
           "Content-type": "application/json",

@@ -24,5 +24,4 @@ const EditorialSchema = new mongoose.Schema({
   commentIDs: [String],
 })
 
-const Editorial = mongoose.model('editorals', EditorialSchema);
-export default Editorial;
+export const Editorial = mongoose.model('editorals', EditorialSchema);

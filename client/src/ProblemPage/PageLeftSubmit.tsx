@@ -91,7 +91,7 @@ export function PageLeftSubmit({
     const interval = setInterval(async () => {
       if (done) return;
       try {
-        const get = await Fetch(`${backend}/api/user/submissions/${submissionId}`, {
+        const get = await Fetch(`${backend}/submissions/${submissionId}`, {
           method: "GET",
           headers: {
             authorization: `Bearer ${sessionToken}`,
@@ -110,7 +110,7 @@ export function PageLeftSubmit({
           const verdictId = getJSON.submission.verdictId;
 
           try {
-            const get = await Fetch(`${backend}/api/user/submissions/verdict/${verdictId}`, {
+            const get = await Fetch(`${backend}/submissions/verdict/${verdictId}`, {
               method: "GET",
               headers: {
                 authorization: `Bearer ${sessionToken}`,

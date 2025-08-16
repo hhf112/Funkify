@@ -4,7 +4,7 @@ import {
   getUserByEmail,
   getProblemsSovled,
   updateAttempted
-} from "../controllers/userController.js";
+} from "../../controllers/user.controller.js";
 
 const router = Router();
 

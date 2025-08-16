@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import Problem from '../models/problemModels/Problem.js';
+import {Problem, type ProblemType} from '../models/problem.model.js';
 import { GoogleGenAI, Type } from '@google/genai';
 
 const ai = new GoogleGenAI({});

@@ -96,7 +96,7 @@ export function Problems() {
       try {
         setErrMsg({ message: "Fetching problems", color: "amber" });
         setTimeout(() => setErrMsg({ message: "It is taking longer than usual please wait!", color: "amber" }), 2000)
-        const get = await fetch(`${backend}/api/problems/count?count=10`);
+        const get = await fetch(`${backend}/problem/count?count=10`);
         const getJSON = await get.json();
         if (getJSON.problems) seteProblems(getJSON.problems);
         setErrMsg({ message: "", color: "amber" });

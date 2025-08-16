@@ -1,10 +1,9 @@
 import { Request, Response } from 'express';
 import mongoose, { Model } from 'mongoose';
-import Submission from '../models/submissionModels/Submission.js'
-import { SubmissionType } from '../models/submissionModels/Submission.js';
-import Problem from '../models/problemModels/Problem.js';
-import { warn } from 'console';
-import Verdict from '../models/submissionModels/Verdict.js';
+import { Submission, SubmissionType } from '../models/submission.model.js'
+import { Problem, type ProblemType } from '../models/problem.model.js';
+import { Verdict, type VerdictType } from '../models/verdict.model.js';
+import "dotenv/config";
 
 const compiler = process.env.COMPILER;
 
@@ -59,6 +58,7 @@ export const createSubmission = async (req: Request, res: Response) => {
       language,
       testId,
     });
+
 
     const dopost = fetch(`${compiler}/`, {
       method: "POST",
@@ -197,6 +197,7 @@ export const getSubmissionByProblemIdAndUserId = async (req: Request, res: Respo
   try {
     const userId = req.query.userId as string;
     const problemId = req.query.problemId as string;
+
     if (!userId || !problemId) {
 
       res.status(400).json({

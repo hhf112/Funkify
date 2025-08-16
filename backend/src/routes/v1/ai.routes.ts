@@ -1,7 +1,7 @@
 import { Router } from "express";
 import {
   getSummary
-} from "../controllers/userAIController.js"
+} from "../../controllers/ai.controller.js"
 
 
 const router = Router()

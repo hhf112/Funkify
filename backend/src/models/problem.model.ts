@@ -1,13 +1,12 @@
 import mongoose from 'mongoose';
 
 export interface ProblemType {
+  createdAt?: Date,
+  author: string | null,
   title: string,
   description: string,
   difficulty: string,
   tags: string[],
-  createdAt?: Date,
-  author?: string,
-  userId: string,
   sampleTests:  {
     input: string,
     output: string,
@@ -21,7 +20,7 @@ export interface ProblemType {
     memory_mb: string,
   },
   testSolution: string,
-  linesPerTestCase: number
+  testLines: number
 }
 
 const problemSchema = new mongoose.Schema({
@@ -50,10 +49,6 @@ const problemSchema = new mongoose.Schema({
     default: Date.now
   },
   author: {
-    type: String,
-    default: 'Anonymous'
-  },
-  userId: {
     type: String,
     default: null,
   },
@@ -102,12 +97,11 @@ const problemSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
-  linesPerTestCase: {
+  testLines: {
     type: Number,
     required: true,
     default: 1,
   }
 })
 
-const Problem = mongoose.model('problems', problemSchema);
-export default Problem;
+export const Problem = mongoose.model('problems', problemSchema);

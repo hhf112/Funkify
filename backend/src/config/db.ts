@@ -15,12 +15,12 @@ export const DBConnection = async () => {
       autoIndex: true,
     })
     // has implied unique index
-    const Problem = (await import("./models/problemModels/Problem.js")).default;
-    const Submission = (await import("./models/submissionModels/Submission.js")).default;
-    const SystemTests = (await import("./models/submissionModels/SystemTests.js")).default;
+    const Problem = (await import("../models/problem.model.js")).Problem;
+    const Submission = (await import("../models/submission.model.js")).Submission;
+    const Tests = (await import("../models/tests.model.js")).Tests;
     await Submission.syncIndexes();
     await Problem.syncIndexes();
-    await SystemTests.syncIndexes();
+    await Tests.syncIndexes();
 
     console.log("Database connected successfully");
   } catch (err) {

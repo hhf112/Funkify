@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@google/genai':
-        specifier: ^1.10.0
-        version: 1.10.0
+        specifier: ^1.14.0
+        version: 1.14.0
       '@types/cors':
         specifier: ^2.8.19
         version: 2.8.19
@@ -21,11 +21,11 @@ importers:
         specifier: ^9.0.10
         version: 9.0.10
       '@types/node':
-        specifier: ^24.0.4
-        version: 24.0.4
+        specifier: ^24.3.0
+        version: 24.3.0
       bullmq:
-        specifier: ^5.56.0
-        version: 5.56.0
+        specifier: ^5.58.0
+        version: 5.58.0
       cookie-parser:
         specifier: ^1.4.7
         version: 1.4.7
@@ -33,8 +33,8 @@ importers:
         specifier: ^2.8.5
         version: 2.8.5
       dotenv:
-        specifier: ^16.5.0
-        version: 16.5.0
+        specifier: ^16.6.1
+        version: 16.6.1
       express:
         specifier: ^5.1.0
         version: 5.1.0
@@ -42,25 +42,25 @@ importers:
         specifier: ^8.0.1
         version: 8.0.1(express@5.1.0)
       ioredis:
-        specifier: ^5.6.1
-        version: 5.6.1
+        specifier: ^5.7.0
+        version: 5.7.0
       jsonwebtoken:
         specifier: ^9.0.2
         version: 9.0.2
       mongoose:
-        specifier: ^8.16.0
-        version: 8.16.0
+        specifier: ^8.17.1
+        version: 8.17.1
       nodemon:
         specifier: ^3.1.10
         version: 3.1.10
       typescript:
-        specifier: ^5.8.3
-        version: 5.8.3
+        specifier: ^5.9.2
+        version: 5.9.2
 
 packages:
 
-  '@google/genai@1.10.0':
-    resolution: {integrity: sha512-PR4tLuiIFMrpAiiCko2Z16ydikFsPF1c5TBfI64hlZcv3xBEApSCceLuDYu1pNMq2SkNh4r66J4AG+ZexBnMLw==}
+  '@google/genai@1.14.0':
+    resolution: {integrity: sha512-jirYprAAJU1svjwSDVCzyVq+FrJpJd5CSxR/g2Ga/gZ0ZYZpcWjMS75KJl9y71K1mDN+tcx6s21CzCbB2R840g==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
       '@modelcontextprotocol/sdk': ^1.11.0
@@ -68,8 +68,8 @@ packages:
       '@modelcontextprotocol/sdk':
         optional: true
 
-  '@ioredis/commands@1.2.0':
-    resolution: {integrity: sha512-Sx1pU8EM64o2BrqNpEO1CNLtKQwyhuXuqyfH7oGKCk+1a33d2r5saW8zNwm3j6BTExtjrv2BxTgzzkMwts6vGg==}
+  '@ioredis/commands@1.3.0':
+    resolution: {integrity: sha512-M/T6Zewn7sDaBQEqIZ8Rb+i9y8qfGmq+5SDFSf9sA2lUZTmdDLVdOiQaeDp+Q4wElZ9HG1GAX5KhDaidp6LQsQ==}
 
   '@mongodb-js/saslprep@1.3.0':
     resolution: {integrity: sha512-zlayKCsIjYb7/IdfqxorK5+xUMyi4vOKcFy10wKJYc63NSdKI8mNME+uJqfatkPmOSMMUiojrL58IePKBm3gvQ==}
@@ -113,8 +113,8 @@ packages:
   '@types/cors@2.8.19':
     resolution: {integrity: sha512-mFNylyeyqN93lfe/9CSxOGREz8cpzAhH+E93xJ4xWQf62V8sQ/24reV2nyzUWM6H6Xji+GGHpkbLe7pVoUEskg==}
 
-  '@types/express-serve-static-core@5.0.6':
-    resolution: {integrity: sha512-3xhRnjJPkULekpSzgtoNYYcTWgEZkp4myc+Saevii5JPnHNvHMRlBSHDbs7Bh1iPPoVTERHEZXyhyLbMEsExsA==}
+  '@types/express-serve-static-core@5.0.7':
+    resolution: {integrity: sha512-R+33OsgWw7rOhD1emjU7dzCDHucJrgJXMA5PYCzJxVil0dsyx5iBEPHqpPfiKNJQb7lZ1vxwoLR4Z87bBUpeGQ==}
 
   '@types/express@5.0.3':
     resolution: {integrity: sha512-wGA0NX93b19/dZC1J18tKWVIYWyyF2ZjT9vin/NRu0qzzvfVzWjs04iq2rQ3H65vCTQYlRqs3YHfY7zjdV+9Kw==}
@@ -131,8 +131,8 @@ packages:
   '@types/ms@2.1.0':
     resolution: {integrity: sha512-GsCCIZDE/p3i96vtEqx+7dBUGXrc7zeSK3wwPHIaRThS+9OhWIXRqzs4d6k1SVU8g91DrNRWxWUGhp5KXQb2VA==}
 
-  '@types/node@24.0.4':
-    resolution: {integrity: sha512-ulyqAkrhnuNq9pB76DRBTkcS6YsmDALy6Ua63V8OhrOBgbcYt6IOdzpw5P1+dyRIyMerzLkeYWBeOXPpA9GMAA==}
+  '@types/node@24.3.0':
+    resolution: {integrity: sha512-aPTXCrfwnDLj4VvXrm+UUCQjNEvJgNA8s5F1cvwQU+3KNltTOkBm1j30uNLyqqPNe7gE3KFzImYoZEfLhp4Yow==}
 
   '@types/qs@6.14.0':
     resolution: {integrity: sha512-eOunJqu0K1923aExK6y8p6fsihYEn/BYuQ4g0CxAAgFc4b/ZLN4CrsRZ55srTdqoiLzU2B2evC+apEIxprEzkQ==}
@@ -195,8 +195,8 @@ packages:
   buffer-equal-constant-time@1.0.1:
     resolution: {integrity: sha512-zRpUiDwd/xk6ADqPMATG8vc9VPrkck7T07OIx0gnjmJAnHnTVXNQG3vfvWNuiZIkwu9KrKdA1iJKfsfTVxE6NA==}
 
-  bullmq@5.56.0:
-    resolution: {integrity: sha512-j5ct2tdc9M8PKcjhJw+euO24BsO1wXBAkNGXYI1R1qvh7FvRldZ5wtLixLWqQ4/crafj0Vrwi+y1kXFXMwBJFA==}
+  bullmq@5.58.0:
+    resolution: {integrity: sha512-WIjvoSQ9jprId2gAZaPMQu3jaAkRCN8Wjj/pR39knwjULB7asB6XoSTqvnSbOsfyHMKln8el0MRvRJVY9VdmFA==}
 
   bytes@3.1.2:
     resolution: {integrity: sha512-/Nf7TyzTx6S3yRJObOAV7956r8cr2+Oj8AC5dt8wSP3BQAoeX58NoHyCU8P8zGkNXStjTSi6fzO6F0pBdcYbEg==}
@@ -273,8 +273,8 @@ packages:
     resolution: {integrity: sha512-3UDv+G9CsCKO1WKMGw9fwq/SWJYbI0c5Y7LU1AXYoDdbhE2AHQ6N6Nb34sG8Fj7T5APy8qXDCKuuIHd1BR0tVA==}
     engines: {node: '>=8'}
 
-  dotenv@16.5.0:
-    resolution: {integrity: sha512-m/C+AwOAr9/W1UOIZUo232ejMNnJAJtYQjUbHoNTBNTJSvqzzDh7vnrei3o3r3m9blf6ZoDkvcw0VmozNRFJxg==}
+  dotenv@16.6.1:
+    resolution: {integrity: sha512-uBq4egWHTcTt33a72vpSG0z3HnPuIl6NqYcTrKEg2azoEyl2hpW0zqlxysq2pK9HlDIHyHyakeYaYnSAwd8bow==}
     engines: {node: '>=12'}
 
   dunder-proto@1.0.1:
@@ -413,8 +413,8 @@ packages:
   inherits@2.0.4:
     resolution: {integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==}
 
-  ioredis@5.6.1:
-    resolution: {integrity: sha512-UxC0Yv1Y4WRJiGQxQkP0hfdL0/5/6YvdfOOClRgJ0qppSarkhneSa6UvkMkms0AkdGimSH3Ikqm+6mkMmX7vGA==}
+  ioredis@5.7.0:
+    resolution: {integrity: sha512-NUcA93i1lukyXU+riqEyPtSEkyFq8tX90uL659J+qpCZ3rEdViB/APC58oAhIh3+bJln2hzdlZbBZsGNrlsR8g==}
     engines: {node: '>=12.22.0'}
 
   ip-address@10.0.1:
@@ -498,8 +498,8 @@ packages:
   lodash.once@4.1.1:
     resolution: {integrity: sha512-Sb487aTOCr9drQVL8pIxOzVhafOjZN9UU54hiN8PU3uAiSV7lx1yYNpbNmex2PK6dSJoNTSJUUswT651yww3Mg==}
 
-  luxon@3.6.1:
-    resolution: {integrity: sha512-tJLxrKJhO2ukZ5z0gyjY1zPh3Rh88Ej9P7jNrZiHMUXHae1yvI2imgOZtL1TO8TW6biMMKfTtAOoEJANgtWBMQ==}
+  luxon@3.7.1:
+    resolution: {integrity: sha512-RkRWjA926cTvz5rAb1BqyWkKbbjzCGchDUIKMCUvNi17j6f6j8uHGDV82Aqcqtzd+icoYpELmG3ksgGiFNNcNg==}
     engines: {node: '>=12'}
 
   math-intrinsics@1.1.0:
@@ -531,8 +531,8 @@ packages:
   mongodb-connection-string-url@3.0.2:
     resolution: {integrity: sha512-rMO7CGo/9BFwyZABcKAWL8UJwH/Kc2x0g72uhDWzG48URRax5TCIcJ7Rc3RZqffZzO/Gwff/jyKwCU9TN8gehA==}
 
-  mongodb@6.17.0:
-    resolution: {integrity: sha512-neerUzg/8U26cgruLysKEjJvoNSXhyID3RvzvdcpsIi2COYM3FS3o9nlH7fxFtefTb942dX3W9i37oPfCVj4wA==}
+  mongodb@6.18.0:
+    resolution: {integrity: sha512-fO5ttN9VC8P0F5fqtQmclAkgXZxbIkYRTUi1j8JO6IYwvamkhtYDilJr35jOPELR49zqCJgXZWwCtW7B+TM8vQ==}
     engines: {node: '>=16.20.1'}
     peerDependencies:
       '@aws-sdk/credential-providers': ^3.188.0
@@ -558,8 +558,8 @@ packages:
       socks:
         optional: true
 
-  mongoose@8.16.0:
-    resolution: {integrity: sha512-gLuAZsbwY0PHjrvfuXvUkUq9tXjyAjN3ioXph5Y6Seu7/Uo8xJaM+rrMbL/x34K4T3UTgtXRyfoq1YU16qKyIw==}
+  mongoose@8.17.1:
+    resolution: {integrity: sha512-aodS4cacux5caoxB5ErEwRmrafIUsVRJxHnvP7URnSUnTenr32j1qBVV+KjYxryyLSisQkxglAFF69TNLeZTLg==}
     engines: {node: '>=16.20.1'}
 
   mpath@0.9.0:
@@ -577,8 +577,8 @@ packages:
     resolution: {integrity: sha512-P0efT1C9jIdVRefqjzOQ9Xml57zpOXnIuS+csaB4MdZbTdmGDLo8XhzBG1N7aO11gKDDkJvBLULeFTo46wwreA==}
     hasBin: true
 
-  msgpackr@1.11.4:
-    resolution: {integrity: sha512-uaff7RG9VIC4jacFW9xzL3jc0iM32DNHe4jYVycBcjUePT/Klnfj7pqtWJt9khvDFizmjN2TlYniYmSS2LIaZg==}
+  msgpackr@1.11.5:
+    resolution: {integrity: sha512-UjkUHN0yqp9RWKy0Lplhh+wlpdt9oQBYgULZOiFhV3VclSF1JnSQWZ5r9gORQlNYaUKQoR8itv7g7z1xDDuACA==}
 
   negotiator@1.0.0:
     resolution: {integrity: sha512-8Ofs/AUQh8MaEcrlq5xOX0CQ9ypTF5dl78mjlMNfOK08fzpgTHQRQPBxcPlEtIw0yRpws+Zo/3r+5WRby7u3Gg==}
@@ -764,16 +764,16 @@ packages:
     resolution: {integrity: sha512-OZs6gsjF4vMp32qrCbiVSkrFmXtG/AZhY3t0iAMrMBiAZyV9oALtXO8hsrHbMXF9x6L3grlFuwW2oAz7cav+Gw==}
     engines: {node: '>= 0.6'}
 
-  typescript@5.8.3:
-    resolution: {integrity: sha512-p1diW6TqL9L07nNxvRMM7hMMw4c5XOo/1ibL4aAIGmSAt9slTE1Xgw5KWuof2uTOvCg9BY7ZRi+GaF+7sfgPeQ==}
+  typescript@5.9.2:
+    resolution: {integrity: sha512-CWBzXQrc/qOkhidw1OzBTQuYRbfyxDXJMVJ1XNwUHGROVmuaeiEm3OslpZ1RV96d7SKKjZKrSJu3+t/xlw3R9A==}
     engines: {node: '>=14.17'}
     hasBin: true
 
   undefsafe@2.0.5:
     resolution: {integrity: sha512-WxONCrssBM8TSPRqN5EmsjVrsv4A8X12J4ArBiiayv3DyyG3ZlIg6yysuuSYdZsVz3TKcTg2fd//Ujd4CHV1iA==}
 
-  undici-types@7.8.0:
-    resolution: {integrity: sha512-9UJ2xGDvQ43tYyVMpuHlsgApydB8ZKfVYTsLDhXkFL/6gfkp+U8xTGdh8pMJv1SpZna0zxG1DwsKZsreLbXBxw==}
+  undici-types@7.10.0:
+    resolution: {integrity: sha512-t5Fy/nfn+14LuOc2KNYg75vZqClpAiqscVvMygNnlsHBFpSXdJaYtXMcdNLpl/Qvc3P2cB3s6lOV51nqsFq4ag==}
 
   unpipe@1.0.0:
     resolution: {integrity: sha512-pjy2bYhSsufwWlKwPc+l3cN7+wuJlK6uz0YdJEOlQDbl6jo/YlPi4mb8agUkVC8BF7V8NuzeyPNqRksA3hztKQ==}
@@ -818,7 +818,7 @@ packages:
 
 snapshots:
 
-  '@google/genai@1.10.0':
+  '@google/genai@1.14.0':
     dependencies:
       google-auth-library: 9.15.1
       ws: 8.18.3
@@ -828,7 +828,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@ioredis/commands@1.2.0': {}
+  '@ioredis/commands@1.3.0': {}
 
   '@mongodb-js/saslprep@1.3.0':
     dependencies:
@@ -855,19 +855,19 @@ snapshots:
   '@types/body-parser@1.19.6':
     dependencies:
       '@types/connect': 3.4.38
-      '@types/node': 24.0.4
+      '@types/node': 24.3.0
 
   '@types/connect@3.4.38':
     dependencies:
-      '@types/node': 24.0.4
+      '@types/node': 24.3.0
 
   '@types/cors@2.8.19':
     dependencies:
-      '@types/node': 24.0.4
+      '@types/node': 24.3.0
 
-  '@types/express-serve-static-core@5.0.6':
+  '@types/express-serve-static-core@5.0.7':
     dependencies:
-      '@types/node': 24.0.4
+      '@types/node': 24.3.0
       '@types/qs': 6.14.0
       '@types/range-parser': 1.2.7
       '@types/send': 0.17.5
@@ -875,7 +875,7 @@ snapshots:
   '@types/express@5.0.3':
     dependencies:
       '@types/body-parser': 1.19.6
-      '@types/express-serve-static-core': 5.0.6
+      '@types/express-serve-static-core': 5.0.7
       '@types/serve-static': 1.15.8
 
   '@types/http-errors@2.0.5': {}
@@ -883,15 +883,15 @@ snapshots:
   '@types/jsonwebtoken@9.0.10':
     dependencies:
       '@types/ms': 2.1.0
-      '@types/node': 24.0.4
+      '@types/node': 24.3.0
 
   '@types/mime@1.3.5': {}
 
   '@types/ms@2.1.0': {}
 
-  '@types/node@24.0.4':
+  '@types/node@24.3.0':
     dependencies:
-      undici-types: 7.8.0
+      undici-types: 7.10.0
 
   '@types/qs@6.14.0': {}
 
@@ -900,12 +900,12 @@ snapshots:
   '@types/send@0.17.5':
     dependencies:
       '@types/mime': 1.3.5
-      '@types/node': 24.0.4
+      '@types/node': 24.3.0
 
   '@types/serve-static@1.15.8':
     dependencies:
       '@types/http-errors': 2.0.5
-      '@types/node': 24.0.4
+      '@types/node': 24.3.0
       '@types/send': 0.17.5
 
   '@types/webidl-conversions@7.0.3': {}
@@ -961,11 +961,11 @@ snapshots:
 
   buffer-equal-constant-time@1.0.1: {}
 
-  bullmq@5.56.0:
+  bullmq@5.58.0:
     dependencies:
       cron-parser: 4.9.0
-      ioredis: 5.6.1
-      msgpackr: 1.11.4
+      ioredis: 5.7.0
+      msgpackr: 1.11.5
       node-abort-controller: 3.1.1
       semver: 7.7.2
       tslib: 2.8.1
@@ -1025,7 +1025,7 @@ snapshots:
 
   cron-parser@4.9.0:
     dependencies:
-      luxon: 3.6.1
+      luxon: 3.7.1
 
   debug@4.4.1(supports-color@5.5.0):
     dependencies:
@@ -1040,7 +1040,7 @@ snapshots:
   detect-libc@2.0.4:
     optional: true
 
-  dotenv@16.5.0: {}
+  dotenv@16.6.1: {}
 
   dunder-proto@1.0.1:
     dependencies:
@@ -1228,9 +1228,9 @@ snapshots:
 
   inherits@2.0.4: {}
 
-  ioredis@5.6.1:
+  ioredis@5.7.0:
     dependencies:
-      '@ioredis/commands': 1.2.0
+      '@ioredis/commands': 1.3.0
       cluster-key-slot: 1.1.2
       debug: 4.4.1(supports-color@5.5.0)
       denque: 2.1.0
@@ -1321,7 +1321,7 @@ snapshots:
 
   lodash.once@4.1.1: {}
 
-  luxon@3.6.1: {}
+  luxon@3.7.1: {}
 
   math-intrinsics@1.1.0: {}
 
@@ -1346,17 +1346,17 @@ snapshots:
       '@types/whatwg-url': 11.0.5
       whatwg-url: 14.2.0
 
-  mongodb@6.17.0:
+  mongodb@6.18.0:
     dependencies:
       '@mongodb-js/saslprep': 1.3.0
       bson: 6.10.4
       mongodb-connection-string-url: 3.0.2
 
-  mongoose@8.16.0:
+  mongoose@8.17.1:
     dependencies:
       bson: 6.10.4
       kareem: 2.6.3
-      mongodb: 6.17.0
+      mongodb: 6.18.0
       mpath: 0.9.0
       mquery: 5.0.0
       ms: 2.1.3
@@ -1393,7 +1393,7 @@ snapshots:
       '@msgpackr-extract/msgpackr-extract-win32-x64': 3.0.3
     optional: true
 
-  msgpackr@1.11.4:
+  msgpackr@1.11.5:
     optionalDependencies:
       msgpackr-extract: 3.0.3
 
@@ -1588,11 +1588,11 @@ snapshots:
       media-typer: 1.1.0
       mime-types: 3.0.1
 
-  typescript@5.8.3: {}
+  typescript@5.9.2: {}
 
   undefsafe@2.0.5: {}
 
-  undici-types@7.8.0: {}
+  undici-types@7.10.0: {}
 
   unpipe@1.0.0: {}
 

@@ -1,5 +1,17 @@
 import mongoose from 'mongoose';
 
+
+export interface VerdictType {
+  verdict: string;
+  plagReportID: string;
+  compile: boolean;
+  runtime: boolean;
+  submissionId: string;
+  userId: string;
+  memory_mb: number;
+  runtime_s: number;
+}
+
 const verdictSchema = new mongoose.Schema({
   verdict: {
     type: String,
@@ -50,5 +62,4 @@ const verdictSchema = new mongoose.Schema({
   },
 })
 
-const Verdict = mongoose.model('verdicts', verdictSchema);
-export default Verdict;
+export const Verdict = mongoose.model('verdicts', verdictSchema);

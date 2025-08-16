@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
-import User from "../models/userModels/User.js";
-import type { UserType } from "../models/userModels/User.js";
+import { User, type UserType } from "../models/user.model.js";
 
 
 export const getUserById = async (req: Request, res: Response) => {
@@ -47,7 +46,7 @@ export const updateAttempted = async (req: Request, res: Response) => {
       return;
     }
 
-    user.attempted.push({id: problemId, status: status});
+    user.attempted.push({ id: problemId, status: status });
     await user.save();
 
   } catch (err) {

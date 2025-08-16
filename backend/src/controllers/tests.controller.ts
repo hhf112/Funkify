@@ -1,7 +1,6 @@
 import { Request, Response } from "express"
-import { SystemTestsType } from "../models/submissionModels/SystemTests"
-import SystemTests from "../models/submissionModels/SystemTests.js"
-import Problem from "../models/problemModels/Problem.js"
+import { Tests, type TestType } from "../models/tests.model.js"
+import { Problem, type ProblemType } from "../models/problem.model.js"
 
 
 export const addTests = async (req: Request, res: Response) => {
@@ -21,7 +20,7 @@ export const addTests = async (req: Request, res: Response) => {
   }
 
   try {
-    const systests = await SystemTests.create({
+    const systests = await Tests.create({
       problemId,
       tests,
       author,
@@ -29,7 +28,7 @@ export const addTests = async (req: Request, res: Response) => {
     });
 
 
-  // console.log(systests);
+    // console.log(systests);
     await Problem.findOneAndUpdate({ _id: problemId }, { testId: systests._id });
     res.status(200).json({
       success: true,

@@ -63,7 +63,7 @@ export function AIWindow({
     setAIAdvice("You only get 5 requests per day! use them carefully! 🙆‍♀️");
 
     try {
-      const advice = await Fetch(`${backend}/api/user/ai/sum/${Id}?what=${what}`, {
+      const advice = await Fetch(`${backend}/ai/sum/${Id}?what=${what}`, {
         method: "GET",
         headers: {
           "authorization": `Bearer ${sessionToken}`,

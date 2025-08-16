@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt, { VerifyErrors } from 'jsonwebtoken';
-
+import "dotenv/config";
 
 const JWT_SECRET: string | undefined = process.env.JWT_SECRET;
 if (!JWT_SECRET) {

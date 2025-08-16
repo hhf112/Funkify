@@ -6,17 +6,21 @@ import {
   getSubmissionsByUserId,
   getSubmissionByProblemIdAndUserId,
   getVerdictById,
-} from '../controllers/submissionController.js';
+} from '../../controllers/submission.controller.js';
+import { Authenticate } from '../../middleware/authentication.js';
+import { warn } from 'console';
 
 const router = Router();
 
 
+router.use('/', Authenticate);
+
 router.post('/', createSubmission);
 router.get('/user/:userId', getSubmissionsByUserId);
 router.get('/problem/:problemId', getSubmissionsByProblemId);
-router.get('/for', getSubmissionByProblemIdAndUserId);
-router.get('/:submissionId', getSubmissionById);
+router.get('/for', getSubmissionByProblemIdAndUserId); // userId=&problemId=
 router.get("/verdict/:verdictId", getVerdictById)
+router.get('/:submissionId', getSubmissionById);
 
 export default router;
 
