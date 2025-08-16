@@ -1,27 +1,34 @@
 import mongoose from 'mongoose';
 
-
 export interface SubmissionType {
   problemId: string,
-  testId: string,
+  testId: string
   userId: string,
   code: string,
-  language: string,
-  submissionTime?: Date,
-  status?: string,
-  verdictId?: string,
+  lang: string,
+  status: {
+    processed: boolean,
+    fail: boolean,
+    verdict: string,
+    error?: {
+      stderr: string,
+      error: string,
+    },
+    results: boolean[],
+    passed: number,
+    total: number,
+  }
 }
 
-
-const submissionsSchema = new mongoose.Schema({
-  testId: {
-    type: String,
-    required: true,
-  },
+const submissionSchema = new mongoose.Schema({
   problemId: {
     type: String,
     required: true,
     trim: true
+  },
+  testId: {
+    type: String,
+    default: null,
   },
   userId: {
     type: String,
@@ -32,23 +39,62 @@ const submissionsSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  submissionTime: {
+  lang: {
     type: String,
-    default: () => new Date().toLocaleString()
-  },
-  language: {
-    type: String,
-    required: true
+    required: true,
   },
   status: {
-    type: String,
-    enum: ["pending", "processing", "processed", "fail"],
-    default: 'pending'
-  },
-  verdictId: {
-    type: String,
-    default: null
-  },
-})
+    verdict: {
+      type: String,
+      enum: [
+        'Accepted',
+        'Wrong Answer',
+        'Time Limit Exceeded',
+        'Memory Limit Exceeded',
+        'Runtime Error',
+        'Compilation Error',
+        'Skipped',
+      ],
+      required: true
+    },
+    error: {
+      type: Object,
+      default: null,
 
-export const Submission = mongoose.model('submissions', submissionsSchema);
+      stderr: {
+        type: String,
+        default: null
+      },
+      error: {
+        type: String,
+        default: null
+      }
+    },
+    results: {
+      type: [Boolean],
+      default: []
+    },
+    passed: {
+      type: Number,
+      required: true,
+    },
+    processed: {
+      type: Boolean,
+      required: true,
+      default: false
+    },
+    fail: {
+      type: Boolean,
+      required: true,
+      default: false
+    },
+    total: {
+      type: Number,
+      required: true,
+    }
+  },
+},
+  { timestamps: true }
+)
+
+export const Submission = mongoose.model('submissions', submissionSchema);
