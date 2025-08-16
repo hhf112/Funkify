@@ -63,7 +63,7 @@ export function AIWindow({
     setAIAdvice("You only get 5 requests per day! use them carefully! 🙆‍♀️");
 
     try {
-      const advice = await Fetch(`${backend}/ai/sum/${Id}?what=${what}`, {
+      const advice = await Fetch(`${backend}/ai/` + (what === 0? "summary" : "hint" ) +  `/${problemId}`, {
         method: "GET",
         headers: {
           "authorization": `Bearer ${sessionToken}`,
@@ -97,7 +97,8 @@ export function AIWindow({
         setErrMsg({message: "", color: ""});
         return;
       }
-      setAIAdvice(adviceJSON.summary.slice(1, -1));
+      if (what == 0) setAIAdvice(adviceJSON.summary.slice(1, -1));
+      else if (what == 1) setAIAdvice(adviceJSON.hint.slice(1, -1));
 
       setErrMsg({
         message: "",
