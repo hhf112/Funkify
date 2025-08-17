@@ -17,7 +17,7 @@ const runFor: Record<string, any> = {
 
 export const runCode = async (req: Request, res: Response) => {
   const binaryPath = req.body.binaryPath;
-  const lang = req.body.lang;
+  const lang = req.body.language;
   if (!req.body.tests || !req.body.timeLimit) {
     res.status(400).json({
       success: false,
@@ -33,7 +33,7 @@ export const runCode = async (req: Request, res: Response) => {
       error: string,
     },
     results: {
-      test: string,
+      test: { input: string, output: string },
       output: string,
       passed: boolean,
     }[],
@@ -52,13 +52,13 @@ export const runCode = async (req: Request, res: Response) => {
         if (output.stdout.trim() == test.output.trim()) {
           runStatus.passed++;
           runStatus.results = [...runStatus.results, {
-            test: test.input,
+            test: { input: test.input, output: test.output },
             passed: true,
             output: output.stdout,
           }];
         } else {
           runStatus.results = [...runStatus.results, {
-            test: test.input,
+            test: { input: test.input, output: test.output },
             passed: false,
             output: output.stdout,
           }];
@@ -66,17 +66,17 @@ export const runCode = async (req: Request, res: Response) => {
         }
       } else {
         runStatus.results = [...runStatus.results, {
-          test: test.input,
+          test: { input: test.input, output: test.output },
           output: output.stdout,
           passed: false,
         }];
+        runStatus.verdict = output.errorMessage === "timed out." ? "Time Limit Exceeded" : "Runtime Error";
+        runStatus.error = {
+          stderr: output.stderr,
+          error: output.errorMessage,
+        }
+        break;
       }
-      runStatus.verdict = output.errorMessage === "timed out." ? "Time Limit Exceeded" : "Runtime Error";
-      runStatus.error = {
-        stderr: output.stderr,
-        error: output.errorMessage,
-      }
-      break;
     }
     fs.unlinkSync(binaryPath);
 
