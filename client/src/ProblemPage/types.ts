@@ -2,11 +2,7 @@
 export interface testResult {
   test: { input: string, output: string },
   output: string,
-  verdict: VerdictResultType,
-  error?: {
-    stderr: string,
-    error: string,
-  }
+  passed: boolean,
 }
 export interface Submission {
   problemId: string,

@@ -49,7 +49,11 @@ export function Problem() {
   const [submissionId, setSubmissionId] = useState<string>("");
   const [sampleTests, setSampleTests] = useState<{ input: string, output: string, }[]>([]);
   const [runVerdict, setRunVerdict] = useState<{
-    finalVerdict: string,
+    verdict: string,
+    error?: {
+      stderr: string,
+      error: string,
+    },
     results: testResult[]
   } | null>(null);
 
@@ -131,7 +135,7 @@ export function Problem() {
           tests: sampleTests.map((test: { input: string, output: string }) =>
             ({ input: test.input, output: test.output })),
           timeLimit: prob?.constraints.runtime_s,
-          linesPerTestCase: prob.linesPerTestCase,
+          testlines: prob.linesPerTestCase,
         })
       });
 
@@ -141,8 +145,13 @@ export function Problem() {
       }
 
       const getJSON = await get.json();
-      // console.log(getJSON);
-      setRunVerdict({ finalVerdict: getJSON.finalVerdict, results: getJSON.results });
+      console.log(getJSON);
+      if (getJSON.runStatus) setRunVerdict(getJSON.runStatus);
+      else setRunVerdict({
+          verdict: getJSON.compileStatus.verdict,
+          error: getJSON.compileStatus.error,
+          results: getJSON.compileStatus.results, 
+        });
     } catch (err: any) {
       console.log(err);
       setErrMsg({

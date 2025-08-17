@@ -8,11 +8,22 @@ export function PageLeftRun({
   setContent
 }: {
   setContent: Dispatch<SetStateAction<number>>
-  runVerdict: { finalVerdict: string, results: testResult[] } | null,
+  runVerdict: {
+    verdict: string,
+    error?: {
+      stderr: string,
+      error: string,
+    },
+    results: testResult[]
+  } | null,
   setRunVerdict: Dispatch<SetStateAction<{
-    finalVerdict: string,
-    results: testResult[],
-  } | null>>
+    verdict: string,
+    error?: {
+      stderr: string,
+      error: string,
+    },
+    results: testResult[]
+  } | null>>;
 
 }) {
   // console.log(runVerdict?.results);
@@ -26,11 +37,24 @@ export function PageLeftRun({
         <img src="/left-arrow.png" className="shrink-0 object-contain p-1 h-8 w-8" />
       </button>
 
-      {!runVerdict ?
+      {runVerdict === null ?
         <div className="p-10 text-lg prose prose-sm bg-neutral-100 animate-pulse w-full">
           <h1 className="text-white text-center"> Waiting </h1>
         </div>
-        : <VerdictCard key={runVerdict === null ? 1 : 0 } message={runVerdict.finalVerdict} />
+        : <VerdictCard key={runVerdict === null ? 1 : 0} message={runVerdict.verdict} />
+      }
+
+
+      {runVerdict != null && runVerdict.error != null && <div className="w-full font-bold font-mono text-neutral-600 flex flex-col">
+        STDERR
+        <textarea readOnly={true}
+          className="  border-neutral-400  text-red-400 resize-y border grow overflow-y-auto p-1"
+          defaultValue={runVerdict.error?.stderr} />
+        ERROR
+        <textarea readOnly={true}
+          className="  border-neutral-400 text-red-400 resize-y border grow overflow-y-auto p-1"
+          defaultValue={runVerdict.error?.error} />
+      </div>
       }
 
       {runVerdict?.results.map((test, index) => (
@@ -38,11 +62,11 @@ export function PageLeftRun({
           className="text-lg font-mono max-h-none border flex flex-col my-4 p-2 w-full
           border-neutral-400">
           <span
-            className={`${test.verdict.passed ? "bg-green-400 " : "bg-red-400"}
+            className={`${test.passed ? "bg-green-400 " : "bg-red-400"}
               text-white p-1`}>
             TEST {index}
           </span>
-          { test.test  ? <div className="flex flex-col">
+          {test.test && <div className="flex flex-col">
             INPUT
             <textarea readOnly={true}
               className="  border-neutral-400 resize-y border grow overflow-y-auto p-1"
@@ -50,20 +74,11 @@ export function PageLeftRun({
             OUTPUT
             <textarea readOnly={true}
               className="   border-neutral-400 resize-y grow border overflow-y-auto p-1"
-              defaultValue={test.output} />
+              defaultValue={test.test.output} />
             EXPECTED
             <textarea readOnly={true}
               className="   border-neutral-400 resize-y grow border overflow-y-auto p-1"
-              defaultValue={test.test.output} />
-          </div> : <div className="flex flex-col">
-            STDERR
-            <textarea readOnly={true}
-              className="  border-neutral-400  text-red-400 resize-y border grow overflow-y-auto p-1"
-              defaultValue={test.error?.stderr} />
-              ERROR
-            <textarea readOnly={true}
-              className="  border-neutral-400 text-red-400 resize-y border grow overflow-y-auto p-1"
-              defaultValue={test.error?.error} />
+              defaultValue={test.output} />
           </div>}
         </div>
       ))}
