@@ -1,4 +1,4 @@
-project may no longer as my free tier credits will expire. screenshots:
+project may no longer be active as my free tier credits will expire/inactive services. screenshots:
 ![home page](./assets/funkify1.gif)
 ![problem solving page](./assets/3.jpg)
 ![problem list page](./assets/4.jpg)
