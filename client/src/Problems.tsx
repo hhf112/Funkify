@@ -17,7 +17,7 @@ interface ProblemCompact {
 const backend = import.meta.env.VITE_BACKEND;
 if (!backend) {
   console.error("backend url not found")
-  process.exit(1);
+  // process.exit(1);
 }
 
 function getColor(difficulty: string) {
@@ -102,7 +102,7 @@ export function Problems() {
         setErrMsg({ message: "", color: "amber" });
       } catch (err) {
         setErrMsg({ message: "unexpected error occured", color: "red" });
-        console.log(err);
+        console.error(err);
       }
     }
     getProbs();

@@ -97,7 +97,7 @@ export function PageLeftSubmit({
         const getJSON = await get.json();
 
 
-        console.log(getJSON);
+        // console.log(getJSON);
         if (getJSON.submission.status.fail) {
           setDone(true);
           clearInterval(interval);
@@ -114,8 +114,8 @@ export function PageLeftSubmit({
           clearInterval(interval);
         }
       } catch (err) {
-        console.log(err);
-        console.log("unable to fetch result.");
+        console.error(err);
+        console.error("unable to fetch result.");
         return;
       }
     }, 2000);

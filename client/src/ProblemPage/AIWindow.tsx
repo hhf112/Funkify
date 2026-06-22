@@ -5,14 +5,22 @@ import { useNavigate } from "react-router-dom";
 const backend = import.meta.env.VITE_BACKEND || "";
 if (!backend) {
   console.error("backend url not found")
-  process.exit(1);
+  // process.exit(1);
 }
 
-function Button({ onClick, text }: { onClick: () => any, text: string }) {
+function Button({ onClick, text, setErrMsg }: {
+  onClick: () => any,
+  text: string,
+  setErrMsg: Dispatch<SetStateAction<{ color: string, message: string }>>
+}) {
   return <button
     className="border my-2 w-full py-2 cursor-pointer hover:scale-105
         hover:-translate-y-1 transform duration-100 transition-all delay-75 rounded-full bg-white border-neutral-200 text-neutral-500"
-    onClick={onClick}>
+    // onClick={onClick}>
+    onClick={() => {
+      setErrMsg({ color: "amber", message: "this feature is depracated" });
+      setTimeout(() => setErrMsg({ message: "", color: "" }), 3000);
+    }}>
     {text}
   </button>
 
@@ -39,7 +47,7 @@ export function AIWindow({
   const { sessionToken, Fetch } = useContext(sessionContext);
   const [mount, setMount] = useState<boolean>(false);
   const [hoverAI, setHoverAI] = useState<boolean>(false);
-  const [AIAdvice, setAIAdvice] = useState<string>("Nothing to see here! try your best at the problem statement!");
+  const [AIAdvice, setAIAdvice] = useState<string>("If you feel stuck, only after a honest try you can use some assistance from AI!\n<!this feature is depracated as the current free tier API costs risk unexpected billing charges for the owner!>");
   const [askAICount, setaskAICount] = useState<number>(0);
   const [what, setWhat] = useState<number>(0);
   const [whatSelector, setWhatSelector] = useState<number>(0);
@@ -63,13 +71,13 @@ export function AIWindow({
     setAIAdvice("You only get 5 requests per day! use them carefully! 🙆‍♀️");
 
     try {
-      const advice = await Fetch(`${backend}/ai/` + (what === 0? "summary" : "hint" ) +  `/${problemId}`, {
+      const advice = await Fetch(`${backend}/ai/` + (what === 0 ? "summary" : "hint") + `/${problemId}`, {
         method: "GET",
         headers: {
           "authorization": `Bearer ${sessionToken}`,
         },
       });
-      if (!advice) {navigate("/Login"); return;}
+      if (!advice) { navigate("/Login"); return; }
 
       if (advice.status === 429) {
         setErrMsg({
@@ -94,7 +102,7 @@ export function AIWindow({
           .replace(/\\"/g, '"')
           .replace(/\\'/g, "'");
         editorRef.current?.setValue(decoded);
-        setErrMsg({message: "", color: ""});
+        setErrMsg({ message: "", color: "" });
         return;
       }
       if (what == 0) setAIAdvice(adviceJSON.summary.slice(1, -1));
@@ -105,7 +113,7 @@ export function AIWindow({
         color: "amber"
       });
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   }
 
@@ -148,16 +156,18 @@ export function AIWindow({
             <Button
               onClick={() => getAIAdvice(0)}
               text={"Get a summary of the problem statement 📃"}
+              setErrMsg={setErrMsg}
             />
             <Button
               onClick={() => getAIAdvice(1)}
               text={"Get a Hint! 💡"}
+              setErrMsg={setErrMsg}
             />
           </div>
           :
           <textarea
             readOnly
-            className="mt-2 font-Inter text-neutral-700 whitespace-pre-wrap resize-none w-full h-full focus:outline-none focus:ring-0 focus:border-transparent"
+            className="mt-2 font-Inter text-neutral-500 italic whitespace-pre-wrap resize-none w-full h-full focus:outline-none focus:ring-0 focus:border-transparent"
             value={AIAdvice} />
       }
 

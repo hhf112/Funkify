@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 const authentication = import.meta.env.VITE_AUTH;
 if (!authentication) {
   console.error("authentication url not found");
-  process.exit(1);
+  // process.exit(1);
 }
 
 // interfaces
@@ -85,7 +85,7 @@ export function SessionContextProvider(
       // console.log(postJSON);
       setSessionToken(null);
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   }
 

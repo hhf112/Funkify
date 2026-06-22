@@ -83,7 +83,7 @@ export function Problem() {
         setProb(prob);
         setSampleTests(prob.sampleTests);
       } catch (err: any) {
-        console.log(err);
+        console.error(err);
         setLoadMsg(err.message);
       }
     };
@@ -145,7 +145,7 @@ export function Problem() {
       }
 
       const getJSON = await get.json();
-      console.log(getJSON);
+      // console.log(getJSON);
       if (getJSON.runStatus) setRunVerdict(getJSON.runStatus);
       else setRunVerdict({
           verdict: getJSON.compileStatus.verdict,
@@ -153,7 +153,7 @@ export function Problem() {
           results: getJSON.compileStatus.results, 
         });
     } catch (err: any) {
-      console.log(err);
+      console.error(err);
       setErrMsg({
         color: "red",
         message: err.message,
@@ -213,7 +213,7 @@ export function Problem() {
       }
 
       const postJSON = await post.json();
-      console.log(postJSON);
+      // console.log(postJSON);
       if (!postJSON.success) {
         setVerdict(postJSON.compileStatus);
         setDone(true);
