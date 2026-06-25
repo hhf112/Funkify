@@ -77,7 +77,7 @@ ${formMount ? "opacity-100" : "opacity-0"}`}>
         </h3>
       </div>
 
-      <img src="/unlock.png" className={`animate-bounce w-15 h-15 object-fill m-2
+      <img src="/unlock.png" className={`w-15 h-15 object-fill m-2
     ${formMount ? "opacity-100" : "opacity-0"} transform duration-1000 transition delay-1000`} />
 
       <h3 className="text-neutral-700 my-2 font-semibold">

@@ -114,12 +114,10 @@ export function Problems() {
   return (
     <div className="py-5  h-screen items-center w-full flex flex-col">
 
-      <h1 className="fixed top-0 left-0 p-2 text-cyan-500 font-bold font-Inter bg-white/20
+    {}<h1 className="fixed top-0 left-0 p-2 text-cyan-500 font-bold font-Inter bg-white/20
         backdrop-blur-xs w-full tex-sm h-5">
         Funkify
       </h1>
-
-
 
       <button
         className={`px-20 cursor-pointer py-3 mx-2 border-4 border-neutral-700 
