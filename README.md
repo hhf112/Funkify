@@ -1,3 +1,6 @@
+a simple overview of the architecture
+![overview](./assets/overview.jpg)
+
 some features of the project may no longer be active as my free tier credits will expire/inactive services. screenshots:
 ![home page](./assets/funkify1.gif)
 ![problem solving page](./assets/3.jpg)
